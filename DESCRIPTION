@@ -1,0 +1,39 @@
+Package: GiottoVisuals
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: c(
+	person("Ruben", "Dries", email = "rubendries@gmail.com",
+		 role = c("aut", "cre")),
+	person("Jiaji", "George Chen", email = "jiajic@bu.edu",
+		 role = c("aut")),
+	person("Guo-Cheng", "Yuan", email = "guo-cheng.yuan@mssm.edu",
+		 role = c("aut")),
+  person("Matthew", "O'Brien", email = "mobrien2@bu.edu",
+	   role = c("aut")),
+	person("Joselyn", "Chávez", email = "joselynchavezf@gmail.com",
+	   role = c("aut"))
+	)
+Maintainer: Ruben Dries <rubendries@gmail.com>
+Description: Visualization and plotting functions for Giotto Suite
+License: GPL (>= 3)
+Encoding: UTF-8
+URL: https://drieslab.github.io/Giotto/, https://github.com/drieslab/Giotto
+BugReports: https://github.com/drieslab/Giotto/issues
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Depends:
+    base (>= 3.5.0),
+    utils (>= 3.5.0),
+    R (>= 3.5.0),
+    GiottoUtils
+Imports:
+    cowplot (>= 0.9.4),
+    ggplot2 (>= 3.1.1),
+    ggrepel,
+    grDevices,
+    graphics,
+    plotly,
+    RColorBrewer (>= 1.1-2)
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
