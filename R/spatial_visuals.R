@@ -12,23 +12,6 @@
 
 
 
-## ** set default plot n cols ####
-#' @title Set default ncols in plotting grid
-#' @name set_default_cow_n_col
-#' @keywords internal
-set_default_cow_n_col = function(cow_n_col = NULL,
-                                 nr_plots) {
-
-  if(is.null(cow_n_col)) {
-    cow_n_col = ceiling(sqrt(nr_plots))
-  } else {
-    cow_n_col
-  }
-  return(cow_n_col)
-}
-
-
-
 ## ** image object compatibility ####
 
 #' @title Optimized largeImage resampling

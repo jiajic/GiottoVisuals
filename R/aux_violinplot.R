@@ -1,0 +1,156 @@
+#' @title violinPlot
+#' @name violinPlot
+#' @description Creates violinplot for selected clusters
+#' @param gobject giotto object
+#' @param spat_unit spatial unit (e.g. "cell")
+#' @param feat_type feature type (e.g. "rna", "dna", "protein")
+#' @param expression_values expression values to use (e.g. "normalized", "scaled", "custom")
+#' @param feats features to plot
+#' @param genes deprecated, use feats argument
+#' @param cluster_column name of column to use for clusters (e.g. "leiden_clus")
+#' @param color_violin color violin according to "genes" or "clusters"
+#' @param cluster_custom_order custom order of clusters
+#' @param cluster_color_code color code for clusters
+#' @param strip_position position of gene labels (e.g. "top", "right", "left", "bottom")
+#' @param strip_text size of strip text
+#' @param axis_text_x_size size of x-axis text
+#' @param axis_text_y_size size of y-axis text
+#' @param show_plot show plot. TRUE or FALSE
+#' @param return_plot return ggplot object. TRUE or FALSE
+#' @param save_plot directly save the plot. TRUE or FALSE
+#' @param save_param list of saving parameters, see \code{\link{showSaveParameters}}
+#' @param default_save_name default save name for saving, don't change, change save_name in save_param
+#' @return ggplot
+#' @export
+violinPlot <- function(gobject,
+                       spat_unit = NULL,
+                       feat_type = NULL,
+                       expression_values = c('normalized', 'scaled', 'custom'),
+                       feats = NULL,
+                       cluster_column,
+                       cluster_custom_order = NULL,
+                       color_violin = c('feats', 'cluster'),
+                       cluster_color_code = NULL,
+                       strip_position = c('top', 'right', 'left', 'bottom'),
+                       strip_text = 7,
+                       axis_text_x_size = 10,
+                       axis_text_y_size = 6,
+                       show_plot = NA,
+                       return_plot = NA,
+                       save_plot = NA,
+                       save_param =  list(),
+                       default_save_name = 'violinPlot') {
+
+  # Set feat_type and spat_unit
+  spat_unit = set_default_spat_unit(gobject = gobject,
+                                    spat_unit = spat_unit)
+  feat_type = set_default_feat_type(gobject = gobject,
+                                    spat_unit = spat_unit,
+                                    feat_type = feat_type)
+
+  ## strip position
+  strip_position = match.arg(strip_position, c('top', 'right', 'left', 'bottom'))
+
+  ## color of violin plots
+  color_violin = match.arg(color_violin, c('feats', 'cluster'))
+
+  ## expression data ##
+  values = match.arg(expression_values, unique(c('normalized', 'scaled', 'custom', expression_values)))
+  expr_data = get_expression_values(gobject = gobject,
+                                    feat_type = feat_type,
+                                    spat_unit = spat_unit,
+                                    values = values,
+                                    output = 'matrix')
+
+  # only keep feats that are in the dataset
+  selected_feats = feats[feats %in% rownames(expr_data)]
+  if(length(selected_feats[duplicated(selected_feats)]) != 0) {
+    cat('These feats have duplicates: \n',
+        selected_feats[duplicated(selected_feats)])
+    selected_feats = unique(selected_feats)
+  }
+
+  # stop and provide warning if no feats have been found
+  if(length(selected_feats) == 0) {
+    stop("No overlapping features have been found, check inputer for parameter 'feats'")
+  }
+
+  subset_data = as.matrix(expr_data[rownames(expr_data) %in% selected_feats, ])
+
+  if(length(feats) == 1) {
+    t_subset_data = subset_data
+  } else {
+    t_subset_data = t_flex(subset_data)
+  }
+
+  # metadata
+  metadata = pDataDT(gobject,
+                     feat_type = feat_type,
+                     spat_unit = spat_unit)
+
+  if(length(feats) == 1) {
+    metadata_expr <- cbind(metadata,  t_subset_data)
+    setnames(metadata_expr, 'V1', feats)
+  } else {
+    metadata_expr <- cbind(metadata, t_subset_data)
+  }
+
+
+  metadata_expr_m = data.table::melt.data.table(metadata_expr, measure.vars = unique(selected_feats), variable.name = 'feats')
+  metadata_expr_m[, feats := factor(feats, selected_feats)]
+  metadata_expr_m[[cluster_column]] = as.factor(metadata_expr_m[[cluster_column]])
+
+  if(!is.null(cluster_custom_order)) {
+    cluster_custom_order = unique(cluster_custom_order)
+    metadata_expr_m[[cluster_column]] = factor(x = metadata_expr_m[[cluster_column]], levels = cluster_custom_order)
+  }
+
+
+  pl <- ggplot2::ggplot()
+  pl <- pl + ggplot2::theme_classic()
+
+  if(color_violin == 'feats') {
+    pl <- pl + ggplot2::geom_violin(data = metadata_expr_m, aes_string(x = cluster_column, y = 'value', fill = 'feats'), width = 1, scale = 'width', show.legend = F)
+  } else {
+    pl <- pl + ggplot2::geom_violin(data = metadata_expr_m,
+                                    aes_string(x = cluster_column, y = 'value',
+                                               fill = cluster_column),
+                                    width = 1, scale = 'width',
+                                    show.legend = F)
+
+    # provide own color scheme for clusters
+    if(!is.null(cluster_color_code)) {
+      pl <- pl + ggplot2::scale_fill_manual(values = cluster_color_code)
+    }
+  }
+
+
+  pl <- pl + ggplot2::facet_wrap(.~feats, ncol = 1, strip.position = strip_position)
+  pl <- pl + ggplot2::theme(strip.text = element_text(size = strip_text),
+                            axis.text.x = element_text(size = axis_text_x_size, angle = 45, hjust = 1, vjust = 1),
+                            axis.text.y = element_text(size = axis_text_y_size))
+  pl <- pl + ggplot2::labs(x = '', y = 'normalized expression')
+
+
+
+  # print, return and save parameters
+  show_plot = ifelse(is.na(show_plot), readGiottoInstructions(gobject, param = 'show_plot'), show_plot)
+  save_plot = ifelse(is.na(save_plot), readGiottoInstructions(gobject, param = 'save_plot'), save_plot)
+  return_plot = ifelse(is.na(return_plot), readGiottoInstructions(gobject, param = 'return_plot'), return_plot)
+
+  ## print plot
+  if(show_plot == TRUE) {
+    print(pl)
+  }
+
+  ## save plot
+  if(save_plot == TRUE) {
+    do.call('all_plots_save_function', c(list(gobject = gobject, plot_object = pl, default_save_name = default_save_name), save_param))
+  }
+
+  ## return plot
+  if(return_plot == TRUE) {
+    return(pl)
+  }
+
+}

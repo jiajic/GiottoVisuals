@@ -9,4 +9,6 @@
 library(testthat)
 library(GiottoVisuals)
 
+devtools::install_github('drieslab/GiottoUtils')
+
 test_check("GiottoVisuals")

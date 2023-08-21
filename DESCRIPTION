@@ -14,7 +14,7 @@ Authors@R: c(
 	   role = c("aut"))
 	)
 Maintainer: Ruben Dries <rubendries@gmail.com>
-Description: Visualization and plotting functions for Giotto Suite
+Description: Expanded visualization and plotting functionality for Giotto Suite.
 License: GPL (>= 3)
 Encoding: UTF-8
 URL: https://drieslab.github.io/Giotto/, https://github.com/drieslab/Giotto
@@ -25,15 +25,55 @@ Depends:
     base (>= 3.5.0),
     utils (>= 3.5.0),
     R (>= 3.5.0),
-    GiottoUtils
+    GiottoUtils,
+    GiottoClass
 Imports:
     cowplot (>= 0.9.4),
+    data.table,
     ggplot2 (>= 3.1.1),
     ggrepel,
-    grDevices,
     graphics,
     plotly,
-    RColorBrewer (>= 1.1-2)
-Suggests: 
-    testthat (>= 3.0.0)
+    RColorBrewer (>= 1.1-2),
+    scales (>= 1.0.0),
+    scattermore,
+    stats
+Suggests:
+    ComplexHeatmap (>= 1.20.0),
+    ggalluvial,
+    ggdendro,
+    ggforce,
+    ggraph,
+    ggsci,
+    GiottoData,
+    networkd3,
+    NineteenEightyR,
+    nord,
+    palr,
+    palettetown,
+    rcartocolor,
+    shiny,
+    viridis,
+    viridisLite,
+    wesanderson,
+    testthat (>= 3.0.0),
+Remotes:
+    drieslab/GiottoUtils,
+    drieslab/GiottoClass
 Config/testthat/edition: 3
+Collate: 
+    'aux_dendrogram.R'
+    'aux_heatmap.R'
+    'aux_violinplot.R'
+    'save_visuals.R'
+    'auxilliary_visuals.R'
+    'color_palettes.R'
+    'dd.R'
+    'defaults.R'
+    'interactivity.R'
+    'package_imports.R'
+    'pc_plots.R'
+    'spatial_in_situ_visuals.R'
+    'spatial_interaction_visuals.R'
+    'spatial_visuals.R'
+    'zzz.R'

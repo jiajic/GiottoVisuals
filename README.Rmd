@@ -22,6 +22,7 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/drieslab/GiottoVisuals/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/drieslab/GiottoVisuals/actions/workflows/R-CMD-check.yml)
 [![GitHub issues](https://img.shields.io/github/issues/drieslab/Giotto)](https://github.com/drieslab/Giotto/issues)
 [![GitHub pulls](https://img.shields.io/github/issues-pr/drieslab/GiottoVisuals)](https://github.com/drieslab/GiottoVisuals/pulls)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 GiottoVisuals contains the main plotting functions of Giotto Suite

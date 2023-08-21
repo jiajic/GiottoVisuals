@@ -54,6 +54,101 @@ dimPlot2D_single(
   default_save_name = "dimPlot2D_single"
 )
 }
+\arguments{
+\item{gobject}{giotto object}
+
+\item{spat_unit}{spatial unit (e.g. "cell")}
+
+\item{feat_type}{feature type (e.g. "rna", "dna", "protein")}
+
+\item{dim_reduction_to_use}{dimension reduction to use}
+
+\item{dim_reduction_name}{dimension reduction name}
+
+\item{dim1_to_use}{dimension to use on x-axis}
+
+\item{dim2_to_use}{dimension to use on y-axis}
+
+\item{spat_enr_names}{names of spatial enrichment results to include}
+
+\item{show_NN_network}{show underlying NN network}
+
+\item{nn_network_to_use}{type of NN network to use (kNN vs sNN)}
+
+\item{network_name}{name of NN network to use, if show_NN_network = TRUE}
+
+\item{cell_color}{color for cells (see details)}
+
+\item{color_as_factor}{convert color column to factor}
+
+\item{cell_color_code}{named vector with colors}
+
+\item{cell_color_gradient}{vector with 3 colors for numeric data}
+
+\item{gradient_midpoint}{midpoint for color gradient}
+
+\item{gradient_limits}{vector with lower and upper limits}
+
+\item{select_cell_groups}{select subset of cells/clusters based on cell_color parameter}
+
+\item{select_cells}{select subset of cells based on cell IDs}
+
+\item{show_other_cells}{display not selected cells}
+
+\item{other_cell_color}{color for not selected cells}
+
+\item{other_point_size}{point size for not selected cells}
+
+\item{show_cluster_center}{plot center of selected clusters}
+
+\item{show_center_label}{plot label of selected clusters}
+
+\item{center_point_size}{size of center points}
+
+\item{center_point_border_col}{border color of center points}
+
+\item{center_point_border_stroke}{border stroke size of center points}
+
+\item{label_size}{size of labels}
+
+\item{label_fontface}{font of labels}
+
+\item{edge_alpha}{column to use for alpha of the edges}
+
+\item{point_shape}{point with border or not (border or no_border)}
+
+\item{point_size}{size of point (cell)}
+
+\item{point_alpha}{transparency of points}
+
+\item{point_border_col}{color of border around points}
+
+\item{point_border_stroke}{stroke size of border around points}
+
+\item{title}{title for plot, defaults to cell_color parameter}
+
+\item{show_legend}{show legend}
+
+\item{legend_text}{size of legend text}
+
+\item{legend_symbol_size}{size of legend symbols}
+
+\item{background_color}{color of plot background}
+
+\item{axis_text}{size of axis text}
+
+\item{axis_title}{size of axis title}
+
+\item{show_plot}{show plot}
+
+\item{return_plot}{return ggplot object}
+
+\item{save_plot}{directly save the plot \link{boolean}}
+
+\item{save_param}{list of saving parameters, see \code{\link{showSaveParameters}}}
+
+\item{default_save_name}{default save name for saving, don't change, change save_name in save_param}
+}
 \value{
 ggplot
 }
