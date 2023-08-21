@@ -62,8 +62,12 @@ set_default_color_discrete = function(colors = NULL, ...) {
 #' @return data.table of Giotto color option information
 #' @export
 showColorOptions = function() {
-  giotto_color_options[, option
-  ]
+  out = giotto_color_options[, paste(
+    '\noption      : ', option,
+    '\ndefault     : ', default,
+    '\ndescription : ', description,
+    '\n'
+  )]
   cat(out)
   return(invisible(giotto_color_options))
 }
@@ -86,9 +90,5 @@ giotto_color_options = data.table::data.table(
   )
 )
 
-test_fun = function() {
-  browser()
-  x = data.table::data.table(a = 3, b = 4)
-  print(x[, a + b])
-}
+
 
