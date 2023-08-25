@@ -472,6 +472,8 @@ showColorInstructions <- function() {
   return(invisible(giotto_color_instructions))
 }
 
+
+# TODO update for additional CCcom and dotplots
 giotto_color_instructions = data.table::data.table(
   option = c(
     '\'cell_color_d_pal\'',
