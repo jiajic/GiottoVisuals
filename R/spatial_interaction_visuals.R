@@ -170,27 +170,16 @@ cellProximityHeatmap = function(gobject,
     heatm = ComplexHeatmap::Heatmap(matrix = final_matrix, cluster_rows = F, cluster_columns = F)
   }
 
-
-
-  # print, return and save parameters
-  show_plot = ifelse(is.na(show_plot), readGiottoInstructions(gobject, param = 'show_plot'), show_plot)
-  save_plot = ifelse(is.na(save_plot), readGiottoInstructions(gobject, param = 'save_plot'), save_plot)
-  return_plot = ifelse(is.na(return_plot), readGiottoInstructions(gobject, param = 'return_plot'), return_plot)
-
-  ## print plot
-  if(show_plot == TRUE) {
-    print(heatm)
-  }
-
-  ## save plot
-  if(save_plot == TRUE) {
-    do.call('all_plots_save_function', c(list(gobject = gobject, plot_object = heatm, default_save_name = default_save_name), save_param))
-  }
-
-  ## return plot
-  if(return_plot == TRUE) {
-    return(heatm)
-  }
+  return(plot_output_handler(
+    gobject = gobject,
+    plot_object = heatm,
+    save_plot = save_plot,
+    return_plot = return_plot,
+    show_plot = show_plot,
+    default_save_name = default_save_name,
+    save_param = save_param,
+    else_return = NULL
+  ))
 
 }
 
@@ -346,27 +335,16 @@ cellProximityNetwork = function(gobject,
                                                    axis.text = ggplot2::element_blank(),
                                                    axis.ticks = ggplot2::element_blank())
 
-
-  # print, return and save parameters
-  show_plot = ifelse(is.na(show_plot), readGiottoInstructions(gobject, param = 'show_plot'), show_plot)
-  save_plot = ifelse(is.na(save_plot), readGiottoInstructions(gobject, param = 'save_plot'), save_plot)
-  return_plot = ifelse(is.na(return_plot), readGiottoInstructions(gobject, param = 'return_plot'), return_plot)
-
-  ## print plot
-  if(show_plot == TRUE) {
-    print(gpl)
-  }
-
-  ## save plot
-  if(save_plot == TRUE) {
-    do.call('all_plots_save_function', c(list(gobject = gobject, plot_object = gpl, default_save_name = default_save_name), save_param))
-  }
-
-  ## return plot
-  if(return_plot == TRUE) {
-    return(gpl)
-  }
-
+  return(plot_output_handler(
+    gobject = gobject,
+    plot_object = gpl,
+    save_plot = save_plot,
+    return_plot = return_plot,
+    show_plot = show_plot,
+    default_save_name = default_save_name,
+    save_param = save_param,
+    else_return = NULL
+  ))
 
 }
 
@@ -384,17 +362,17 @@ cellProximityVisPlot_2D_ggplot <- function(gobject,
                                            sdimy = NULL,
                                            cell_color = NULL,
                                            cell_color_code = NULL,
-                                           color_as_factor = T,
-                                           show_other_cells = F,
-                                           show_network = F,
-                                           show_other_network = F,
+                                           color_as_factor = TRUE,
+                                           show_other_cells = FALSE,
+                                           show_network = FALSE,
+                                           show_other_network = FALSE,
                                            network_color = NULL,
                                            spatial_network_name = 'Delaunay_network',
-                                           show_grid = F,
+                                           show_grid = FALSE,
                                            grid_color = NULL,
                                            spatial_grid_name = 'spatial_grid',
                                            coord_fix_ratio = 1,
-                                           show_legend = T,
+                                           show_legend = TRUE,
                                            point_size_select = 2,
                                            point_select_border_col = 'black',
                                            point_select_border_stroke = 0.05,
@@ -511,11 +489,19 @@ cellProximityVisPlot_2D_ggplot <- function(gobject,
         pl <- pl + ggplot2::scale_fill_manual(values = cell_color_code)
       } else if(color_as_factor == T) {
         number_colors = length(unique(factor_data))
-        cell_color_code = getDistinctColors(n = number_colors)
+        cell_color_code = set_default_color_discrete_cell(instrs = instructions(gobject))(n = number_colors)
         names(cell_color_code) = unique(factor_data)
         pl <- pl + ggplot2::scale_fill_manual(values = cell_color_code)
       } else if(color_as_factor == F){
-        pl <- pl + ggplot2::scale_fill_gradient(low = 'blue', high = 'red')
+        pl <- pl + set_default_color_continuous_cell(
+          colors = cell_color_code,
+          instrs = instructions(gobject),
+          midpoint = NULL,
+          style = 'sequential',
+          type_default = list(
+            pal = c('blue', 'red')
+          )
+        )
       }
 
     } else {
@@ -677,7 +663,7 @@ cellProximityVisPlot_2D_plotly <- function(gobject,
     if(cell_color %in% colnames(cell_locations_metadata)){
       if(is.null(cell_color_code)) {
         number_colors=length(unique(cell_locations_metadata[[cell_color]]))
-        cell_color_code = getDistinctColors(n = number_colors)
+        cell_color_code = set_default_color_discrete_cell(instrs = instructions(gobject))(n = number_colors)
       }
       cell_locations_metadata[[cell_color]] <- as.factor(cell_locations_metadata[[cell_color]])
 
@@ -834,7 +820,7 @@ cellProximityVisPlot_3D_plotly <- function(gobject,
     if(cell_color %in% colnames(cell_locations_metadata)){
       if(is.null(cell_color_code)) {
         number_colors=length(unique(cell_locations_metadata[[cell_color]]))
-        cell_color_code = getDistinctColors(n = number_colors)
+        cell_color_code = set_default_color_discrete_cell(instrs = instructions(gobject))(n = number_colors)
       }
       cell_locations_metadata[[cell_color]] <- as.factor(cell_locations_metadata[[cell_color]])
 
@@ -1550,7 +1536,7 @@ plotInteractionChangedFeats = function(gobject,
 
 
   if(is.null(cell_color_code)) {
-    mycolors = getDistinctColors(n = length(unique(tempDT$int_cell_type)))
+    mycolors = set_default_color_discrete_cell(instrs = instructions(gobject))(n = length(unique(tempDT$int_cell_type)))
     names(mycolors) = unique(tempDT$int_cell_type)
   } else {
     mycolors = cell_color_code
@@ -2132,7 +2118,7 @@ plotCombineCCcom = function(gobject,
 #' @param aggl_method agglomeration method used by hclust
 #' @param show_plot show plots
 #' @param return_plot return plotting object
-#' @param save_plot directly save the plot [boolean]
+#' @param save_plot logical. directly save the plot
 #' @param save_param list of saving parameters from \code{\link{all_plots_save_function}}
 #' @param default_save_name default save name for saving, don't change, change save_name in save_param
 #' @return ggplot
@@ -2146,6 +2132,8 @@ plotCCcomHeatmap = function(gobject,
                             show = c('PI', 'LR_expr', 'log2fc'),
                             cor_method = c("pearson", "kendall", "spearman"),
                             aggl_method = c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid"),
+                            gradient_color = NULL,
+                            gradient_style = c('divergent', 'sequential'),
                             show_plot = NA,
                             return_plot = NA,
                             save_plot = NA,
@@ -2207,29 +2195,23 @@ plotCCcomHeatmap = function(gobject,
                                                       axis.ticks.y = element_line())
   if(show_cell_LR_names == TRUE) pl <- pl + ggplot2::theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust = 1),
                                                            axis.ticks.x = element_line())
-  pl = pl + ggplot2::scale_fill_gradientn(colours = c('darkblue', 'blue', 'white', 'red', 'darkred'))
+  pl = pl + set_default_color_continuous_CCcom_heatmap(
+    colors = gradient_color,
+    instrs = instructions(gobject),
+    style = gradient_style
+  )
   pl = pl + ggplot2::labs(x = 'cell-cell', y = 'ligand-receptor')
 
-
-  # print, return and save parameters
-  show_plot = ifelse(is.na(show_plot), readGiottoInstructions(gobject, param = 'show_plot'), show_plot)
-  save_plot = ifelse(is.na(save_plot), readGiottoInstructions(gobject, param = 'save_plot'), save_plot)
-  return_plot = ifelse(is.na(return_plot), readGiottoInstructions(gobject, param = 'return_plot'), return_plot)
-
-  ## print plot
-  if(show_plot == TRUE) {
-    print(pl)
-  }
-
-  ## save plot
-  if(save_plot == TRUE) {
-    do.call('all_plots_save_function', c(list(gobject = gobject, plot_object = pl, default_save_name = default_save_name), save_param))
-  }
-
-  ## return plot
-  if(return_plot == TRUE) {
-    return(pl)
-  }
+  return(plot_output_handler(
+    gobject = gobject,
+    plot_object = pl,
+    save_plot = save_plot,
+    return_plot = return_plot,
+    show_plot = show_plot,
+    default_save_name = default_save_name,
+    save_param = save_param,
+    else_return = NULL
+  ))
 
 }
 
@@ -2249,7 +2231,7 @@ plotCCcomHeatmap = function(gobject,
 #' @param aggl_method agglomeration method used by hclust
 #' @param show_plot show plots
 #' @param return_plot return plotting object
-#' @param save_plot directly save the plot [boolean]
+#' @param save_plot logical. directly save the plot
 #' @param save_param list of saving parameters from \code{\link{all_plots_save_function}}
 #' @param default_save_name default save name for saving, don't change, change save_name in save_param
 #' @return ggplot
@@ -2263,6 +2245,8 @@ plotCCcomDotplot = function(gobject,
                             cluster_on = c('PI', 'LR_expr', 'log2fc'),
                             cor_method = c("pearson", "kendall", "spearman"),
                             aggl_method = c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid"),
+                            dot_color_gradient = NULL,
+                            gradient_style = c('divergent', 'sequential'),
                             show_plot = NA,
                             return_plot = NA,
                             save_plot = NA,
@@ -2331,8 +2315,21 @@ plotCCcomDotplot = function(gobject,
                                                      axis.ticks.y = element_line())
   if(show_cell_LR_names == TRUE) pl = pl + ggplot2::theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust = 1),
                                                           axis.ticks.x = element_line())
-  pl = pl + ggplot2::scale_fill_gradientn(colours = c('darkblue', 'blue', 'white', 'red', 'darkred'))
-  pl = pl + ggplot2::scale_size_continuous(range = c(5, 0.5)) + scale_color_gradientn(colours = c('darkblue', 'blue', 'white', 'red', 'darkred'))
+  pl = pl + set_default_color_continuous_CCcom_dotplot(
+    colors = dot_color_gradient,
+    instrs = instructions(gobject),
+    midpoint = NULL,
+    style = gradient_style,
+    type = 'fill'
+  )
+  pl = pl + ggplot2::scale_size_continuous(range = c(5, 0.5)) +
+    set_default_color_continuous_CCcom_dotplot(
+      colors = dot_color_gradient,
+      instrs = instructions(gobject),
+      midpoint = NULL,
+      style = gradient_style,
+      type = 'color'
+    )
   pl = pl + ggplot2::labs(x = 'cell-cell', y = 'ligand-receptor')
 
   # print, return and save parameters
@@ -2363,10 +2360,11 @@ plotCCcomDotplot = function(gobject,
 #' @name plotRankSpatvsExpr
 #' @description Plots dotplot to compare ligand-receptor rankings from spatial and expression information
 #' @param gobject giotto object
-#' @param combCC combined communinication scores from \code{\link{combCCcom}}
+#' @param combCC combined communication scores from \code{\link{combCCcom}}
 #' @param expr_rnk_column column with expression rank information to use
 #' @param spat_rnk_column column with spatial rank information to use
-#' @param midpoint midpoint of colors
+#' @param gradient_midpoint midpoint of colors
+#' @param midpoint deprecated
 #' @param size_range size ranges of dotplot
 #' @param xlims x-limits, numerical vector of 2
 #' @param ylims y-limits, numerical vector of 2
@@ -2382,7 +2380,10 @@ plotRankSpatvsExpr = function(gobject,
                               combCC,
                               expr_rnk_column = 'LR_expr_rnk',
                               spat_rnk_column = 'LR_spat_rnk',
-                              midpoint = 10,
+                              dot_color_gradient = NULL,
+                              midpoint = deprecated(),
+                              gradient_midpoint = 10,
+                              gradient_style = c('divergent', 'sequential'),
                               size_range = c(0.01, 1.5),
                               xlims = NULL,
                               ylims = NULL,
@@ -2392,6 +2393,14 @@ plotRankSpatvsExpr = function(gobject,
                               save_plot = NA,
                               save_param =  list(),
                               default_save_name = 'plotRankSpatvsExpr') {
+
+  # deprecate
+  if (GiottoUtils::is_present(midpoint)) {
+    deprecate_warn('0.0.0.9000',
+                   'GiottoVisuals::plotRankSpatvsExpr(midpoint = )',
+                   'GiottoVisuals::plotRankSpatvsExpr(gradient_midpoint = )')
+    gradient_midpoint <- midpoint
+  }
 
 
   # data.table variables
@@ -2427,7 +2436,17 @@ plotRankSpatvsExpr = function(gobject,
   pl = ggplot2::ggplot()
   pl = pl + ggplot2::theme_classic() + ggplot2::theme(axis.text = element_blank())
   pl = pl + ggplot2::geom_point(data = rnk_res_m, ggplot2::aes(x = variable, y = spt_rank, size = value, color = value))
-  pl = pl + ggplot2::scale_color_gradient2(low = 'blue', mid = 'yellow', high = 'red', midpoint = midpoint, guide = guide_legend(title = ''))
+  pl = pl + set_default_color_continuous_CCcom_dotplot(
+    colors = dot_color_gradient,
+    instrs = instruction(gobject),
+    midpoint = gradient_midpoint,
+    style = gradient_style,
+    type = 'color',
+    type_default = list(
+      pal = c('blue', 'yellow', 'red')
+    ),
+    guide = guide_legend(title = '')
+  )
   pl = pl + ggplot2::scale_size_continuous(range = size_range, guide = "none")
   pl = pl + ggplot2::labs(x = 'expression rank', y = 'spatial rank')
 
@@ -2440,26 +2459,16 @@ plotRankSpatvsExpr = function(gobject,
   }
 
 
-
-  # print, return and save parameters
-  show_plot = ifelse(is.na(show_plot), readGiottoInstructions(gobject, param = 'show_plot'), show_plot)
-  save_plot = ifelse(is.na(save_plot), readGiottoInstructions(gobject, param = 'save_plot'), save_plot)
-  return_plot = ifelse(is.na(return_plot), readGiottoInstructions(gobject, param = 'return_plot'), return_plot)
-
-  ## print plot
-  if(show_plot == TRUE) {
-    print(pl)
-  }
-
-  ## save plot
-  if(save_plot == TRUE) {
-    do.call('all_plots_save_function', c(list(gobject = gobject, plot_object = pl, default_save_name = default_save_name), save_param))
-  }
-
-  ## return plot
-  if(return_plot == TRUE) {
-    return(pl)
-  }
+  return(plot_output_handler(
+    gobject = gobject,
+    plot_object = pl,
+    save_plot = save_plot,
+    return_plot = return_plot,
+    show_plot = show_plot,
+    default_save_name = default_save_name,
+    save_param = save_param,
+    else_return = NULL
+  ))
 
 }
 
@@ -2802,11 +2811,19 @@ cellProximitySpatPlot2D <- function(gobject,
         pl <- pl + ggplot2::scale_fill_manual(values = cell_color_code)
       } else if(color_as_factor == T) {
         number_colors = length(unique(factor_data))
-        cell_color_code = getDistinctColors(n = number_colors)
+        cell_color_code = set_default_color_discrete_cell(instrs = instructions(gobject))(n = number_colors)
         names(cell_color_code) = unique(factor_data)
         pl <- pl + ggplot2::scale_fill_manual(values = cell_color_code)
       } else if(color_as_factor == F){
-        pl <- pl + ggplot2::scale_fill_gradient(low = 'blue', high = 'red')
+        pl <- pl + set_default_color_continuous_cell(
+          colors = cell_color_code,
+          instrs = instructions(gobject),
+          midpoint = NULL,
+          style = 'sequential',
+          type_default = list(
+            pal = c('blue', 'red')
+          )
+        )
       }
 
     } else {

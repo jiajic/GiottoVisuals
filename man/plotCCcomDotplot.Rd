@@ -15,6 +15,8 @@ plotCCcomDotplot(
   cor_method = c("pearson", "kendall", "spearman"),
   aggl_method = c("ward.D", "ward.D2", "single", "complete", "average", "mcquitty",
     "median", "centroid"),
+  dot_color_gradient = NULL,
+  gradient_style = c("divergent", "sequential"),
   show_plot = NA,
   return_plot = NA,
   save_plot = NA,
@@ -45,7 +47,7 @@ plotCCcomDotplot(
 
 \item{return_plot}{return plotting object}
 
-\item{save_plot}{directly save the plot \link{boolean}}
+\item{save_plot}{logical. directly save the plot}
 
 \item{save_param}{list of saving parameters from \code{\link{all_plots_save_function}}}
 

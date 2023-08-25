@@ -1,6 +1,6 @@
 Package: GiottoVisuals
 Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: c(
 	person("Ruben", "Dries", email = "rubendries@gmail.com",
 		 role = c("aut", "cre")),
@@ -33,6 +33,7 @@ Imports:
     ggplot2 (>= 3.1.1),
     ggrepel,
     graphics,
+    methods,
     plotly,
     RColorBrewer (>= 1.1-2),
     scales (>= 1.0.0),
@@ -64,15 +65,22 @@ Config/testthat/edition: 3
 Collate: 
     'aux_dendrogram.R'
     'aux_heatmap.R'
+    'aux_scatterplot.R'
     'aux_violinplot.R'
-    'save_visuals.R'
+    'plot_save.R'
     'auxilliary_visuals.R'
     'color_palettes.R'
     'dd.R'
     'defaults.R'
+    'gg_info_layers.R'
+    'globals.R'
+    'hvf_plots.R'
+    'image_visuals.R'
     'interactivity.R'
     'package_imports.R'
     'pc_plots.R'
+    'plot_output.R'
+    'spatial_DE_visuals.R'
     'spatial_in_situ_visuals.R'
     'spatial_interaction_visuals.R'
     'spatial_visuals.R'

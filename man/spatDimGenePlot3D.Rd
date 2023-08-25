@@ -170,9 +170,4 @@ Visualize cells according to spatial AND dimension reduction coordinates in ggpl
 \details{
 Description of parameters.
 }
-\seealso{
-Other spatial and dimension reduction gene expression visualizations: 
-\code{\link{spatDimGenePlot2D}()},
-\code{\link{spatDimGenePlot}()}
-}
 \concept{spatial and dimension reduction gene expression visualizations}

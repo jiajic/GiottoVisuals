@@ -20,7 +20,10 @@ plotMetaDataCellsHeatmap(
   custom_values_order = NULL,
   values_cor_method = "pearson",
   values_cluster_method = "complete",
-  midpoint = 0,
+  gradient_color = NULL,
+  gradient_midpoint = 0,
+  gradient_style = c("divergent", "sequential"),
+  midpoint = deprecated(),
   x_text_size = 8,
   x_text_angle = 45,
   y_text_size = 8,
@@ -63,7 +66,7 @@ plotMetaDataCellsHeatmap(
 
 \item{values_cluster_method}{hierarchical cluster method for the values, default to "complete"}
 
-\item{midpoint}{midpoint of show_values}
+\item{gradient_midpoint}{midpoint of show_values}
 
 \item{x_text_size}{size of x-axis text}
 

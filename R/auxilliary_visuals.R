@@ -1,6 +1,77 @@
 
-#' @include save_visuals.R
+#' @include plot_save.R
 NULL
+
+
+
+# images ####
+#' @title select_gimage
+#' @name select_gimage
+#' @description selects and (possibly resamples) giotto images for plotting
+#' @keywords internal
+#' @export
+select_gimage = function(gobject,
+                         gimage = NULL,
+                         image_name = NULL,
+                         largeImage_name = NULL,
+                         spat_unit = NULL,
+                         spat_loc_name = NULL,
+                         feat_type = NULL,
+                         polygon_feat_type = NULL) {
+
+
+  if(!is.null(gimage)) gimage = gimage
+
+
+  else if(!is.null(image_name)) {
+
+    if(length(image_name) == 1) {
+      gimage = gobject@images[[image_name]]
+      if(is.null(gimage)) warning('image_name: ', image_name, ' does not exists')
+    } else {
+      gimage = list()
+      for(gim in 1:length(image_name)) {
+        gimage[[gim]] = gobject@images[[gim]]
+        if(is.null(gimage[[gim]])) warning('image_name: ', gim, ' does not exists')
+      }
+    }
+
+  } else if(!is.null(largeImage_name)) {
+    # If there is input to largeImage_name arg
+
+    if(length(largeImage_name) == 1) {
+      gimage = plot_auto_largeImage_resample(gobject = gobject,
+                                             largeImage_name = largeImage_name,
+                                             spat_unit = spat_unit,
+                                             spat_loc_name = spat_loc_name,
+                                             polygon_feat_type = polygon_feat_type,
+                                             include_image_in_border = TRUE)
+    } else {
+      gimage = list()
+      for(gim in 1:length(largeImage_name)) {
+        gimage[[gim]] = plot_auto_largeImage_resample(gobject = gobject,
+                                                      largeImage_name = largeImage_name[[gim]],
+                                                      spat_unit = spat_unit,
+                                                      spat_loc_name = spat_loc_name,
+                                                      polygon_feat_type = polygon_feat_type,
+                                                      include_image_in_border = TRUE)
+      }
+    }
+
+  } else {
+    # Default to first image available in images if no input given to image_name or largeImage_name args
+    image_name = names(gobject@images)[1]
+    gimage = gobject@images[[image_name]]
+
+    if(is.null(gimage)) warning('image_name: ', image_name, ' does not exist \n')
+  }
+
+  return(gimage)
+
+}
+
+
+
 
 # ggplot helper ####
 
@@ -160,6 +231,19 @@ decide_cluster_order = function(gobject,
   return(clus_sort_names)
 }
 
+
+
+
+
+
+# rescale values ####
+
+# based on ggplot2 internal
+mid_rescaler <- function(mid) {
+  function(x, to = c(0, 1), from = range(x, na.rm = TRUE)) {
+    scales::rescale_mid(x, to, from, mid)
+  }
+}
 
 
 

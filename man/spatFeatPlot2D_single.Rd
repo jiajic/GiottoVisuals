@@ -18,8 +18,9 @@ spatFeatPlot2D_single(
   expression_values = c("normalized", "scaled", "custom"),
   feats,
   order = TRUE,
-  cell_color_gradient = c("blue", "white", "red"),
+  cell_color_gradient = NULL,
   gradient_midpoint = NULL,
+  gradient_style = c("divergent", "sequential"),
   gradient_limits = NULL,
   show_network = F,
   network_color = NULL,
@@ -85,6 +86,8 @@ spatFeatPlot2D_single(
 \item{cell_color_gradient}{vector with 3 colors for numeric data}
 
 \item{gradient_midpoint}{midpoint for color gradient}
+
+\item{gradient_style}{whether to use gradient as 'divergent' or 'sequential'}
 
 \item{gradient_limits}{vector with lower and upper limits}
 

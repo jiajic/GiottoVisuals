@@ -12,10 +12,20 @@ expand_feature_info(
   verbose = TRUE
 )
 }
+\arguments{
+\item{spatial_feat_info}{a data.table of spatial feature information}
+
+\item{expand_counts}{logical. whether points should be expanded based on count}
+
+\item{jitter}{numeric vector. amount of jitter to add}
+
+\item{verbose}{be verbose}
+}
 \value{
 data.table
 }
 \description{
-low level function to expand feature coordinates
+low level function to expand feature coordinates by adding
+jitter to coordinates
 }
 \keyword{internal}

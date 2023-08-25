@@ -3,315 +3,12 @@
 
 
 
-#' @title Plot cell polygon layer
-#' @name plot_cell_polygon_layer
-#' @description Low level function to plot a polygon
-#' @return ggplot
-#' @details This functions plots a polygon based on spatial cell information.
-#' This is most likely a polygon that corresponds to the cell shape.
-#' @keywords internal
-plot_cell_polygon_layer = function(ggobject = NULL,
-                                   polygon_dt,
-                                   polygon_grouping = 'poly_ID',
-                                   sdimx = 'x',
-                                   sdimy = 'y',
-                                   fill = NULL,
-                                   poly_fill_gradient = c('blue', 'white', 'red'),
-                                   fill_gradient_midpoint =  NULL,
-                                   fill_as_factor = TRUE,
-                                   fill_code = NULL,
-                                   bg_color = 'black',
-                                   color = 'black',
-                                   alpha = 0.5,
-                                   size = 2) {
 
-  # data.table variables
-  final_fill = NULL
 
-  # check fill column
-  if(!is.null(fill)) {
-    if(fill_as_factor == TRUE) {
-      polygon_dt[, final_fill := as.factor(get(fill))]
-    } else {
-      polygon_dt[, final_fill := get(fill)]
-    }
-  }
 
-  # create layer
-  if(!is.null(ggobject) & methods::is(ggobject, 'ggplot')) {
-    pl = ggobject
-  } else {
-    pl = ggplot2::ggplot()
-  }
 
+# subcellular ####
 
-  # specific fill color for polygon shapes
-  if(!is.null(fill)) {
-    pl = pl + ggplot2::geom_polygon(data = polygon_dt,
-                                    ggplot2::aes_string(x = 'x',
-                                                        y = 'y',
-                                                        group = polygon_grouping,
-                                                        fill = 'final_fill'),
-                                    alpha = alpha,
-                                    color = color,
-                                    size = size)
-
-    # manual fill colors for factor values
-    if(fill_as_factor == TRUE) {
-      if(!is.null(fill_code)) {
-        pl = pl + ggplot2::scale_fill_manual(values = fill_code)
-      } else {
-        fill_values_names = unique(polygon_dt[['final_fill']])
-        fill_code = getDistinctColors(length(fill_values_names))
-        names(fill_code) = fill_values_names
-        pl = pl + ggplot2::scale_fill_manual(values = fill_code)
-      }
-    }
-
-    # gradient fill colors for numerical values
-    if(fill_as_factor == FALSE) {
-
-      if(is.null(fill_gradient_midpoint)) {
-        fill_gradient_midpoint = stats::median(polygon_dt[['final_fill']])
-      }
-
-      pl = pl + ggplot2::scale_fill_gradient2(low = poly_fill_gradient[[1]],
-                                              mid = poly_fill_gradient[[2]],
-                                              high = poly_fill_gradient[[3]],
-                                              midpoint = fill_gradient_midpoint,
-                                              guide = guide_colorbar(title = ''))
-    }
-
-
-  } else {
-    pl = pl + ggplot2::geom_polygon(data = polygon_dt,
-                                    ggplot2::aes_string(x = 'x',
-                                                        y = 'y',
-                                                        group = 'poly_ID'),
-                                    fill = bg_color,
-                                    alpha = alpha,
-                                    color = color,
-                                    size = size)
-  }
-
-  return(pl)
-
-}
-
-
-
-#' @title select_gimage
-#' @name select_gimage
-#' @description selects and creates giotto images for plotting
-#' @keywords internal
-select_gimage = function(gobject,
-                         gimage = NULL,
-                         image_name = NULL,
-                         largeImage_name = NULL,
-                         spat_unit = NULL,
-                         spat_loc_name = NULL,
-                         feat_type = NULL,
-                         polygon_feat_type = NULL) {
-
-
-  if(!is.null(gimage)) gimage = gimage
-
-
-  else if(!is.null(image_name)) {
-
-    if(length(image_name) == 1) {
-      gimage = gobject@images[[image_name]]
-      if(is.null(gimage)) warning('image_name: ', image_name, ' does not exists')
-    } else {
-      gimage = list()
-      for(gim in 1:length(image_name)) {
-        gimage[[gim]] = gobject@images[[gim]]
-        if(is.null(gimage[[gim]])) warning('image_name: ', gim, ' does not exists')
-      }
-    }
-
-  } else if(!is.null(largeImage_name)) {
-    # If there is input to largeImage_name arg
-
-    if(length(largeImage_name) == 1) {
-      gimage = plot_auto_largeImage_resample(gobject = gobject,
-                                             largeImage_name = largeImage_name,
-                                             spat_unit = spat_unit,
-                                             spat_loc_name = spat_loc_name,
-                                             polygon_feat_type = polygon_feat_type,
-                                             include_image_in_border = TRUE)
-    } else {
-      gimage = list()
-      for(gim in 1:length(largeImage_name)) {
-        gimage[[gim]] = plot_auto_largeImage_resample(gobject = gobject,
-                                                      largeImage_name = largeImage_name[[gim]],
-                                                      spat_unit = spat_unit,
-                                                      spat_loc_name = spat_loc_name,
-                                                      polygon_feat_type = polygon_feat_type,
-                                                      include_image_in_border = TRUE)
-      }
-    }
-
-  } else {
-    # Default to first image available in images if no input given to image_name or largeImage_name args
-    image_name = names(gobject@images)[1]
-    gimage = gobject@images[[image_name]]
-
-    if(is.null(gimage)) warning('image_name: ', image_name, ' does not exist \n')
-  }
-
-  return(gimage)
-
-}
-
-
-
-
-#' @title expand_feature_info
-#' @name expand_feature_info
-#' @description low level function to expand feature coordinates
-#' @return data.table
-#' @keywords internal
-expand_feature_info = function(spatial_feat_info,
-                               expand_counts = FALSE,
-                               count_info_column = 'count',
-                               jitter = c(0,0),
-                               verbose = TRUE) {
-
-  # data.table variables
-  feat_ID = x = y = feat = spat_unit = NULL
-
-  # 1. expand feature locations with multiple counts (e.g. in seq-Scope or Stereo-seq)
-  if(isTRUE(expand_counts)) {
-
-    if(!count_info_column %in% colnames(spatial_feat_info)) stop('count_info_column ', count_info_column, ' does not exist')
-
-    if(isTRUE(verbose)) {wrap_msg('Start expanding feature information based on count column')}
-
-
-    extra_feats = spatial_feat_info[get(count_info_column) > 1]
-    extra_feats = extra_feats[,rep(get(count_info_column), get(count_info_column)), by = .(feat_ID, x, y, feat, spat_unit)]
-    spatial_feat_info = rbind(extra_feats[,.(feat_ID, x, y, feat, spat_unit)], spatial_feat_info[get(count_info_column) == 1, .(feat_ID, x, y, feat, spat_unit)])
-
-
-
-  }
-
-  # 2. add jitter to x and y coordinates
-
-  if(!identical(c(0,0), jitter)) {
-
-    if(isTRUE(verbose)) {wrap_msg('Start adding jitter to x and y based on provided max jitter information')}
-
-    # create jitter for x and y coordinates: from 0 to max-x or max-y
-    tx_number = nrow(spatial_feat_info)
-    x_jitter = sample(0:jitter[[1]], size = tx_number, replace = TRUE)
-    y_jitter = sample(0:jitter[[2]], size = tx_number, replace = TRUE)
-
-    spatial_feat_info[, c('x', 'y') := list(x+x_jitter, y+y_jitter)]
-  }
-
-  return(spatial_feat_info)
-
-}
-
-
-
-#' @title plot_feature_points_layer
-#' @name plot_feature_points_layer
-#' @description low level function to plot a points at the spatial in situ level
-#' @return ggplot
-#' @details This function can plot multiple features over multiple modalities. These plots can get very big very fast.
-#' @keywords internal
-plot_feature_points_layer = function(ggobject,
-                                     spatial_feat_info,
-                                     feats,
-                                     feats_color_code = NULL,
-                                     feat_shape_code = NULL,
-                                     sdimx = 'x',
-                                     sdimy = 'y',
-                                     color = 'feat_ID',
-                                     shape = 'feat',
-                                     point_size = 1.5,
-                                     stroke = NULL,
-                                     show_legend = TRUE,
-                                     plot_method = c('ggplot', 'scattermore', 'scattermost'),
-                                     expand_counts = FALSE,
-                                     count_info_column = 'count',
-                                     jitter = c(0,0),
-                                     verbose = TRUE) {
-
-
-  # define plotting method
-  plot_method = match.arg(arg = plot_method, choices = c('ggplot', 'scattermore', 'scattermost'))
-
-  # data.table vars
-  feat_ID = NULL
-
-  spatial_feat_info_subset = spatial_feat_info[feat_ID %in% unlist(feats)]
-
-  # expand feature coordinates and/or add jitter to coordinates
-  if(isTRUE(expand_counts) | !identical(c(0,0), jitter)) {
-    spatial_feat_info_subset = expand_feature_info(spatial_feat_info = spatial_feat_info_subset,
-                                                   expand_counts = expand_counts,
-                                                   count_info_column = count_info_column,
-                                                   jitter = jitter,
-                                                   verbose = verbose)
-  }
-
-  wrap_msg(' --| Plotting ', nrow(spatial_feat_info_subset), ' feature points')
-
-  if(!is.null(ggobject) & inherits(ggobject, 'ggplot')) {
-    pl = ggobject
-  } else {
-    pl = ggplot2::ggplot()
-  }
-
-  # prepare color vector for scattermost
-  if(plot_method == 'scattermost') {
-    if(!is.null(feats_color_code)) {
-      scattermost_color = feats_color_code[spatial_feat_info_subset[['feat_ID']]]
-    } else {
-      feats_names = unique(spatial_feat_info_subset[[color]])
-      feats_color_code = getDistinctColors(length(feats_names))
-      names(feats_color_code) = feats_names
-      scattermost_color = feats_color_code[spatial_feat_info_subset[['feat_ID']]]
-    }
-  }
-
-  pl = pl + giotto_point(plot_method = plot_method,
-                         data = spatial_feat_info_subset,
-                         ggplot2::aes_string(x = sdimx,
-                                             y = sdimy,
-                                             color = color,
-                                             shape = shape),
-                         size = point_size,
-                         stroke = stroke,
-                         show.legend = show_legend,
-
-                         # specific for scattermost
-                         scattermost_xy = spatial_feat_info_subset[,.(x,y)],
-                         scattermost_color = scattermost_color)
-
-
-
-  # manually set feature color code
-  if(!is.null(feats_color_code)) {
-    pl = pl + ggplot2::scale_color_manual(values = feats_color_code)
-  } else {
-    feats_names = unique(spatial_feat_info_subset[[color]])
-    feats_color_code = getDistinctColors(length(feats_names))
-    names(feats_color_code) = feats_names
-    pl = pl + ggplot2::scale_color_manual(values = feats_color_code)
-  }
-
-  # manually set feature shape color code
-  if(!is.null(feat_shape_code)) {
-    pl = pl + ggplot2::scale_shape_manual(values = feat_shape_code)
-  }
-
-  return(pl)
-}
 
 
 #' @title spatInSituPlotPoints
@@ -390,8 +87,9 @@ spatInSituPlotPoints <- function(gobject,
                                  polygon_color = 'black',
                                  polygon_bg_color = 'black',
                                  polygon_fill = NULL,
-                                 polygon_fill_gradient = c('blue', 'white', 'red'),
+                                 polygon_fill_gradient = NULL,
                                  polygon_fill_gradient_midpoint =  NULL,
+                                 polygon_fill_gradient_style = c('divergent', 'sequential'),
                                  polygon_fill_as_factor = NULL,
                                  polygon_fill_code = NULL,
                                  polygon_alpha = 0.5,
@@ -415,11 +113,6 @@ spatInSituPlotPoints <- function(gobject,
   if(is.null(feats)) {
     warning('You need to select features (feats) and modify feature types (feat_type) if you want to show individual features (e.g. transcripts) \n')
   }
-
-  # print, return and save parameters
-  show_plot = ifelse(is.na(show_plot), readGiottoInstructions(gobject, param = 'show_plot'), show_plot)
-  save_plot = ifelse(is.na(save_plot), readGiottoInstructions(gobject, param = 'save_plot'), save_plot)
-  return_plot = ifelse(is.na(return_plot), readGiottoInstructions(gobject, param = 'return_plot'), return_plot)
 
   # check valid input
   plot_last <- match.arg(plot_last)
@@ -481,6 +174,7 @@ spatInSituPlotPoints <- function(gobject,
       spatial_feat_info = do.call('rbind', spatial_feat_info)
 
       plot = plot_feature_points_layer(ggobject = plot,
+                                       instrs = instructions(gobject),
                                        spatial_feat_info = spatial_feat_info,
                                        feats = feats,
                                        feats_color_code = feats_color_code,
@@ -529,6 +223,7 @@ spatInSituPlotPoints <- function(gobject,
       #polygon_dt = spatVector_to_dt(polygon_info)
 
       plot = plot_cell_polygon_layer(ggobject = plot,
+                                     instrs = instructions(gobject),
                                      polygon_dt = polygon_dt,
                                      polygon_grouping = 'poly_ID',
                                      sdimx = sdimx,
@@ -536,6 +231,7 @@ spatInSituPlotPoints <- function(gobject,
                                      fill = polygon_fill,
                                      poly_fill_gradient = polygon_fill_gradient,
                                      fill_gradient_midpoint = polygon_fill_gradient_midpoint,
+                                     fill_gradient_style = polygon_fill_gradient_style,
                                      fill_as_factor = polygon_fill_as_factor,
                                      fill_code = polygon_fill_code,
                                      bg_color = polygon_bg_color,
@@ -576,6 +272,7 @@ spatInSituPlotPoints <- function(gobject,
       #polygon_dt = spatVector_to_dt(polygon_info)
 
       plot = plot_cell_polygon_layer(ggobject = plot,
+                                     instrs = instructions(gobject),
                                      polygon_dt = polygon_dt,
                                      polygon_grouping = 'poly_ID',
                                      sdimx = sdimx,
@@ -583,6 +280,7 @@ spatInSituPlotPoints <- function(gobject,
                                      fill = polygon_fill,
                                      poly_fill_gradient = polygon_fill_gradient,
                                      fill_gradient_midpoint = polygon_fill_gradient_midpoint,
+                                     fill_gradient_style = polygon_fill_gradient_style,
                                      fill_as_factor = polygon_fill_as_factor,
                                      fill_code = polygon_fill_code,
                                      bg_color = polygon_bg_color,
@@ -614,6 +312,7 @@ spatInSituPlotPoints <- function(gobject,
       spatial_feat_info = do.call('rbind', spatial_feat_info)
 
       plot = plot_feature_points_layer(ggobject = plot,
+                                       instrs = instructions(gobject),
                                        spatial_feat_info = spatial_feat_info,
                                        feats = feats,
                                        feats_color_code = feats_color_code,
@@ -651,73 +350,35 @@ spatInSituPlotPoints <- function(gobject,
     plot = plot + ggplot2::coord_fixed(ratio = coord_fix_ratio)
   }
 
-
-  ## print plot
-  if(show_plot == TRUE) {
-    print(plot)
-  }
-
-  ## save plot
-  if(save_plot == TRUE) {
-    do.call('all_plots_save_function', c(list(gobject = gobject,
-                                              plot_object = plot,
-                                              default_save_name = default_save_name),
-                                         save_param))
-  }
-
-  ## return plot
-  if(return_plot == TRUE) {
-    return(plot)
-  }
+  return(plot_output_handler(
+    gobject = gobject,
+    plot_object = plot,
+    save_plot = save_plot,
+    return_plot = return_plot,
+    show_plot = show_plot,
+    default_save_name = default_save_name,
+    save_param = save_param,
+    else_return = NULL
+  ))
 
 }
 
 
 
 
-#' @title plot_feature_hexbin_layer
-#' @name plot_feature_hexbin_layer
-#' @description low level function to plot hexbins at the spatial in situ level
-#' @return ggplot
-#' @details This function can plot one feature for one modality.
-#' @keywords internal
-plot_feature_hexbin_layer = function(ggobject = NULL,
-                                     spatial_feat_info,
-                                     sel_feat,
-                                     sdimx = 'x',
-                                     sdimy = 'y',
-                                     binwidth = NULL,
-                                     min_axis_bins = 10L,
-                                     alpha = 0.5) {
-
-  # data.table variables
-  feat_ID = NULL
-
-  spatial_feat_info_subset = spatial_feat_info[feat_ID %in% sel_feat]
-
-  # set default binwidth to 1/10 of minor axis
-  if(is.null(binwidth)) {
-    minorRange = spatial_feat_info_subset[, min(diff(sapply(.SD, range))), .SDcols = c('x','y')]
-    binwidth = as.integer(minorRange/min_axis_bins)
-  }
-
-  if(!is.null(ggobject) & methods::is(ggobject, 'ggplot')) {
-    pl = ggobject
-  } else {
-    pl = ggplot2::ggplot()
-  }
-
-  pl = pl + ggplot2::geom_hex(data = spatial_feat_info_subset,
-                              ggplot2::aes_string(x = sdimx,
-                                                  y = sdimy),
-                              binwidth = binwidth,
-                              alpha = alpha)
-  pl = pl + labs(title = sel_feat)
-  return(pl)
-
-}
 
 
+
+
+
+
+
+
+
+
+
+
+# hexbin ####
 
 #' @title spatInSituPlotHex_single
 #' @name spatInSituPlotHex_single
@@ -768,7 +429,8 @@ spatInSituPlotHex_single = function(gobject,
                                     polygon_name = polygon_feat_type)
     polygon_dt = spatVector_to_dt(polygon_info)
 
-    plot = plot_cell_polygon_layer(ggobject = gobject,
+    plot = plot_cell_polygon_layer(ggobject = plot,
+                                   instrs = instructions(gobject),
                                    polygon_dt,
                                    polygon_grouping = 'poly_ID',
                                    sdimx = sdimx,
@@ -797,6 +459,7 @@ spatInSituPlotHex_single = function(gobject,
   spatial_feat_info = do.call('rbind', spatial_feat_info)
 
   plot = plot_feature_hexbin_layer(ggobject = plot,
+                                   instrs = instructions(gobject),
                                    spatial_feat_info = spatial_feat_info,
                                    sel_feat = feat,
                                    sdimx = sdimx,
@@ -969,45 +632,12 @@ spatInSituPlotHex = function(gobject,
 
 
 
-#' @title plot_feature_raster_density_layer
-#' @name plot_feature_raster_density_layer
-#' @description low level function to plot density plots at the spatial in situ level
-#' @return ggplot
-#' @details This function can plot one feature for one modality.
-#' @keywords internal
-plot_feature_raster_density_layer = function(ggobject = NULL,
-                                             spatial_feat_info,
-                                             sel_feat,
-                                             sdimx = 'x',
-                                             sdimy = 'y',
-                                             alpha = 0.5) {
-
-  # data.table variable
-  feat_ID = NULL
-
-  spatial_feat_info_subset = spatial_feat_info[feat_ID %in% unlist(sel_feat)]
-
-  if(!is.null(ggobject) & methods::is(ggobject, 'ggplot')) {
-    pl = ggobject
-  } else {
-    pl = ggplot2::ggplot()
-  }
-
-  pl = pl + ggplot2::stat_density_2d(data = spatial_feat_info_subset,
-                                     ggplot2::aes_string(x = sdimx,
-                                                         y = sdimy,
-                                                         fill = 'after_stat(density)'),
-                                     geom = "raster",
-                                     alpha = alpha,
-                                     contour = FALSE)
-  pl = pl + labs(title = sel_feat)
-  pl = pl + ggplot2::scale_fill_continuous(type = "viridis")
-
-  return(pl)
-
-}
 
 
+
+
+
+# density ####
 
 #' @title spatInSituPlotDensity_single
 #' @name spatInSituPlotDensity_single
@@ -1056,7 +686,8 @@ spatInSituPlotDensity_single = function(gobject,
     #polygon_dt = combineSpatialCellMetadataInfo(gobject, feat_type = polygon_feat_type)
     #polygon_dt = polygon_dt[[polygon_feat_type]]
 
-    plot = plot_cell_polygon_layer(ggobject = gobject,
+    plot = plot_cell_polygon_layer(ggobject = plot,
+                                   instrs = instructions(gobject),
                                    polygon_dt,
                                    polygon_grouping = 'poly_ID',
                                    sdimx = sdimx,
@@ -1083,6 +714,7 @@ spatInSituPlotDensity_single = function(gobject,
   spatial_feat_info = do.call('rbind', spatial_feat_info)
 
   plot = plot_feature_raster_density_layer(ggobject = plot,
+                                           instrs = instructions(gobject),
                                            spatial_feat_info = spatial_feat_info,
                                            sel_feat = feat,
                                            sdimx = sdimx,
@@ -1252,4 +884,66 @@ spatInSituPlotDensity = function(gobject,
 
 
 
+# helpers ####
 
+
+
+
+
+
+
+## other ####
+
+#' @title expand_feature_info
+#' @name expand_feature_info
+#' @description low level function to expand feature coordinates by adding
+#' jitter to coordinates
+#' @param spatial_feat_info a data.table of spatial feature information
+#' @param expand_counts logical. whether points should be expanded based on count
+#' @param jitter numeric vector. amount of jitter to add
+#' @param verbose be verbose
+#' @return data.table
+#' @keywords internal
+#' @export
+expand_feature_info = function(spatial_feat_info,
+                               expand_counts = FALSE,
+                               count_info_column = 'count',
+                               jitter = c(0,0),
+                               verbose = TRUE) {
+
+  # data.table variables
+  feat_ID = x = y = feat = spat_unit = NULL
+
+  # 1. expand feature locations with multiple counts (e.g. in seq-Scope or Stereo-seq)
+  if(isTRUE(expand_counts)) {
+
+    if(!count_info_column %in% colnames(spatial_feat_info)) stop('count_info_column ', count_info_column, ' does not exist')
+
+    if(isTRUE(verbose)) {wrap_msg('Start expanding feature information based on count column')}
+
+
+    extra_feats = spatial_feat_info[get(count_info_column) > 1]
+    extra_feats = extra_feats[,rep(get(count_info_column), get(count_info_column)), by = .(feat_ID, x, y, feat, spat_unit)]
+    spatial_feat_info = rbind(extra_feats[,.(feat_ID, x, y, feat, spat_unit)], spatial_feat_info[get(count_info_column) == 1, .(feat_ID, x, y, feat, spat_unit)])
+
+
+
+  }
+
+  # 2. add jitter to x and y coordinates
+
+  if(!identical(c(0,0), jitter)) {
+
+    if(isTRUE(verbose)) {wrap_msg('Start adding jitter to x and y based on provided max jitter information')}
+
+    # create jitter for x and y coordinates: from 0 to max-x or max-y
+    tx_number = nrow(spatial_feat_info)
+    x_jitter = sample(0:jitter[[1]], size = tx_number, replace = TRUE)
+    y_jitter = sample(0:jitter[[2]], size = tx_number, replace = TRUE)
+
+    spatial_feat_info[, c('x', 'y') := list(x+x_jitter, y+y_jitter)]
+  }
+
+  return(spatial_feat_info)
+
+}

@@ -116,9 +116,4 @@ Visualize cells and gene expression according to spatial coordinates
 \details{
 Description of parameters.
 }
-\seealso{
-Other spatial gene expression visualizations: 
-\code{\link{spatGenePlot2D}()},
-\code{\link{spatGenePlot}()}
-}
 \concept{spatial gene expression visualizations}

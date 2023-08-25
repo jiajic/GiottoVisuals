@@ -9,7 +9,10 @@ plotRankSpatvsExpr(
   combCC,
   expr_rnk_column = "LR_expr_rnk",
   spat_rnk_column = "LR_spat_rnk",
-  midpoint = 10,
+  dot_color_gradient = NULL,
+  midpoint = deprecated(),
+  gradient_midpoint = 10,
+  gradient_style = c("divergent", "sequential"),
   size_range = c(0.01, 1.5),
   xlims = NULL,
   ylims = NULL,
@@ -24,13 +27,15 @@ plotRankSpatvsExpr(
 \arguments{
 \item{gobject}{giotto object}
 
-\item{combCC}{combined communinication scores from \code{\link{combCCcom}}}
+\item{combCC}{combined communication scores from \code{\link{combCCcom}}}
 
 \item{expr_rnk_column}{column with expression rank information to use}
 
 \item{spat_rnk_column}{column with spatial rank information to use}
 
-\item{midpoint}{midpoint of colors}
+\item{midpoint}{deprecated}
+
+\item{gradient_midpoint}{midpoint of colors}
 
 \item{size_range}{size ranges of dotplot}
 

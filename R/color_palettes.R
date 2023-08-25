@@ -330,6 +330,7 @@ get_continuous_colors = function(col, n, strategy) {
 #' @param col character vector. Hexadecimal color codes
 #' @param rev whether to reverse order of vector
 #' @param strategy policy when insufficient colors are available
+#' @seealso [set_default_color_discrete()]
 #' @description
 #' Simple palette function generator. Creates a function with param n that
 #' dictates how many colors to return from the provided vector of hexadecimal
@@ -351,6 +352,7 @@ simple_palette_factory = function(col, rev = FALSE, strategy = 'interpolate') {
 #' @param rev whether to reverse order of vector
 #' @param strategy policy when insufficient colors are available
 #' @param strategy strategy to use
+#' @seealso [set_default_color_discrete()]
 get_palette_factory = function(pal, rev = FALSE, strategy = 'interpolate') {
 
   function(n) {
