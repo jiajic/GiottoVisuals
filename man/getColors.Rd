@@ -36,5 +36,5 @@ than exist then the palette will be made continuous\cr
 \examples{
 f <- system.file("ex/elev.tif", package="terra")
 r <- terra::rast(f)
-terra::plot(r, col = getColors(100, 'Spectral'))
+terra::plot(r, col = getColors(pal = 'Spectral', n = 100))
 }

@@ -815,15 +815,12 @@ plot_cell_polygon_layer = function(ggobject = NULL,
                                    alpha = 0.5,
                                    size = 2) {
 
-  # data.table variables
-  final_fill = NULL
-
   # check fill column
   if(!is.null(fill)) {
     if(fill_as_factor == TRUE) {
-      polygon_dt[, final_fill := as.factor(get(fill))]
+      polygon_dt[, 'final_fill' := as.factor(get(fill))]
     } else {
-      polygon_dt[, final_fill := get(fill)]
+      polygon_dt[, 'final_fill' := get(fill)]
     }
   }
 
@@ -927,7 +924,7 @@ plot_feature_points_layer = function(ggobject,
   plot_method = match.arg(arg = plot_method, choices = c('ggplot', 'scattermore', 'scattermost'))
 
   # data.table vars
-  feat_ID = NULL
+  feat_ID = x = y = NULL
 
   spatial_feat_info_subset = spatial_feat_info[feat_ID %in% unlist(feats)]
 

@@ -1,6 +1,6 @@
 Package: GiottoVisuals
 Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R: c(
 	person("Ruben", "Dries", email = "rubendries@gmail.com",
 		 role = c("aut", "cre")),
@@ -28,17 +28,21 @@ Depends:
     GiottoUtils,
     GiottoClass
 Imports:
+    checkmate,
+    colorRamp2,
     cowplot (>= 0.9.4),
     data.table,
     ggplot2 (>= 3.1.1),
     ggrepel,
-    graphics,
+    igraph (>= 1.2.4.1),
     methods,
     plotly,
     RColorBrewer (>= 1.1-2),
+    reshape2,
     scales (>= 1.0.0),
     scattermore,
-    stats
+    stats,
+    terra
 Suggests:
     ComplexHeatmap (>= 1.20.0),
     ggalluvial,
@@ -47,41 +51,45 @@ Suggests:
     ggraph,
     ggsci,
     GiottoData,
-    networkd3,
+    htmlwidgets,
+    Matrix,
+    networkD3,
     NineteenEightyR,
     nord,
     palr,
     palettetown,
+    png,
     rcartocolor,
-    shiny,
+    remotes,
+    scatterpie,
+    tiff,
     viridis,
     viridisLite,
     wesanderson,
-    testthat (>= 3.0.0),
+    testthat (>= 3.0.0)
 Remotes:
     drieslab/GiottoUtils,
     drieslab/GiottoClass
 Config/testthat/edition: 3
 Collate: 
-    'aux_dendrogram.R'
-    'aux_heatmap.R'
-    'aux_scatterplot.R'
-    'aux_violinplot.R'
-    'plot_save.R'
-    'auxilliary_visuals.R'
+    'aux_defaults.R'
+    'aux_output.R'
+    'aux_save.R'
+    'aux_visuals.R'
     'color_palettes.R'
     'dd.R'
-    'defaults.R'
     'gg_info_layers.R'
     'globals.R'
-    'hvf_plots.R'
-    'image_visuals.R'
-    'interactivity.R'
     'package_imports.R'
-    'pc_plots.R'
-    'plot_output.R'
-    'spatial_DE_visuals.R'
-    'spatial_in_situ_visuals.R'
-    'spatial_interaction_visuals.R'
-    'spatial_visuals.R'
+    'plot_dendrogram.R'
+    'plot_heatmap.R'
+    'plot_scatter.R'
+    'plot_violin.R'
+    'spatialDE_visuals.R'
+    'vis_hvf.R'
+    'vis_pc.R'
+    'vis_spatial.R'
+    'vis_spatial_in_situ.R'
+    'vis_spatial_interaction.R'
+    'viz_spatial_network.R'
     'zzz.R'
