@@ -2,7 +2,7 @@
 % Please edit documentation in R/dd.R
 \name{data_access_params}
 \alias{data_access_params}
-\title{data_access_params}
+\title{Params documentation template: data_access_params}
 \arguments{
 \item{gobject}{giotto object}
 
@@ -11,6 +11,6 @@
 \item{feat_type}{feature type (e.g. "rna", "dna", "protein")}
 }
 \description{
-data_access_params
+Params documentation template: data_access_params
 }
 \keyword{internal}
