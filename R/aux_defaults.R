@@ -7,6 +7,9 @@
 #' @description
 #' Determine a default cow_n_col param value for cowplot based on the number of
 #' items to plot.
+#' @param cow_n_col number of columns for cowplot to use. A default number is
+#' calculated if `NULL` is passed.
+#' @param nr_plots number of plots to use with cowplot
 #' @export
 set_default_cow_n_col = function(cow_n_col = NULL,
                                  nr_plots) {

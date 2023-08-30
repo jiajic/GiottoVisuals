@@ -6,6 +6,12 @@
 \usage{
 set_default_cow_n_col(cow_n_col = NULL, nr_plots)
 }
+\arguments{
+\item{cow_n_col}{number of columns for cowplot to use. A default number is
+calculated if \code{NULL} is passed.}
+
+\item{nr_plots}{number of plots to use with cowplot}
+}
 \description{
 Determine a default cow_n_col param value for cowplot based on the number of
 items to plot.

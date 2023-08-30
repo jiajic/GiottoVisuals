@@ -2,12 +2,7 @@
 
 export(FSV_show)
 export(colorRamp2)
-export(create_calc_var_HVF_plot)
 export(create_cluster_dendrogram)
-export(create_cov_group_HVF_plot)
-export(create_cov_loess_HVF_plot)
-export(create_jackstrawplot)
-export(create_screeplot)
 export(dimCellPlot)
 export(dimCellPlot2D)
 export(dimFeatPlot2D)
