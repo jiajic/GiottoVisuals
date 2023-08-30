@@ -310,11 +310,22 @@ get_rcarto_colors = function(n, pal, strategy) {
 
 # helpers ####
 
-#' @noRd
-#' @param col character vector. colors to interpolate
+#' @name get_continuous_colors
+#' @title Generate a continuous set of colors
+#' @description
+#' Based on a vector of colors provided to `col`, make these colors continuous
+#' (i.e. make it possible for an arbitrary `n` number of colors to be requested)
+#' then return those `n` colors.\cr
+#' `strategy` describes how to make these colors continuous:
+#' - **'interpolate'** interpolates provided colors using [grDevices::colorRampPalette()]
+#' - **'recycle'** - recycles the input color vector across the `n` requested.
+#' - **'cutoff'** - supply only a maximum of as many colors as exist within the
+#' originally supplied vector.
+#' @param col character vector. colors to make continuous
 #' @param n integer. number of colors to get
 #' @param strategy one of 'cutoff', 'recycle', or 'interpolate'.
 #' strategy to use when more colors are requested than exist
+#' @export
 get_continuous_colors = function(col, n, strategy) {
   strategy = g_match_arg(strategy, choices = c('interpolate', 'recycle', 'cutoff'))
 
@@ -326,16 +337,19 @@ get_continuous_colors = function(col, n, strategy) {
 }
 
 
-#' @noRd
-#' @param col character vector. Hexadecimal color codes
-#' @param rev whether to reverse order of vector
-#' @param strategy policy when insufficient colors are available
+
+#' @name simple_palette_factory
+#' @title Generate a simple palette function
 #' @seealso [set_default_color_discrete()]
 #' @description
 #' Simple palette function generator. Creates a function with param n that
 #' dictates how many colors to return from the provided vector of hexadecimal
 #' color values. Generated functions send warning if there are not enough colors
 #' to use and it needs to recycle values.
+#' @param col character vector. Hexadecimal color codes
+#' @param rev whether to reverse order of vector
+#' @param strategy policy when insufficient colors are available
+#' @export
 simple_palette_factory = function(col, rev = FALSE, strategy = 'interpolate') {
   checkmate::assert_character(col)
   checkmate::assert_logical(rev)
@@ -364,6 +378,14 @@ get_palette_factory = function(pal, rev = FALSE, strategy = 'interpolate') {
 
 # * palette names list ####
 
+#' @title Color palette names
+#' @name pal_names
+#' @description
+#' Known color palettes info provided as named list of character vectors.
+#' List names correspond to the name of the palette package. The character vectors
+#' list the palettes that are available within. These palettes can be passed to
+#' the default color setting functions
+#' @export
 pal_names = list(
   hcl = grDevices::hcl.pals(),
   base = c(

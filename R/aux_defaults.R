@@ -4,8 +4,10 @@
 # default plot n cols ####
 #' @title Set default ncols in plotting grid
 #' @name set_default_cow_n_col
-#' @keywords internal
-#' @noRd
+#' @description
+#' Determine a default cow_n_col param value for cowplot based on the number of
+#' items to plot.
+#' @export
 set_default_cow_n_col = function(cow_n_col = NULL,
                                  nr_plots) {
 
@@ -20,17 +22,59 @@ set_default_cow_n_col = function(cow_n_col = NULL,
 
 # default plotting fill color ####
 
+
+
+
+
+
+
+
+## discrete ####
+
+
 # -------------------------------------------------------------------------- #
-# internal function to provide a function that will generate 'n' hexadecimal
-# color codes for discrete colors
-# inputs are INTENDED to be provided via instructions and options
-#
 # FUNCTION input to 'color' are also permitted, but REQUIRE an 'n' param
 # for downstream functionality. 'giotto.color_discrete_pal' and
 # 'giotto.color_discrete_strategy' are additionally ignored
 # -------------------------------------------------------------------------- #
 
-# framework function. Wrap this for specific things that need defaults setting
+#' @name set_default_color_discrete
+#' @title Set a discrete coloring scheme
+#' @description
+#' Provides a palette function that will generate 'n' hexadecimal color codes for
+#' discrete colors. Sets a default coloring palette if `NULL` is passed to `colors`
+#' param.\cr\cr
+#'
+#' Supports colors setting at three levels:
+#'  - **global options** (general session setting with blanket color palette type effects)
+#'    - options('giotto.color_d_pal) - palette to use
+#'    - options('giotto.color_d_rev) - whether colors should be reversed
+#'    - options('giotto.color_d_strategy) - strategy to use when making colors continuous. See [get_continuous_colors()]
+#'  - **giotto instructions** (gobject specific and effects specific types of plots)
+#'    - run `showColorInstructions()` for details on options/params to set in the `giottoInstructions` object
+#'  - **function specific** (directly pass desired colors to plotting function)
+#' \cr\cr
+#'
+#' If a character vector of length 1 input is provided then it will be assumed
+#' that a known color palette is being requested from [pal_names()].\cr
+#' If a longer character input is provided then they will be expected to be
+#' a vector of colors to use. These values will be passed to [simple_palette_factory]
+#' which will generate a palette function that interpolates between the colors
+#' provided by default and has a `n` param for number of requested colors.\cr
+#' Custom function inputs to `colors` is also supported but these custom functions
+#' should have a `n` param for number of requested colors.
+#' @param colors accepts color inputs
+#' @param instrs `giottoInstructions` object (output of `instructions(gobject)`)
+#' @param \dots additional params to pass
+NULL
+
+
+
+
+#' @describeIn set_default_color_discrete Framework function. Direct use should be minimal.
+#' Wrap this for specific things (plots or types of features) that need defaults setting.
+#' @param instr_pal,instr_rev,instr_strategy used by upstream function to pass specific `giottoInstructions` params
+#' @export
 set_default_color_discrete = function(
     colors = NULL,
     instr_pal,
@@ -67,6 +111,9 @@ set_default_color_discrete = function(
   }
 }
 
+
+#' @rdname set_default_color_discrete
+#' @export
 set_default_color_discrete_cell = function(
     colors = NULL,
     instrs,
@@ -87,6 +134,8 @@ set_default_color_discrete_cell = function(
   )
 }
 
+#' @rdname set_default_color_discrete
+#' @export
 set_default_color_discrete_poly = function(
     colors = NULL,
     instrs,
@@ -107,6 +156,8 @@ set_default_color_discrete_poly = function(
   )
 }
 
+#' @rdname set_default_color_discrete
+#' @export
 set_default_color_discrete_feat = function(
     colors = NULL,
     instrs,
@@ -127,6 +178,8 @@ set_default_color_discrete_feat = function(
   )
 }
 
+#' @rdname set_default_color_discrete
+#' @export
 set_default_color_discrete_heatmap_clus = function(
     colors = NULL,
     instrs,
@@ -155,25 +208,47 @@ set_default_color_discrete_heatmap_clus = function(
 
 
 
+
+## continuous ####
+
+
 #' @name set_default_color_continuous
 #' @title Set a default color for continuous values
 #' @description
-#' Framework function. Should not be used directly. Specific wrapper functions
-#' should be used for each item that needs defaults setting.
-#' midpoint param only supplied when using color scale with 3 colors.\cr
-#' This function sets a default color continuous color gradient to use. It takes
+#' Generates a gradient color palette based on input to `colors` param. Sets a
+#' default gradient if `NULL` is passed.
+#' `midpoint` param only supplied when using color scale with 3 colors.\cr\cr
 #'
-#' @param colors character or NULL. 2 to n number of hex color codes or 1 single
+#' Supports colors setting at four levels:
+#' - **type specific defaults** - defaults for a sepecific feature or type of
+#' plot can be passed through `type_default` param
+#' - **global options** (general session setting with blanket color palette type effects)
+#'    - options('giotto.color_c_pal) - palette to use. Default for 'divergent'
+#' data is blue, white, red, for sequential, it is 'viridis'
+#'    - options('giotto.color_c_rev) - whether colors should be reversed
+#' - **giotto instructions** (gobject specific and effects specific types of plots)
+#'    - run `showColorInstructions()` for details on options/params to set in the `giottoInstructions` object
+#' - **function specific** (directly pass desired colors to plotting function)
+#' \cr\cr
+#'
+#' @param colors character or `NULL`. 2 to n number of hex color codes or 1 single
 #' name of a palette to use can be passed
-#' @param instr_pal instructions default: palette
-#' @param instr_rev instructions default: reverse palette
-#' @param midpoint midpoint value of color gradient
-#' @param style scale color scale around midpoint (divergent) or starting from
+#' @param instrs `giottoInstructions` object (output of `instructions(gobject)`)
+#' @param midpoint numeric. midpoint value of color gradient
+#' @param style scale color scale around `midpoint` (divergent) or starting from
 #' minimum value (sequential)
-#' @param type_default data type specific defaults
+#' @param type_default data type specific default to use
 #' @param type whether setting is for ggplot2 'fill' or 'color' type function
 #' @param \dots additional params to pass to respective ggplot fill_gradient functions
-#' @keywords internal
+NULL
+
+
+
+#' @describeIn set_default_color_continuous Framework function. Direct use should
+#' be minimal. Specific wrapper functions should be used for each item that needs
+#' defaults setting (plots or types of features).
+#' @param instr_pal,instr_rev used by upstream function to pass specific `giottoInstructions` params
+#' @export
 set_default_color_continuous <- function(
     colors = NULL, # used for function inputs
     instr_pal,
@@ -317,7 +392,8 @@ evaluate_color_gradient_sequential = function(colors,
 }
 
 
-
+#' @rdname set_default_color_continuous
+#' @export
 set_default_color_continuous_cell <- function(
     colors = NULL,
     instrs,
@@ -342,6 +418,8 @@ set_default_color_continuous_cell <- function(
   )
 }
 
+#' @rdname set_default_color_continuous
+#' @export
 set_default_color_continuous_poly <- function(
     colors = NULL,
     instrs,
@@ -365,7 +443,8 @@ set_default_color_continuous_poly <- function(
 }
 
 
-
+#' @rdname set_default_color_continuous
+#' @export
 set_default_color_continuous_heatmap = function(
     colors = NULL,
     instrs,
@@ -388,6 +467,8 @@ set_default_color_continuous_heatmap = function(
   )
 }
 
+#' @rdname set_default_color_continuous
+#' @export
 set_default_color_continuous_CCcom_heatmap = function(
     colors = NULL,
     instrs,
@@ -413,6 +494,8 @@ set_default_color_continuous_CCcom_heatmap = function(
   )
 }
 
+#' @rdname set_default_color_continuous
+#' @export
 set_default_color_continuous_CCcom_dotplot = function(
     colors = NULL,
     instrs,
