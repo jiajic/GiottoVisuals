@@ -123,7 +123,7 @@ spatNetwDistributionsKneighbors = function(gobject,
     stop('spatial network ', spatial_network_name, ' was not found')
   }
 
-  spatial_network_dt = as.data.table(spatial_network[, table(source)])
+  spatial_network_dt = data.table::as.data.table(spatial_network[, table(source)])
 
   pl = ggplot2::ggplot()
   pl = pl + ggplot2::labs(title = 'k-neighbor distribution for all cells', x = 'k-neighbors/cell')

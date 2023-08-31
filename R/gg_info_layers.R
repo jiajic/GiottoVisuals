@@ -1857,3 +1857,73 @@ plot_point_layer_ggplot_noFILL = function(ggobject,
   }
   return(pl)
 }
+
+
+
+
+
+
+# image ####
+
+# TODO - needs update and completion of overlay option
+
+
+#' @title addGiottoImageToSpatPlot
+#' @name addGiottoImageToSpatPlot
+#' @description Add a giotto image to a spatial ggplot object post creation
+#' @param spatpl a spatial ggplot object
+#' @param gimage a giotto image, see \code{\link{createGiottoImage}}
+#' @param layer numeric layer on which to add the giotto image. OR takes 'bg' or
+#'   'overlay' as input to designate last (bottom/background) or first (top/overlay)
+#' @param alpha (optional) add giotto image to plot with transparency. Numeric. From 0
+#'   (transparent) to 1 (fully visible)
+#' @return an updated spatial ggplot object
+#' @export
+addGiottoImageToSpatPlot = function(spatpl = NULL,
+                                    gimage = NULL,
+                                    layer = c('bg', 'overlay'),
+                                    alpha = NULL) {
+
+  layer = match.arg(arg = layer, choices = c('bg', 'overlay'))
+
+  if(is.null(spatpl) | is.null(gimage)) {
+    stop('A spatial ggplot object and a giotto image need to be given')
+  }
+
+  # extract min and max from object
+  my_xmax = gimage@minmax[1]
+  my_xmin = gimage@minmax[2]
+  my_ymax = gimage@minmax[3]
+  my_ymin = gimage@minmax[4]
+
+  # convert giotto image object into array
+  img_array = as.numeric(gimage@mg_object[[1]])
+
+  # add transparency if needed
+  if(!is.null(alpha) & is.numeric(alpha)) {
+    img_array = add_img_array_alpha(x = img_array,
+                                    alpha = alpha)
+  }
+
+  # extract adjustments from object
+  xmax_b = gimage@boundaries[1]
+  xmin_b = gimage@boundaries[2]
+  ymax_b = gimage@boundaries[3]
+  ymin_b = gimage@boundaries[4]
+
+  newpl = spatpl + annotation_raster(img_array,
+                                     xmin = my_xmin-xmin_b, xmax = my_xmax+xmax_b,
+                                     ymin = my_ymin-ymin_b, ymax = my_ymax+ymax_b)
+
+  # position new layer
+  if(layer == 'bg') {
+    # move image to background
+    nr_layers = length(newpl$layers)
+    newpl$layers = c(newpl$layers[[nr_layers]], newpl$layers[1:(nr_layers-1)])
+  } else if(layer == 'overlay') {} # keep image on top
+
+
+  return(newpl)
+
+}
+
