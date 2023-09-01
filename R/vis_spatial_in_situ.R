@@ -306,7 +306,7 @@ spatInSituPlotPoints <- function(gobject,
                                                sel_feats = feats)
       }
 
-      spatial_feat_info = do.call('rbind', spatial_feat_info)
+      spatial_feat_info = data.table::rbindlist(spatial_feat_info, fill = TRUE)
 
       plot = plot_feature_points_layer(ggobject = plot,
                                        instrs = instructions(gobject),
