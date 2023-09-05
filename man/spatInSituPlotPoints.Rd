@@ -35,7 +35,7 @@ spatInSituPlotPoints(
   polygon_fill_as_factor = NULL,
   polygon_fill_code = NULL,
   polygon_alpha = 0.5,
-  polygon_line_size = 2,
+  polygon_line_size = 0.4,
   axis_text = 8,
   axis_title = 8,
   legend_text = 6,
