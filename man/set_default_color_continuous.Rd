@@ -112,3 +112,47 @@ be minimal. Specific wrapper functions should be used for each item that needs
 defaults setting (plots or types of features).
 
 }}
+\examples{
+\dontrun{
+library(GiottoVisuals)
+
+g = GiottoData::loadGiottoMini('vizgen')
+
+nr_feat_polys = function(...) {
+  spatInSituPlotPoints(g,
+                       polygon_fill = 'nr_feats',
+                       polygon_fill_as_factor = F,
+                       polygon_feat_type = 'aggregate',
+                       polygon_line_size = 0.1,
+                       polygon_alpha = 1,
+                       ...)
+}
+
+# default
+nr_feat_polys()
+
+# set global option level: viridis
+options('giotto.color_c_pal' = 'v')
+nr_feat_polys()
+
+# set instructions level: magma
+instructions(g, 'poly_color_c_pal') = 'magma'
+nr_feat_polys()
+
+instructions(g, 'poly_color_c_rev') = TRUE
+nr_feat_polys()
+nr_feat_polys(polygon_fill_gradient_style = 's')
+
+
+# set function level: miami
+instructions(g, 'poly_color_c_rev') = FALSE
+nr_feat_polys(polygon_fill_gradient = 'miami')
+
+# set function level: color vector (2 to n colors)
+nr_feat_polys(polygon_fill_gradient = c('green', 'purple'), polygon_fill_gradient_style = 's')
+
+nr_feat_polys(polygon_fill_gradient = c('blue', 'yellow', 'red'), polygon_fill_gradient_style = 's')
+
+nr_feat_polys(polygon_fill_gradient = c('darkgrey', 'darkblue', 'purple', 'violet', 'cyan'), polygon_fill_gradient_style = 's')
+}
+}

@@ -86,7 +86,7 @@ spatInSituPlotPoints <- function(gobject,
                                  polygon_fill_as_factor = NULL,
                                  polygon_fill_code = NULL,
                                  polygon_alpha = 0.5,
-                                 polygon_line_size = 2,
+                                 polygon_line_size = 0.4,
                                  axis_text = 8,
                                  axis_title = 8,
                                  legend_text = 6,
@@ -546,7 +546,7 @@ spatInSituPlotHex = function(gobject,
   if (GiottoUtils::is_present(polygon_size)) {
     deprecate_warn('0.0.0.9000',
                    'GiottoVisuals::spatInSituPlotHex(polygon_size = )',
-                   'GiottoVisuals::spatInSituPlotHex(polygon_size = )')
+                   'GiottoVisuals::spatInSituPlotHex(polygon_line_size = )')
     polygon_line_size <- polygon_size
   }
 
@@ -791,7 +791,7 @@ spatInSituPlotDensity = function(gobject,
   if (GiottoUtils::is_present(polygon_size)) {
     deprecate_warn('0.0.0.9000',
                    'GiottoVisuals::spatInSituPlotDensity(polygon_size = )',
-                   'GiottoVisuals::spatInSituPlotDensity(polygon_size = )')
+                   'GiottoVisuals::spatInSituPlotDensity(polygon_line_size = )')
     polygon_line_size <- polygon_size
   }
 
@@ -825,7 +825,7 @@ spatInSituPlotDensity = function(gobject,
                                       polygon_fill = polygon_fill,
                                       polygon_fill_as_factor = polygon_fill_as_factor,
                                       polygon_alpha = polygon_alpha,
-                                      polygon_size = polygon_size,
+                                      polygon_size = polygon_line_size,
                                       coord_fix_ratio = coord_fix_ratio,
                                       axis_text = axis_text,
                                       axis_title = axis_title,

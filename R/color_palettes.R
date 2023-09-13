@@ -436,7 +436,13 @@ pal_names = list(
     'youngturqs'
   ),
   rcartocolor = c(
-    rcartocolor::metacartocolors$Name
+    "ag_GrnYl",   "ag_Sunset",  "ArmyRose",   "Earth",      "Fall",
+    "Geyser",     "TealRose",   "Temps",      "Tropic",     "Antique",
+    "Bold",       "Pastel",     "Prism",      "Safe",       "Vivid",
+    "BluGrn",     "BluYl",      "BrwnYl",     "Burg",       "BurgYl",
+    "DarkMint",   "Emrld",      "Magenta",    "Mint",       "OrYel",
+    "Peach",      "PinkYl",     "Purp",       "PurpOr",     "RedOr",
+    "Sunset",     "SunsetDark", "Teal",       "TealGrn"
   )
 )
 
