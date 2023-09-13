@@ -9,6 +9,4 @@
 library(testthat)
 library(GiottoVisuals)
 
-remotes::install_github('drieslab/GiottoUtils')
-
 test_check("GiottoVisuals")
