@@ -203,3 +203,9 @@ NULL
 
 
 
+# Documentation dummy for methods that are defined elsewhere
+#' @title hidden_aliases
+#' @name hidden_aliases
+NULL
+
+
