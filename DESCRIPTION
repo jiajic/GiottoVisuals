@@ -1,6 +1,6 @@
 Package: GiottoVisuals
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9003
+Title: Visuals for the Giotto spatial biology analysis ecosystem
+Version: 0.0.0.9004
 Authors@R: c(
 	person("Ruben", "Dries", email = "rubendries@gmail.com",
 		 role = c("aut", "cre")),
@@ -84,6 +84,7 @@ Collate:
     'globals.R'
     'plot_dendrogram.R'
     'plot_heatmap.R'
+    'plot_sankey.R'
     'plot_scatter.R'
     'plot_violin.R'
     'spatialDE_visuals.R'
