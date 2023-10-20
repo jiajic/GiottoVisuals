@@ -2,27 +2,41 @@
 # Sankey plotting functionality with networkD3
 
 # node values are 0 indexed
+#' @name giottoSankeyPlan
+#' @title S4 giottoSankeyPlan
+#' @description
+#' Object to organize the sets of information to select from a Giotto object's
+#' metadata to compare across annotations from the same or across spatial
+#' units and feature types.
+#' @slot set_address subnesting location within Giotto object of metadata info
+#' stored as a data.table
+#' @slot set_subset a subset to apply upon the metadata info for a set
+#' @slot set_label character label to apply to a set
+#' @slot data_type whether the metadata is cell or feat
+#' @slot relations data.table of from and to comparisons between sets. The sets
+#' are referred to as zero indexed integers.
+#' @export
 giottoSankeyPlan = setClass(
   'giottoSankeyPlan',
   slots = list(
-    node_address = 'data.table', # spat_unit, feat_type, col
-    node_subset = 'list', # subset vector for node
-    node_label = 'character',
+    set_address = 'data.table', # spat_unit, feat_type, col
+    set_subset = 'list', # subset vector for node
+    set_label = 'character',
     data_type = 'character', # type of info (cell or feat)
     relations = 'data.table' # from, to
   ),
   prototype = list(
-    node_address = data.table::data.table(),
+    set_address = data.table::data.table(),
     relations = data.table::data.table()
   )
 )
 
 setMethod('show', signature = 'giottoSankeyPlan', function(object) {
   cat('giottoSankeyPlan --',
-      paste('N:', nrow(object@node_address)), # nodes
+      paste('N:', nrow(object@set_address)), # nodes
       paste('R:', nrow(object@relations))) # relations/links
   cat('\n')
-  if (nrow(object@node_address) > 0L) {
+  if (nrow(object@set_address) > 0L) {
     print(sankeySetAddresses(object))
   }
   if (nrow(object@relations) > 0L) {
@@ -37,16 +51,34 @@ setMethod('show', signature = 'giottoSankeyPlan', function(object) {
 setGeneric('sankeyRelate', function(x, ...) standardGeneric('sankeyRelate'))
 setGeneric('sankeyRelate<-', function(x, add, value) standardGeneric('sankeyRelate<-'))
 
+
+
 # methods
+
+
+#' @name sankeyRelate
+#' @title Set a relation between two sankey sets
+#' @description
+#' Set a relation to be compared across two sets of metadata annotations in the
+#' Giotto object.
+#' @param x giottoSankeyPlan object
+#' @param add logical. whether relation to add through `value` shoudld be
+#' appended or replace all existing relations
+#' @param \dots additional params to pass
+#' @param value numerical vector (zero indexed) of sets to compare
 
 
 
 # get relations ####
+#' @rdname sankeyRelate
+#' @export
 setMethod('sankeyRelate', signature('giottoSankeyPlan'), function(x, ...) {
   return(x@relations)
 })
 
 # replace relations ####
+#' @rdname sankeyRelate
+#' @export
 setMethod(
   'sankeyRelate<-',
   signature(x = 'giottoSankeyPlan', add = 'logical', value = 'data.frame'),
@@ -68,6 +100,8 @@ setMethod(
   }
 )
 
+#' @rdname sankeyRelate
+#' @export
 setMethod(
   'sankeyRelate<-',
   signature(x = 'giottoSankeyPlan', add = 'logical', value = 'numeric'),
@@ -101,19 +135,23 @@ setMethod(
   }
 )
 
+#' @rdname sankeyRelate
+#' @export
 setMethod(
   'sankeyRelate<-',
   signature(x = 'giottoSankeyPlan', add = 'logical', value = 'character'),
   function(x, add, value)
   {
-    if(length(x@node_label) == 0L) stop('No node labels found.')
+    if(length(x@set_label) == 0L) stop('No node labels found.')
     # match to node names
-    node_ids = match(c(value[1], value[2]), x@node_label)
+    node_ids = match(c(value[1], value[2]), x@set_label)
     sankeyRelate(x, add) = node_ids # pass to numeric
     return(x)
   }
 )
 
+#' @rdname sankeyRelate
+#' @export
 setMethod( # provide default add behavior if missing
   'sankeyRelate<-',
   signature(x = 'giottoSankeyPlan', add = 'missing', value = 'ANY'),
@@ -124,6 +162,8 @@ setMethod( # provide default add behavior if missing
   }
 )
 
+#' @rdname sankeyRelate
+#' @export
 setMethod( # remove all
   'sankeyRelate<-',
   signature(x = 'giottoSankeyPlan', add = 'missing', value = 'NULL'),
@@ -135,12 +175,19 @@ setMethod( # remove all
 )
 
 # labels ####
+#' @title Get and set the sankey labels information
+#' @name sankeyLabel
+#' @param x giottoSankeyPlan
+#' @param value values to set
+#' @export
 sankeyLabel = function(x) {
-  return(x@node_label)
+  return(x@set_label)
 }
 
+#' @rdname sankeyLabel
+#' @export
 `sankeyLabel<-` = function(x, value) {
-  x@node_label = value
+  x@set_label = value
   return(x)
 }
 
@@ -150,15 +197,15 @@ sankeyLabel = function(x) {
 setMethod('+', signature('giottoSankeyPlan'), function(e1, e2) {
 
   # update addresses
-  e1@node_address = rbind(e1@node_address, e2@node_address)
-  if (any(duplicated(e1@node_address[, c('spat_unit', 'feat_type', 'col')]))) {
+  e1@set_address = rbind(e1@set_address, e2@set_address)
+  if (any(duplicated(e1@set_address[, c('spat_unit', 'feat_type', 'col')]))) {
     stop('Not possible to append more than one reference to the same node')
     # TODO try to recover
   }
 
   # update relations
   if(nrow(e2@relations) > 0L) {
-    e1_n_nodes = nrow(e1@node_address)
+    e1_n_nodes = nrow(e1@set_address)
     e2_rels = data.table::copy(e2@relations)
     e2_rels[, from := from + e1_n_nodes]
     e2_rels[, to := to + e1_n_nodes]
@@ -168,10 +215,10 @@ setMethod('+', signature('giottoSankeyPlan'), function(e1, e2) {
 
 
   # update labels
-  e1@node_label = c(e1@node_label, e2@node_label)
+  e1@set_label = c(e1@set_label, e2@set_label)
 
   # update subsets
-  e1@node_subset = c(e1@node_subset, e2@node_subset)
+  e1@set_subset = c(e1@set_subset, e2@set_subset)
 
   e1
 })
@@ -194,14 +241,14 @@ setMethod('+', signature('giottoSankeyPlan'), function(e1, e2) {
 #' @keywords plotting sankey
 sankeySet = function(spat_unit = NULL, feat_type = NULL, col, index = NULL, label = NA_character_) {
   x = giottoSankeyPlan(
-    node_address = data.table::data.table(
+    set_address = data.table::data.table(
       spat_unit = spat_unit,
       feat_type = feat_type,
       col = col
     ),
-    node_subset = list(index)
+    set_subset = list(index)
   )
-  x@node_label = label
+  x@set_label = label
   x
 }
 
@@ -215,13 +262,13 @@ sankeySet = function(spat_unit = NULL, feat_type = NULL, col, index = NULL, labe
 #' @keywords plotting sankey
 subsetSankeySet = function(x, set_id, index = list()) {
   if (!is.list(index)) index = list(index)
-  if (is.character(set_id)) set_id = match(set_id, x@node_label)
+  if (is.character(set_id)) set_id = match(set_id, x@set_label)
 
-  if (!set_id %in% seq(nrow(x@node_address)))
+  if (!set_id %in% seq(nrow(x@set_address)))
     stop('provided set id is not in the giottoSankeyPlan object')
 
   for(i in seq_along(set_id)) {
-    x@node_subset[i] = index[i]
+    x@set_subset[i] = index[i]
   }
   x
 }
@@ -235,7 +282,7 @@ subsetSankeySet = function(x, set_id, index = list()) {
 #' @export
 #' @keywords plotting sankey
 sankeySetAddresses = function(x) {
-  combined_dt <- cbind(x@node_address, x@node_subset)
+  combined_dt <- cbind(x@set_address, x@set_subset)
   colnames(combined_dt)[4] = 'index'
   combined_dt
 }
@@ -402,6 +449,7 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #'                     feat_type = 'rna',
 #'                     col = 'louvain_clus')
 #' plan = leiden + louvain
+#' sankeyRelate(plan) = c(0,1)
 #' sankeyPlot(g, plan)
 #' @export
 #' @keywords plotting sankey
@@ -449,7 +497,4 @@ sankeyPlot = function(gobject,
     ...
   )
 }
-
-
-# internals ####
 

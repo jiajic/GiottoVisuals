@@ -56,6 +56,7 @@ louvain = sankeySet(spat_unit = 'aggregate',
                     feat_type = 'rna',
                     col = 'louvain_clus')
 plan = leiden + louvain
+sankeyRelate(plan) = c(0,1)
 sankeyPlot(g, plan)
 }
 \keyword{plotting}
