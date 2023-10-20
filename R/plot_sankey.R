@@ -437,6 +437,8 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 
 
 
+# sankeyPlot methods ####
+
 
 #' @title Create a sankey plot
 #' @name sankeyPlot
@@ -495,18 +497,18 @@ setMethod(
            ...) {
     GiottoUtils::package_check("networkD3")
     meta_type = match.arg(meta_type, choices = c('cell', 'feat'))
-    x@data_type = meta_type
+    y@data_type = meta_type
 
     # iterate through sankey relations in the giottoSankeyPlan
     node_idx_start = 0
     links_dt = data.table::data.table()
     nodes = c()
 
-    for (rel_i in seq(nrow(sankeyRelate(x)))) {
+    for (rel_i in seq(nrow(sankeyRelate(y)))) {
 
       rel_data = sankey_relation_pair(
-        g = gobject,
-        gsp = x,
+        g = x,
+        gsp = y,
         rel_idx = rel_i,
         node_idx_start = node_idx_start
       )
@@ -571,7 +573,7 @@ setMethod(
     # Defaults for spat_unit and feat_type are set inside of the getter if they
     # are provided as NULL
     meta_cm = meta_get_fun(
-      gobject = g,
+      gobject = x,
       spat_unit = spat_unit,
       feat_type = feat_type,
       output = 'cellMetaObj',
@@ -585,7 +587,7 @@ setMethod(
     if (!is.null(idx)) {
       meta_cm = meta_cm[idx]
     }
-    test_dt = meta_cm[][, x, with = FALSE]
+    test_dt = meta_cm[][, y, with = FALSE]
 
     res = sankey_compare(data_dt = test_dt)
     links_dt = res$links
