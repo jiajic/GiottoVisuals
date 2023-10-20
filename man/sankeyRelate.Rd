@@ -2,6 +2,7 @@
 % Please edit documentation in R/plot_sankey.R
 \name{sankeyRelate}
 \alias{sankeyRelate}
+\alias{sankeyRelate<-}
 \alias{sankeyRelate<-,giottoSankeyPlan,logical,data.frame-method}
 \alias{sankeyRelate<-,giottoSankeyPlan,logical,numeric-method}
 \alias{sankeyRelate<-,giottoSankeyPlan,logical,character-method}

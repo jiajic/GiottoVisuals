@@ -58,6 +58,7 @@ setGeneric('sankeyRelate<-', function(x, add, value) standardGeneric('sankeyRela
 
 #' @name sankeyRelate
 #' @title Set a relation between two sankey sets
+#' @aliases sankeyRelate<-
 #' @description
 #' Set a relation to be compared across two sets of metadata annotations in the
 #' Giotto object.
@@ -192,9 +193,12 @@ sankeyLabel = function(x) {
 }
 
 
+
+#' @rdname hidden_aliases
+#' @export
 # Multiple references to the same address are not allowed
 # e1 values will be taken in all such cases
-setMethod('+', signature('giottoSankeyPlan'), function(e1, e2) {
+setMethod('+', signature('giottoSankeyPlan', 'giottoSankeyPlan'), function(e1, e2) {
 
   # update addresses
   e1@set_address = rbind(e1@set_address, e2@set_address)
@@ -234,9 +238,10 @@ setMethod('+', signature('giottoSankeyPlan'), function(e1, e2) {
 #' @title Create a `giottoSankeyPlan` with one set of annotations
 #' @param spat_unit spatial unit of the metadata
 #' @param feat_type feature type of the metadata
-#' @param col_name which column of metadata to pull from. Must be data that
+#' @param col which column of metadata to pull from. Must be data that
 #' can be treated categorically.
 #' @param index character, integer, or logical vector to subset metadata table
+#' @param label (optional) character label for a set
 #' @export
 #' @keywords plotting sankey
 sankeySet = function(spat_unit = NULL, feat_type = NULL, col, index = NULL, label = NA_character_) {
@@ -356,6 +361,8 @@ sankey_compare = function(data_dt, idx_start = 0) {
 #' @param g giotto object
 #' @param gsp giottoSankeyPlan object
 #' @param rel_idx index of relation pair in `gsp`
+#' @param node_idx_start starting index to assign new nodes
+#' @keywords internal
 sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 
   rel = gsp@relations[rel_idx]
@@ -441,6 +448,7 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #' @param sankey_plan giottoSankeyPlan object
 #' @param meta_type build sankey on cell or feature metadata
 #' @examples
+#' \dontrun{
 #' g = GiottoData::loadGiottoMini("vizgen")
 #' leiden = sankeySet(spat_unit = 'aggregate',
 #'                    feat_type = 'rna',
@@ -451,6 +459,7 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #' plan = leiden + louvain
 #' sankeyRelate(plan) = c(0,1)
 #' sankeyPlot(g, plan)
+#' }
 #' @export
 #' @keywords plotting sankey
 sankeyPlot = function(gobject,

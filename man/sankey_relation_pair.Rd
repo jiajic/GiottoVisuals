@@ -12,8 +12,11 @@ sankey_relation_pair(g, gsp, rel_idx, node_idx_start = 0)
 \item{gsp}{giottoSankeyPlan object}
 
 \item{rel_idx}{index of relation pair in \code{gsp}}
+
+\item{node_idx_start}{starting index to assign new nodes}
 }
 \description{
 Get matched values to compare from the giotto object. Comparison columns
 are then passed as a data.table to \code{sankey_compare} to be calculated.
 }
+\keyword{internal}

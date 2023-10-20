@@ -48,6 +48,7 @@ Create a sankey plot from a giotto object. Pulls from information in the
 metadata.
 }
 \examples{
+\dontrun{
 g = GiottoData::loadGiottoMini("vizgen")
 leiden = sankeySet(spat_unit = 'aggregate',
                    feat_type = 'rna',
@@ -58,6 +59,7 @@ louvain = sankeySet(spat_unit = 'aggregate',
 plan = leiden + louvain
 sankeyRelate(plan) = c(0,1)
 sankeyPlot(g, plan)
+}
 }
 \keyword{plotting}
 \keyword{sankey}

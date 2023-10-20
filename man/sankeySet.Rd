@@ -17,10 +17,12 @@ sankeySet(
 
 \item{feat_type}{feature type of the metadata}
 
+\item{col}{which column of metadata to pull from. Must be data that
+can be treated categorically.}
+
 \item{index}{character, integer, or logical vector to subset metadata table}
 
-\item{col_name}{which column of metadata to pull from. Must be data that
-can be treated categorically.}
+\item{label}{(optional) character label for a set}
 }
 \description{
 Create a \code{giottoSankeyPlan} with one set of annotations
