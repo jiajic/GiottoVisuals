@@ -50,7 +50,7 @@ setMethod('show', signature = 'giottoSankeyPlan', function(object) {
 # generics ####
 setGeneric('sankeyRelate', function(x, ...) standardGeneric('sankeyRelate'))
 setGeneric('sankeyRelate<-', function(x, add, value) standardGeneric('sankeyRelate<-'))
-setGeneric('sankeyPlot', function(gobject, x, ...) standardGeneric('sankeyPlot'))
+setGeneric('sankeyPlot', function(x, y, ...) standardGeneric('sankeyPlot'))
 
 
 # methods ####
@@ -437,6 +437,8 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 
 
 
+# sankeyPlot methods ####
+
 
 #' @title Create a sankey plot
 #' @name sankeyPlot
@@ -447,8 +449,9 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #' and (optionally) `idx` params. More complex and cross spatial unit/feature
 #' type sankeys can be set up using the `sankey_plan` param which accepts a
 #' `giottoSankeyPlan` object.
-#' @inheritParams data_access_params
-#' @param x giottoSankeyPlan object or character vector referring to source and
+#' @param x data source (gobject or data.frame-like object with relations
+#' between the first two cols provided)
+#' @param y giottoSankeyPlan object or character vector referring to source and
 #' target columns in metadata
 #' @param meta_type build sankey on cell or feature metadata
 #' @param spat_unit spatial unit of metadata
@@ -458,6 +461,9 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #' @inheritDotParams networkD3::sankeyNetwork -Links -Nodes -Source -Target -Value -NodeID
 #' @examples
 #' \dontrun{
+#' x = data.table::data.table(col1 = c('a', 'a', 'b'),
+#'                            col2 = c('x', 'y', 'y'))
+#' sankeyPlot(x)
 #' g = GiottoData::loadGiottoMini("vizgen")
 #' # with giottoSankeyPlan
 #' leiden = sankeySet(spat_unit = 'aggregate',
@@ -483,27 +489,26 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #' @export
 setMethod(
   'sankeyPlot',
-  signature(gobject = 'giotto',
-            x = 'giottoSankeyPlan'),
-  function(gobject,
-           x,
+  signature(x = 'giotto',
+            y = 'giottoSankeyPlan'),
+  function(x,
+           y,
            meta_type = c('cell', 'feat'),
            ...) {
-    checkmate::assert_class(gobject, 'giotto')
     GiottoUtils::package_check("networkD3")
     meta_type = match.arg(meta_type, choices = c('cell', 'feat'))
-    x@data_type = meta_type
+    y@data_type = meta_type
 
     # iterate through sankey relations in the giottoSankeyPlan
     node_idx_start = 0
     links_dt = data.table::data.table()
     nodes = c()
 
-    for (rel_i in seq(nrow(sankeyRelate(x)))) {
+    for (rel_i in seq(nrow(sankeyRelate(y)))) {
 
       rel_data = sankey_relation_pair(
-        g = gobject,
-        gsp = x,
+        g = x,
+        gsp = y,
         rel_idx = rel_i,
         node_idx_start = node_idx_start
       )
@@ -537,17 +542,18 @@ setMethod(
 #' @export
 setMethod(
   'sankeyPlot',
-  signature(gobject = 'giotto',
-            x = 'character'),
-  function(gobject,
-           x,
+  signature(x = 'giotto',
+            y = 'character'),
+  function(x,
+           y,
            spat_unit = NULL,
            feat_type = NULL,
            meta_type = c('cell', 'feat'),
            idx = NULL,
            ...) {
 
-    checkmate::assert_character(x, len = 2L)
+    GiottoUtils::package_check("networkD3")
+    checkmate::assert_character(y, len = 2L)
 
     # Data type being compared. Either cell or feat
     meta_type = match.arg(meta_type, choices = c('cell', 'feat'))
@@ -567,7 +573,7 @@ setMethod(
     # Defaults for spat_unit and feat_type are set inside of the getter if they
     # are provided as NULL
     meta_cm = meta_get_fun(
-      gobject = g,
+      gobject = x,
       spat_unit = spat_unit,
       feat_type = feat_type,
       output = 'cellMetaObj',
@@ -581,7 +587,7 @@ setMethod(
     if (!is.null(idx)) {
       meta_cm = meta_cm[idx]
     }
-    test_dt = meta_cm[][, x, with = FALSE]
+    test_dt = meta_cm[][, y, with = FALSE]
 
     res = sankey_compare(data_dt = test_dt)
     links_dt = res$links
@@ -600,4 +606,30 @@ setMethod(
     )
   }
 )
+
+
+#' @rdname sankeyPlot
+#' @export
+setMethod('sankeyPlot', signature(x = 'data.frame', y = 'missing'), function(x, ...) {
+  GiottoUtils::package_check("networkD3")
+
+  res = sankey_compare(data_dt = x)
+  links_dt = res$links
+
+  # create nodes table
+  nodes = data.table::data.table(name = res$nodes)
+
+  networkD3::sankeyNetwork(
+    Links = links_dt,
+    Nodes = nodes,
+    Source = 'source',
+    Target = 'target',
+    Value = 'value',
+    NodeID = 'name',
+    ...
+  )
+
+})
+
+
 

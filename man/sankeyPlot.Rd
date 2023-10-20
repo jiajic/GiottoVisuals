@@ -3,24 +3,28 @@
 \name{sankeyPlot}
 \alias{sankeyPlot}
 \alias{sankeyPlot,giotto,character-method}
+\alias{sankeyPlot,data.frame,missing-method}
 \title{Create a sankey plot}
 \usage{
-\S4method{sankeyPlot}{giotto,giottoSankeyPlan}(gobject, x, meta_type = c("cell", "feat"), ...)
+\S4method{sankeyPlot}{giotto,giottoSankeyPlan}(x, y, meta_type = c("cell", "feat"), ...)
 
 \S4method{sankeyPlot}{giotto,character}(
-  gobject,
   x,
+  y,
   spat_unit = NULL,
   feat_type = NULL,
   meta_type = c("cell", "feat"),
   idx = NULL,
   ...
 )
+
+\S4method{sankeyPlot}{data.frame,missing}(x, y, ...)
 }
 \arguments{
-\item{gobject}{giotto object}
+\item{x}{data source (gobject or data.frame-like object with relations
+between the first two cols provided)}
 
-\item{x}{giottoSankeyPlan object or character vector referring to source and
+\item{y}{giottoSankeyPlan object or character vector referring to source and
 target columns in metadata}
 
 \item{meta_type}{whether to use 'cell' (cell) or 'feat' (feature) metadata}
@@ -71,6 +75,9 @@ type sankeys can be set up using the \code{sankey_plan} param which accepts a
 }
 \examples{
 \dontrun{
+x = data.table::data.table(col1 = c('a', 'a', 'b'),
+                           col2 = c('x', 'y', 'y'))
+sankeyPlot(x)
 g = GiottoData::loadGiottoMini("vizgen")
 # with giottoSankeyPlan
 leiden = sankeySet(spat_unit = 'aggregate',
