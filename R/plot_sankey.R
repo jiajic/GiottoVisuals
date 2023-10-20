@@ -1,9 +1,9 @@
 
 # Sankey plotting functionality with networkD3
-
 # node values are 0 indexed
-#' @name giottoSankeyPlan
+
 #' @title S4 giottoSankeyPlan
+#' @name giottoSankeyPlan
 #' @description
 #' Object to organize the sets of information to select from a Giotto object's
 #' metadata to compare across annotations from the same or across spatial
@@ -16,7 +16,7 @@
 #' @slot relations data.table of from and to comparisons between sets. The sets
 #' are referred to as zero indexed integers.
 #' @export
-giottoSankeyPlan = setClass(
+giottoSankeyPlan <- setClass(
   'giottoSankeyPlan',
   slots = list(
     set_address = 'data.table', # spat_unit, feat_type, col
@@ -448,14 +448,14 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #' type sankeys can be set up using the `sankey_plan` param which accepts a
 #' `giottoSankeyPlan` object.
 #' @inheritParams data_access_params
-#' @inheritDotParams networkD3::sankeyNetwork -Links -Nodes -Source -Target -Value -NodeID
 #' @param x giottoSankeyPlan object or character vector referring to source and
 #' target columns in metadata
 #' @param meta_type build sankey on cell or feature metadata
 #' @param spat_unit spatial unit of metadata
 #' @param feat_type feature type of metadata
-#' @param meta_type whether to use cell or feature metadata
+#' @param meta_type whether to use 'cell' (cell) or 'feat' (feature) metadata
 #' @param idx table subset index for 1 to 1 comparisons
+#' @inheritDotParams networkD3::sankeyNetwork -Links -Nodes -Source -Target -Value -NodeID
 #' @examples
 #' \dontrun{
 #' g = GiottoData::loadGiottoMini("vizgen")
@@ -466,7 +466,9 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #' louvain = sankeySet(spat_unit = 'aggregate',
 #'                     feat_type = 'rna',
 #'                     col = 'louvain_clus')
+#' # place defined sets into same object
 #' plan = leiden + louvain
+#' # assign relationships to compare
 #' sankeyRelate(plan) = c(0,1)
 #' sankeyPlot(g, plan)
 #'

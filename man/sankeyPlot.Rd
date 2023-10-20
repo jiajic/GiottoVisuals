@@ -23,7 +23,7 @@
 \item{x}{giottoSankeyPlan object or character vector referring to source and
 target columns in metadata}
 
-\item{meta_type}{whether to use cell or feature metadata}
+\item{meta_type}{whether to use 'cell' (cell) or 'feat' (feature) metadata}
 
 \item{...}{
   Arguments passed on to \code{\link[networkD3:sankeyNetwork]{networkD3::sankeyNetwork}}
@@ -79,7 +79,9 @@ leiden = sankeySet(spat_unit = 'aggregate',
 louvain = sankeySet(spat_unit = 'aggregate',
                     feat_type = 'rna',
                     col = 'louvain_clus')
+# place defined sets into same object
 plan = leiden + louvain
+# assign relationships to compare
 sankeyRelate(plan) = c(0,1)
 sankeyPlot(g, plan)
 
