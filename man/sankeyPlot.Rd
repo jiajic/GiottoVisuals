@@ -2,16 +2,28 @@
 % Please edit documentation in R/plot_sankey.R
 \name{sankeyPlot}
 \alias{sankeyPlot}
+\alias{sankeyPlot,giotto,character-method}
 \title{Create a sankey plot}
 \usage{
-sankeyPlot(gobject, sankey_plan, meta_type = c("cell", "feat"), ...)
+\S4method{sankeyPlot}{giotto,giottoSankeyPlan}(gobject, x, meta_type = c("cell", "feat"), ...)
+
+\S4method{sankeyPlot}{giotto,character}(
+  gobject,
+  x,
+  spat_unit = NULL,
+  feat_type = NULL,
+  meta_type = c("cell", "feat"),
+  idx = NULL,
+  ...
+)
 }
 \arguments{
 \item{gobject}{giotto object}
 
-\item{sankey_plan}{giottoSankeyPlan object}
+\item{x}{giottoSankeyPlan object or character vector referring to source and
+target columns in metadata}
 
-\item{meta_type}{build sankey on cell or feature metadata}
+\item{meta_type}{whether to use cell or feature metadata}
 
 \item{...}{
   Arguments passed on to \code{\link[networkD3:sankeyNetwork]{networkD3::sankeyNetwork}}
@@ -42,14 +54,25 @@ browser on the client so don't push it too high.}
     \item{\code{sinksRight}}{boolean. If \code{TRUE}, the last nodes are moved to the
 right border of the plot.}
   }}
+
+\item{spat_unit}{spatial unit of metadata}
+
+\item{feat_type}{feature type of metadata}
+
+\item{idx}{table subset index for 1 to 1 comparisons}
 }
 \description{
 Create a sankey plot from a giotto object. Pulls from information in the
-metadata.
+metadata. Simple 1 to 1 sankeys can be generated from a single spatial unit
+and feature type using the \code{spat_unit}, \code{feat_type}, \code{meta_type}, \code{cols},
+and (optionally) \code{idx} params. More complex and cross spatial unit/feature
+type sankeys can be set up using the \code{sankey_plan} param which accepts a
+\code{giottoSankeyPlan} object.
 }
 \examples{
 \dontrun{
 g = GiottoData::loadGiottoMini("vizgen")
+# with giottoSankeyPlan
 leiden = sankeySet(spat_unit = 'aggregate',
                    feat_type = 'rna',
                    col = 'leiden_clus')
@@ -59,6 +82,10 @@ louvain = sankeySet(spat_unit = 'aggregate',
 plan = leiden + louvain
 sankeyRelate(plan) = c(0,1)
 sankeyPlot(g, plan)
+
+# with single set of metadata
+activeSpatUnit(g) = 'aggregate'
+sankeyPlot(g, c('louvain_clus', 'leiden_clus'))
 }
 }
 \keyword{plotting}

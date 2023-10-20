@@ -47,13 +47,13 @@ setMethod('show', signature = 'giottoSankeyPlan', function(object) {
   cat('\n')
 })
 
-# generics
+# generics ####
 setGeneric('sankeyRelate', function(x, ...) standardGeneric('sankeyRelate'))
 setGeneric('sankeyRelate<-', function(x, add, value) standardGeneric('sankeyRelate<-'))
+setGeneric('sankeyPlot', function(gobject, x, ...) standardGeneric('sankeyPlot'))
 
 
-
-# methods
+# methods ####
 
 
 #' @name sankeyRelate
@@ -442,14 +442,24 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #' @name sankeyPlot
 #' @description
 #' Create a sankey plot from a giotto object. Pulls from information in the
-#' metadata.
+#' metadata. Simple 1 to 1 sankeys can be generated from a single spatial unit
+#' and feature type using the `spat_unit`, `feat_type`, `meta_type`, `cols`,
+#' and (optionally) `idx` params. More complex and cross spatial unit/feature
+#' type sankeys can be set up using the `sankey_plan` param which accepts a
+#' `giottoSankeyPlan` object.
 #' @inheritParams data_access_params
 #' @inheritDotParams networkD3::sankeyNetwork -Links -Nodes -Source -Target -Value -NodeID
-#' @param sankey_plan giottoSankeyPlan object
+#' @param x giottoSankeyPlan object or character vector referring to source and
+#' target columns in metadata
 #' @param meta_type build sankey on cell or feature metadata
+#' @param spat_unit spatial unit of metadata
+#' @param feat_type feature type of metadata
+#' @param meta_type whether to use cell or feature metadata
+#' @param idx table subset index for 1 to 1 comparisons
 #' @examples
 #' \dontrun{
 #' g = GiottoData::loadGiottoMini("vizgen")
+#' # with giottoSankeyPlan
 #' leiden = sankeySet(spat_unit = 'aggregate',
 #'                    feat_type = 'rna',
 #'                    col = 'leiden_clus')
@@ -459,51 +469,133 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #' plan = leiden + louvain
 #' sankeyRelate(plan) = c(0,1)
 #' sankeyPlot(g, plan)
+#'
+#' # with single set of metadata
+#' activeSpatUnit(g) = 'aggregate'
+#' sankeyPlot(g, c('louvain_clus', 'leiden_clus'))
 #' }
-#' @export
 #' @keywords plotting sankey
-sankeyPlot = function(gobject,
-                      sankey_plan,
-                      meta_type = c('cell', 'feat'),
-                      ...) {
-  checkmate::assert_class(gobject, 'giotto')
-  GiottoUtils::package_check("networkD3")
-  meta_type = match.arg(meta_type, choices = c('cell', 'feat'))
-  sankey_plan@data_type = meta_type
 
-  # iterate through sankey relations in the giottoSankeyPlan
-  node_idx_start = 0
-  links_dt = data.table::data.table()
-  nodes = c()
 
-  for (rel_i in seq(nrow(sankeyRelate(sankey_plan)))) {
+#' @rdname sankeyPlot
+#' @export
+setMethod(
+  'sankeyPlot',
+  signature(gobject = 'giotto',
+            x = 'giottoSankeyPlan'),
+  function(gobject,
+           x,
+           meta_type = c('cell', 'feat'),
+           ...) {
+    checkmate::assert_class(gobject, 'giotto')
+    GiottoUtils::package_check("networkD3")
+    meta_type = match.arg(meta_type, choices = c('cell', 'feat'))
+    x@data_type = meta_type
 
-    rel_data = sankey_relation_pair(
-      g = gobject,
-      gsp = sankey_plan,
-      rel_idx = rel_i,
-      node_idx_start = node_idx_start
+    # iterate through sankey relations in the giottoSankeyPlan
+    node_idx_start = 0
+    links_dt = data.table::data.table()
+    nodes = c()
+
+    for (rel_i in seq(nrow(sankeyRelate(x)))) {
+
+      rel_data = sankey_relation_pair(
+        g = gobject,
+        gsp = x,
+        rel_idx = rel_i,
+        node_idx_start = node_idx_start
+      )
+
+      # append data
+      links_dt = rbind(links_dt, rel_data$links)
+      nodes = c(nodes, rel_data$nodes)
+
+      # update start index
+      node_idx_start = links_dt[, max(target)]
+    }
+
+    # create nodes table
+    nodes = data.table::data.table(name = nodes)
+
+    networkD3::sankeyNetwork(
+      Links = links_dt,
+      Nodes = nodes,
+      Source = 'source',
+      Target = 'target',
+      Value = 'value',
+      NodeID = 'name',
+      ...
+    )
+  }
+)
+
+
+
+#' @rdname sankeyPlot
+#' @export
+setMethod(
+  'sankeyPlot',
+  signature(gobject = 'giotto',
+            x = 'character'),
+  function(gobject,
+           x,
+           spat_unit = NULL,
+           feat_type = NULL,
+           meta_type = c('cell', 'feat'),
+           idx = NULL,
+           ...) {
+
+    checkmate::assert_character(x, len = 2L)
+
+    # Data type being compared. Either cell or feat
+    meta_type = match.arg(meta_type, choices = c('cell', 'feat'))
+    # Determines which type of metadata to get
+    meta_get_fun = switch(
+      meta_type,
+      'cell' = getCellMetadata,
+      'feat' = getFeatureMetadata
+    )
+    id_col = switch(
+      meta_type,
+      'cell' = 'cell_ID',
+      'feat' = 'feat_ID'
     )
 
-    # append data
-    links_dt = rbind(links_dt, rel_data$links)
-    nodes = c(nodes, rel_data$nodes)
+    # get metadata
+    # Defaults for spat_unit and feat_type are set inside of the getter if they
+    # are provided as NULL
+    meta_cm = meta_get_fun(
+      gobject = g,
+      spat_unit = spat_unit,
+      feat_type = feat_type,
+      output = 'cellMetaObj',
+      copy_obj = TRUE,
+      set_defaults = TRUE
+    )
 
-    # update start index
-    node_idx_start = links_dt[, max(target)]
+    # perform subset
+    # 1. subobject subsetting does not drop ID col
+    # 2. drop to data.table
+    if (!is.null(idx)) {
+      meta_cm = meta_cm[idx]
+    }
+    test_dt = meta_cm[][, x, with = FALSE]
+
+    res = sankey_compare(data_dt = test_dt)
+    links_dt = res$links
+
+    # create nodes table
+    nodes = data.table::data.table(name = res$nodes)
+
+    networkD3::sankeyNetwork(
+      Links = links_dt,
+      Nodes = nodes,
+      Source = 'source',
+      Target = 'target',
+      Value = 'value',
+      NodeID = 'name',
+      ...
+    )
   }
-
-  # create nodes table
-  nodes = data.table::data.table(name = nodes)
-
-  networkD3::sankeyNetwork(
-    Links = links_dt,
-    Nodes = nodes,
-    Source = 'source',
-    Target = 'target',
-    Value = 'value',
-    NodeID = 'name',
-    ...
-  )
-}
+)
 
