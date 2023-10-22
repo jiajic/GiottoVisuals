@@ -816,8 +816,8 @@ plot_cell_polygon_layer = function(ggobject = NULL,
                                    size = 2) {
 
   # check fill column
-  if(!is.null(fill)) {
-    if(fill_as_factor == TRUE) {
+  if (!is.null(fill)) {
+    if (isTRUE(fill_as_factor)) {
       polygon_dt[, 'final_fill' := as.factor(get(fill))]
     } else {
       polygon_dt[, 'final_fill' := get(fill)]
@@ -825,7 +825,8 @@ plot_cell_polygon_layer = function(ggobject = NULL,
   }
 
   # create layer
-  if(!is.null(ggobject) & methods::is(ggobject, 'ggplot')) {
+  if (!is.null(ggobject) &&
+     methods::is(ggobject, 'ggplot')) {
     pl = ggobject
   } else {
     pl = ggplot2::ggplot()
@@ -833,19 +834,23 @@ plot_cell_polygon_layer = function(ggobject = NULL,
 
 
   # specific fill color for polygon shapes
-  if(!is.null(fill)) {
-    pl = pl + ggplot2::geom_polygon(data = polygon_dt,
-                                    ggplot2::aes_string(x = 'x',
-                                                        y = 'y',
-                                                        group = polygon_grouping,
-                                                        fill = 'final_fill'),
-                                    alpha = alpha,
-                                    color = color,
-                                    size = size)
+  if (!is.null(fill)) {
+    pl = pl + ggplot2::geom_polygon(
+      data = polygon_dt,
+      ggplot2::aes_string(
+        x = 'x',
+        y = 'y',
+        group = polygon_grouping,
+        fill = 'final_fill'
+      ),
+      alpha = alpha,
+      color = color,
+      size = size
+    )
 
     # manual fill colors for factor values
-    if(fill_as_factor == TRUE) {
-      if(!is.null(fill_code)) {
+    if (isTRUE(fill_as_factor)) {
+      if (!is.null(fill_code)) {
         pl = pl + ggplot2::scale_fill_manual(values = fill_code)
       } else {
         fill_values_names = unique(polygon_dt[['final_fill']])
@@ -856,29 +861,35 @@ plot_cell_polygon_layer = function(ggobject = NULL,
     }
 
     # gradient fill colors for numerical values
-    if(fill_as_factor == FALSE) {
+    if (!isTRUE(fill_as_factor)) {
 
-      if(is.null(fill_gradient_midpoint)) {
+      if (is.null(fill_gradient_midpoint)) {
         fill_gradient_midpoint = stats::median(polygon_dt[['final_fill']])
       }
 
-      pl <- pl + set_default_color_continuous_poly(colors = poly_fill_gradient,
-                                                   instrs = instrs,
-                                                   midpoint = fill_gradient_midpoint,
-                                                   style = fill_gradient_style,
-                                                   guide = ggplot2::guide_colorbar(title = ''))
+      pl <- pl + set_default_color_continuous_poly(
+        colors = poly_fill_gradient,
+        instrs = instrs,
+        midpoint = fill_gradient_midpoint,
+        style = fill_gradient_style,
+        guide = ggplot2::guide_colorbar(title = '')
+      )
     }
 
 
   } else {
-    pl <- pl + ggplot2::geom_polygon(data = polygon_dt,
-                                     ggplot2::aes_string(x = 'x',
-                                                         y = 'y',
-                                                         group = 'poly_ID'),
-                                     fill = bg_color,
-                                     alpha = alpha,
-                                     color = color,
-                                     size = size)
+    pl <- pl + ggplot2::geom_polygon(
+      data = polygon_dt,
+      ggplot2::aes_string(
+        x = 'x',
+        y = 'y',
+        group = 'poly_ID'
+      ),
+      fill = bg_color,
+      alpha = alpha,
+      color = color,
+      size = size
+    )
   }
 
   return(pl)
