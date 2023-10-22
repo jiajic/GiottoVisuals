@@ -6,7 +6,7 @@
 \usage{
 spatInSituPlotPoints(
   gobject,
-  show_image = F,
+  show_image = FALSE,
   gimage = NULL,
   image_name = NULL,
   largeImage_name = NULL,
@@ -18,6 +18,7 @@ spatInSituPlotPoints(
   feat_shape_code = NULL,
   sdimx = "x",
   sdimy = "y",
+  spat_enr_names = NULL,
   point_size = 1.5,
   stroke = 0.5,
   expand_counts = FALSE,
@@ -78,6 +79,8 @@ spatInSituPlotPoints(
 \item{sdimx}{spatial dimension x}
 
 \item{sdimy}{spatial dimension y}
+
+\item{spat_enr_names}{character. names of spatial enrichment results to include}
 
 \item{point_size}{size of the points}
 
@@ -155,6 +158,25 @@ Function to plot multiple features for multiple modalities at the spatial in sit
 \examples{
 \dontrun{
 library(GiottoVisuals)
+g <- GiottoData::loadGiottoMini('vizgen')
+
+spatInSituPlotPoints(
+  g,
+  polygon_feat_type = 'aggregate',
+  polygon_fill = 'nr_feats',
+  polygon_fill_as_factor = FALSE,
+  polygon_line_size = 0.1,
+  polygon_alpha = 1
+)
+
+spatInSituPlotPoints(
+  g,
+  polygon_feat_type = 'aggregate',
+  spat_enr_names = 'cluster_metagene',
+  polygon_fill = '1',
+  polygon_fill_as_factor = FALSE,
+  polygon_alpha = 1
+)
 }
 
 }

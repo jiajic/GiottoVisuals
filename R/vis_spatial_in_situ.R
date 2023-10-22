@@ -19,6 +19,7 @@
 #' @inheritParams plot_feat_params
 #' @inheritParams plot_poly_params
 #' @inheritParams plot_image_params
+#' @inheritParams plot_spatenr_params
 #' @param spat_loc_name name of spatial locations
 #' @param feats named list of features to plot
 #' @param feat_type feature types of the feats
@@ -42,22 +43,31 @@
 #' @examples
 #' \dontrun{
 #' library(GiottoVisuals)
-# g <- GiottoData::loadGiottoMini('viz')
-#
-# spatInSituPlotPoints(
-#   g,
-#   polygon_fill = 'nr_feats',
-#   polygon_fill_as_factor = FALSE,
-#   polygon_feat_type = 'aggregate',
-#   polygon_line_size = 0.1,
-#   polygon_alpha = 1
-# )
+#' g <- GiottoData::loadGiottoMini('vizgen')
+#'
+#' spatInSituPlotPoints(
+#'   g,
+#'   polygon_feat_type = 'aggregate',
+#'   polygon_fill = 'nr_feats',
+#'   polygon_fill_as_factor = FALSE,
+#'   polygon_line_size = 0.1,
+#'   polygon_alpha = 1
+#' )
+#'
+#' spatInSituPlotPoints(
+#'   g,
+#'   polygon_feat_type = 'aggregate',
+#'   spat_enr_names = 'cluster_metagene',
+#'   polygon_fill = '1',
+#'   polygon_fill_as_factor = FALSE,
+#'   polygon_alpha = 1
+#' )
 #' }
 #'
 #' @family In Situ visualizations
 #' @export
 spatInSituPlotPoints <- function(gobject,
-                                 show_image = F,
+                                 show_image = FALSE,
                                  gimage = NULL,
                                  image_name = NULL,
                                  largeImage_name = NULL,
@@ -69,6 +79,7 @@ spatInSituPlotPoints <- function(gobject,
                                  feat_shape_code = NULL,
                                  sdimx = 'x',
                                  sdimy = 'y',
+                                 spat_enr_names = NULL,
                                  point_size = 1.5,
                                  stroke = 0.5,
                                  expand_counts = FALSE,
@@ -102,27 +113,41 @@ spatInSituPlotPoints <- function(gobject,
                                  default_save_name = 'spatInSituPlotPoints',
                                  verbose = TRUE) {
 
+  # set polygon_feat_type
+  avail_poly_names = list_spatial_info_names(gobject = gobject)
+  if (polygon_feat_type == 'cell' &&
+      !'cell' %in% avail_poly_names) {
+    polygon_feat_type = spat_unit
+    if (verbose) wrap_msg(
+      "[polygon_feat_type] 'cell' not discovered in polygon names.
+      Defaulting to spat_unit."
+    )
+  }
 
-  if(is.null(feats)) {
-    warning('You need to select features (feats) and modify feature types (feat_type) if you want to show individual features (e.g. transcripts) \n')
+  if (is.null(feats)) {
+    warning(wrap_txt(
+      'You need to select features (feats) and modify feature types (feat_type) if you want to show individual features (e.g. transcripts)'
+    ))
   }
 
   # check valid input
-  plot_last <- match.arg(plot_last)
+  plot_last <- match.arg(plot_last, choices = c('polygons', 'points'))
 
   ## giotto image ##
-  if(show_image == TRUE) {
+  if(isTRUE(show_image)) {
 
-    gimage = select_gimage(gobject = gobject,
-                           gimage = gimage,
-                           image_name = image_name,
-                           largeImage_name = largeImage_name,
-                           spat_unit = spat_unit,
-                           spat_loc_name = spat_loc_name,
-                           feat_type = feat_type,
-                           polygon_feat_type = polygon_feat_type)
+    gimage = select_gimage(
+      gobject = gobject,
+      gimage = gimage,
+      image_name = image_name,
+      largeImage_name = largeImage_name,
+      spat_unit = spat_unit,
+      spat_loc_name = spat_loc_name,
+      feat_type = feat_type,
+      polygon_feat_type = polygon_feat_type
+    )
 
-    if(isTRUE(verbose)) wrap_msg('select image done')
+    if (isTRUE(verbose)) wrap_msg('select image done')
 
   }
 
@@ -130,66 +155,77 @@ spatInSituPlotPoints <- function(gobject,
   plot = ggplot2::ggplot()
 
   ## 0. plot image ##
-  if(show_image == TRUE & !is.null(gimage)) {
-    plot = plot_spat_image_layer_ggplot(gg_obj = plot,
-                                        gobject = gobject,
-                                        spat_unit = spat_unit,
-                                        feat_type = feat_type,
-                                        spat_loc_name = spat_loc_name,
-                                        polygon_feat_type = polygon_feat_type,
-                                        gimage = gimage,
-                                        sdimx = 'sdimx',
-                                        sdimy = 'sdimy')
+  if (isTRUE(show_image) &&
+     !is.null(gimage)) {
 
-    if(isTRUE(verbose)) wrap_msg('plot image layer done')
+    plot = plot_spat_image_layer_ggplot(
+      gg_obj = plot,
+      gobject = gobject,
+      spat_unit = spat_unit,
+      feat_type = feat_type,
+      spat_loc_name = spat_loc_name,
+      polygon_feat_type = polygon_feat_type,
+      gimage = gimage,
+      sdimx = 'sdimx',
+      sdimy = 'sdimy'
+    )
+
+    if (isTRUE(verbose)) wrap_msg('plot image layer done')
   }
 
   if (plot_last == 'polygons') {
     ## 1. plot features first
-    if(!is.null(feats)) {
+    if (!is.null(feats)) {
       # use_overlap = TRUE will use the overlap results
       # use_overlap = FALSE will use the raw tx coordinate results
-      if(use_overlap == TRUE) {
+      if (isTRUE(use_overlap)) {
 
-        # TODO: check if overlap exists, if not print warning message and default to non-overlap results
-        spatial_feat_info = combineFeatureOverlapData(gobject = gobject,
-                                                      feat_type = feat_type,
-                                                      sel_feats = feats,
-                                                      poly_info = polygon_feat_type)
+        # TODO: check if overlap exists, if not print warning message and
+        # default to non-overlap results
+        spatial_feat_info = combineFeatureOverlapData(
+          gobject = gobject,
+          feat_type = feat_type,
+          sel_feats = feats,
+          poly_info = polygon_feat_type
+        )
       } else {
 
-        spatial_feat_info = combineFeatureData(gobject = gobject,
-                                               spat_unit =  polygon_feat_type,
-                                               feat_type = feat_type,
-                                               sel_feats = feats)
+        spatial_feat_info = combineFeatureData(
+          gobject = gobject,
+          spat_unit = polygon_feat_type,
+          feat_type = feat_type,
+          sel_feats = feats
+        )
       }
 
       spatial_feat_info = data.table::rbindlist(spatial_feat_info, fill = TRUE)
 
-      plot = plot_feature_points_layer(ggobject = plot,
-                                       instrs = instructions(gobject),
-                                       spatial_feat_info = spatial_feat_info,
-                                       feats = feats,
-                                       feats_color_code = feats_color_code,
-                                       feat_shape_code = feat_shape_code,
-                                       expand_counts = expand_counts,
-                                       count_info_column = count_info_column,
-                                       jitter = jitter,
-                                       sdimx = 'x',
-                                       sdimy = 'y',
-                                       color = 'feat_ID',
-                                       shape = 'feat',
-                                       point_size = point_size,
-                                       stroke = stroke,
-                                       show_legend = show_legend,
-                                       plot_method = plot_method)
+      plot = plot_feature_points_layer(
+        ggobject = plot,
+        instrs = instructions(gobject),
+        spatial_feat_info = spatial_feat_info,
+        feats = feats,
+        feats_color_code = feats_color_code,
+        feat_shape_code = feat_shape_code,
+        expand_counts = expand_counts,
+        count_info_column = count_info_column,
+        jitter = jitter,
+        sdimx = 'x',
+        sdimy = 'y',
+        color = 'feat_ID',
+        shape = 'feat',
+        point_size = point_size,
+        stroke = stroke,
+        show_legend = show_legend,
+        plot_method = plot_method
+      )
 
-      if(isTRUE(verbose)) wrap_msg('plot feature points layer done')
+      if (isTRUE(verbose)) wrap_msg('plot feature points layer done')
 
     }
 
     ## 2. plot polygons/morphology second/last
-    if(show_polygon == TRUE) {
+    if (isTRUE(show_polygon)) {
 
       # Set feat_type and spat_unit
       polygon_feat_type = set_default_spat_unit(gobject = gobject,
@@ -207,7 +243,9 @@ spatInSituPlotPoints <- function(gobject,
                                       spat_loc_name = spat_loc_name,
                                       feat_type = feat_type,
                                       include_poly_info = TRUE,
-                                      poly_info = polygon_feat_type)
+                                      poly_info = polygon_feat_type,
+                                      include_spat_enr = TRUE,
+                                      spat_enr_names = spat_enr_names)
 
       polygon_dt = data.table::rbindlist(polygon_combo, fill = TRUE)
 
@@ -217,30 +255,31 @@ spatInSituPlotPoints <- function(gobject,
       #                                polygon_name = polygon_feat_type)
       #polygon_dt = spatVector_to_dt(polygon_info)
 
-      plot = plot_cell_polygon_layer(ggobject = plot,
-                                     instrs = instructions(gobject),
-                                     polygon_dt = polygon_dt,
-                                     polygon_grouping = 'poly_ID',
-                                     sdimx = sdimx,
-                                     sdimy = sdimy,
-                                     fill = polygon_fill,
-                                     poly_fill_gradient = polygon_fill_gradient,
-                                     fill_gradient_midpoint = polygon_fill_gradient_midpoint,
-                                     fill_gradient_style = polygon_fill_gradient_style,
-                                     fill_as_factor = polygon_fill_as_factor,
-                                     fill_code = polygon_fill_code,
-                                     bg_color = polygon_bg_color,
-                                     color = polygon_color,
-                                     alpha = polygon_alpha,
-                                     size = polygon_line_size)
+      plot = plot_cell_polygon_layer(
+        ggobject = plot,
+        instrs = instructions(gobject),
+        polygon_dt = polygon_dt,
+        polygon_grouping = 'poly_ID',
+        sdimx = sdimx,
+        sdimy = sdimy,
+        fill = polygon_fill,
+        poly_fill_gradient = polygon_fill_gradient,
+        fill_gradient_midpoint = polygon_fill_gradient_midpoint,
+        fill_gradient_style = polygon_fill_gradient_style,
+        fill_as_factor = polygon_fill_as_factor,
+        fill_code = polygon_fill_code,
+        bg_color = polygon_bg_color,
+        color = polygon_color,
+        alpha = polygon_alpha,
+        size = polygon_line_size
+      )
 
-      if(isTRUE(verbose)) wrap_msg('plot polygon layer done')
-
-
+      if (isTRUE(verbose)) wrap_msg('plot polygon layer done')
     }
+
   } else {
     ## 1. plot polygons/morphology first
-    if(show_polygon == TRUE) {
+    if (isTRUE(show_polygon)) {
 
       # Set feat_type and spat_unit
       polygon_feat_type = set_default_spat_unit(gobject = gobject,
@@ -254,11 +293,13 @@ spatInSituPlotPoints <- function(gobject,
       #  polygon_feat_type = gobject@expression_feat[[1]]
       #}
 
-      polygon_combo = combineCellData(gobject = gobject,
-                                      spat_loc_name = spat_loc_name,
-                                      feat_type = feat_type,
-                                      include_poly_info = TRUE,
-                                      poly_info = polygon_feat_type)
+      polygon_combo = combineCellData(
+        gobject = gobject,
+        spat_loc_name = spat_loc_name,
+        feat_type = feat_type,
+        include_poly_info = TRUE,
+        poly_info = polygon_feat_type
+      )
 
       polygon_dt = data.table::rbindlist(polygon_combo, fill = TRUE)
 
@@ -268,22 +309,24 @@ spatInSituPlotPoints <- function(gobject,
       #                                polygon_name = polygon_feat_type)
       #polygon_dt = spatVector_to_dt(polygon_info)
 
-      plot = plot_cell_polygon_layer(ggobject = plot,
-                                     instrs = instructions(gobject),
-                                     polygon_dt = polygon_dt,
-                                     polygon_grouping = 'poly_ID',
-                                     sdimx = sdimx,
-                                     sdimy = sdimy,
-                                     fill = polygon_fill,
-                                     poly_fill_gradient = polygon_fill_gradient,
-                                     fill_gradient_midpoint = polygon_fill_gradient_midpoint,
-                                     fill_gradient_style = polygon_fill_gradient_style,
-                                     fill_as_factor = polygon_fill_as_factor,
-                                     fill_code = polygon_fill_code,
-                                     bg_color = polygon_bg_color,
-                                     color = polygon_color,
-                                     alpha = polygon_alpha,
-                                     size = polygon_line_size)
+      plot = plot_cell_polygon_layer(
+        ggobject = plot,
+        instrs = instructions(gobject),
+        polygon_dt = polygon_dt,
+        polygon_grouping = 'poly_ID',
+        sdimx = sdimx,
+        sdimy = sdimy,
+        fill = polygon_fill,
+        poly_fill_gradient = polygon_fill_gradient,
+        fill_gradient_midpoint = polygon_fill_gradient_midpoint,
+        fill_gradient_style = polygon_fill_gradient_style,
+        fill_as_factor = polygon_fill_as_factor,
+        fill_code = polygon_fill_code,
+        bg_color = polygon_bg_color,
+        color = polygon_color,
+        alpha = polygon_alpha,
+        size = polygon_line_size
+      )
 
       if(isTRUE(verbose)) wrap_msg('plot polygon layer done')
     }
@@ -291,56 +334,62 @@ spatInSituPlotPoints <- function(gobject,
     if(!is.null(feats)) {
       # use_overlap = TRUE will use the overlap results
       # use_overlap = FALSE will use the raw tx coordinate results
-      if(use_overlap == TRUE) {
+      if (isTRUE(use_overlap)) {
 
         # TODO: check if overlap exists, if not print warning message and default to non-overlap results
-        spatial_feat_info = combineFeatureOverlapData(gobject = gobject,
-                                                      feat_type = feat_type,
-                                                      sel_feats = feats,
-                                                      poly_info = polygon_feat_type)
+        spatial_feat_info = combineFeatureOverlapData(
+          gobject = gobject,
+          feat_type = feat_type,
+          sel_feats = feats,
+          poly_info = polygon_feat_type
+        )
       } else {
 
-        spatial_feat_info = combineFeatureData(gobject = gobject,
-                                               spat_unit =  polygon_feat_type,
-                                               feat_type = feat_type,
-                                               sel_feats = feats)
+        spatial_feat_info = combineFeatureData(
+          gobject = gobject,
+          spat_unit =  polygon_feat_type,
+          feat_type = feat_type,
+          sel_feats = feats
+        )
       }
 
       spatial_feat_info = data.table::rbindlist(spatial_feat_info, fill = TRUE)
 
-      plot = plot_feature_points_layer(ggobject = plot,
-                                       instrs = instructions(gobject),
-                                       spatial_feat_info = spatial_feat_info,
-                                       feats = feats,
-                                       feats_color_code = feats_color_code,
-                                       feat_shape_code = feat_shape_code,
-                                       expand_counts = expand_counts,
-                                       count_info_column = count_info_column,
-                                       jitter = jitter,
-                                       sdimx = 'x',
-                                       sdimy = 'y',
-                                       color = 'feat_ID',
-                                       shape = 'feat',
-                                       point_size = point_size,
-                                       stroke = stroke,
-                                       show_legend = show_legend,
-                                       plot_method = plot_method)
+      plot = plot_feature_points_layer(
+        ggobject = plot,
+        instrs = instructions(gobject),
+        spatial_feat_info = spatial_feat_info,
+        feats = feats,
+        feats_color_code = feats_color_code,
+        feat_shape_code = feat_shape_code,
+        expand_counts = expand_counts,
+        count_info_column = count_info_column,
+        jitter = jitter,
+        sdimx = 'x',
+        sdimy = 'y',
+        color = 'feat_ID',
+        shape = 'feat',
+        point_size = point_size,
+        stroke = stroke,
+        show_legend = show_legend,
+        plot_method = plot_method
+      )
 
       if(isTRUE(verbose)) wrap_msg('plot feature points layer done')
-
     }
 
   }
 
   ## 3. adjust theme settings
-  plot <- plot + ggplot2::theme(plot.title = element_text(hjust = 0.5),
-                                legend.title = element_blank(),
-                                legend.text = element_text(size = legend_text),
-                                axis.title = element_text(size = axis_title),
-                                axis.text = element_text(size = axis_text),
-                                panel.grid = element_blank(),
-                                panel.background = element_rect(fill = background_color))
-
+  plot <- plot + ggplot2::theme(
+    plot.title = ggplot2::element_text(hjust = 0.5),
+    legend.title = ggplot2::element_blank(),
+    legend.text = ggplot2::element_text(size = legend_text),
+    axis.title = ggplot2::element_text(size = axis_title),
+    axis.text = ggplot2::element_text(size = axis_text),
+    panel.grid = ggplot2::element_blank(),
+    panel.background = ggplot2::element_rect(fill = background_color)
+  )
 
 
   if(!is.null(coord_fix_ratio)) {
