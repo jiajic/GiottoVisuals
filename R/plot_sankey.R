@@ -522,7 +522,7 @@ setMethod(
     # create nodes table
     nodes = data.table::data.table(name = nodes)
 
-    networkD3::sankeyNetwork(
+    sankey_networkd3(
       Links = links_dt,
       Nodes = nodes,
       Source = 'source',
@@ -593,7 +593,7 @@ setMethod(
     # create nodes table
     nodes = data.table::data.table(name = res$nodes)
 
-    networkD3::sankeyNetwork(
+    sankey_networkd3(
       Links = links_dt,
       Nodes = nodes,
       Source = 'source',
@@ -617,7 +617,7 @@ setMethod('sankeyPlot', signature(x = 'data.frame', y = 'missing'), function(x, 
   # create nodes table
   nodes = data.table::data.table(name = res$nodes)
 
-  networkD3::sankeyNetwork(
+  sankey_networkd3(
     Links = links_dt,
     Nodes = nodes,
     Source = 'source',
@@ -649,6 +649,26 @@ setMethod('sankeyPlot',
           })
 
 
-
+sankey_networkd3 = function(Links,
+                            Nodes,
+                            Source = 'source',
+                            Target = 'target',
+                            Value = 'value',
+                            NodeID = 'name',
+                            nodePadding = 1,
+                            sinksRight = FALSE,
+                            ...) {
+  networkD3::sankeyNetwork(
+    Links = Links,
+    Nodes = Nodes,
+    Source = 'source',
+    Target = 'target',
+    Value = 'value',
+    NodeID = 'name',
+    nodePadding = nodePadding,
+    sinksRight = sinksRight,
+    ...
+  )
+}
 
 
