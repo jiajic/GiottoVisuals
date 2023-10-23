@@ -4,6 +4,7 @@
 \alias{sankeyPlot}
 \alias{sankeyPlot,giotto,character-method}
 \alias{sankeyPlot,data.frame,missing-method}
+\alias{sankeyPlot,giottoPolygon,giottoPolygon-method}
 \title{Create a sankey plot}
 \usage{
 \S4method{sankeyPlot}{giotto,giottoSankeyPlan}(x, y, meta_type = c("cell", "feat"), ...)
@@ -19,13 +20,16 @@
 )
 
 \S4method{sankeyPlot}{data.frame,missing}(x, y, ...)
+
+\S4method{sankeyPlot}{giottoPolygon,giottoPolygon}(x, y, ...)
 }
 \arguments{
-\item{x}{data source (gobject or data.frame-like object with relations
-between the first two cols provided)}
+\item{x}{data source (gobject, data.frame-like object with relations
+between the first two cols provided, or giottoPolygon)}
 
 \item{y}{giottoSankeyPlan object or character vector referring to source and
-target columns in metadata}
+target columns in metadata if x is a gobject. Can also be missing or a
+second giottoPolygon (see usage section)}
 
 \item{meta_type}{whether to use 'cell' (cell) or 'feat' (feature) metadata}
 

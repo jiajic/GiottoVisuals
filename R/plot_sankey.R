@@ -320,25 +320,22 @@ sankey_compare = function(data_dt, idx_start = 0) {
   # that are not substantiated
   links = links[value > 0L]
 
-  # Collect unique node names
+  # Collect node names
   # These node names now define [nodes] to map the data.table source and target
   # column values to.
-  source_names = links[, unique(source)]
-  target_names = links[, unique(target)]
+  source_names = links[, source]
+  target_names = links[, target]
 
-  # Set starting indices for each of the nodes
-  source_idx_start = idx_start
-  target_idx_start = length(source_names)
+  # combine unique node values into single character vector, starting with
+  # source nodes. Additionally, ensure nodes are of type character.
+  nodes = c(source_names, target_names) %>%
+    unique() %>%
+    as.character()
 
   # Convert source and target columns to integer mappings to unique names.
   # !These integer mappings are zero indexed!
-  links[, source := match(source, source_names) - 1 + source_idx_start]
-  links[, target := match(target, target_names) - 1 + target_idx_start]
-
-  # combine node values into single character vector, starting with source
-  # nodes. Additionally, ensure nodes are of type character.
-  nodes = c(source_names, target_names) %>%
-    as.character()
+  links[, source := match(source, nodes) - 1 + idx_start]
+  links[, target := match(target, nodes) - 1 + idx_start]
 
   # return data.table of links and the character vector of nodes
   return_list = list(
@@ -449,10 +446,11 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #' and (optionally) `idx` params. More complex and cross spatial unit/feature
 #' type sankeys can be set up using the `sankey_plan` param which accepts a
 #' `giottoSankeyPlan` object.
-#' @param x data source (gobject or data.frame-like object with relations
-#' between the first two cols provided)
+#' @param x data source (gobject, data.frame-like object with relations
+#' between the first two cols provided, or giottoPolygon)
 #' @param y giottoSankeyPlan object or character vector referring to source and
-#' target columns in metadata
+#' target columns in metadata if x is a gobject. Can also be missing or a
+#' second giottoPolygon (see usage section)
 #' @param meta_type build sankey on cell or feature metadata
 #' @param spat_unit spatial unit of metadata
 #' @param feat_type feature type of metadata
@@ -630,6 +628,27 @@ setMethod('sankeyPlot', signature(x = 'data.frame', y = 'missing'), function(x, 
   )
 
 })
+
+
+#' @rdname sankeyPlot
+#' @export
+setMethod('sankeyPlot',
+          signature(x = 'giottoPolygon', y = 'giottoPolygon'),
+          function(x, y, ...) {
+
+            # take the poly_ID cols only from each gpoly
+            # then perform intersect
+            # finally, pass to sankeyPlot
+            terra::intersect(x[,1][], y[,1][])[,1:2] %>%
+              terra::values() %>%
+              data.table::setDT() %>%
+              data.table::setnames(new = c('a_ID', 'b_ID')) %>%
+              data.table::setkeyv(c('a_ID', 'b_ID')) %>%
+              sankeyPlot()
+
+          })
+
+
 
 
 
