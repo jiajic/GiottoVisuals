@@ -440,12 +440,14 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #' @title Create a sankey plot
 #' @name sankeyPlot
 #' @description
-#' Create a sankey plot from a giotto object. Pulls from information in the
-#' metadata. Simple 1 to 1 sankeys can be generated from a single spatial unit
+#' Create a sankey plot. Pulls from information metadata if giotto object is
+#' provided. Simple 1 to 1 sankeys can be generated from a single spatial unit
 #' and feature type using the `spat_unit`, `feat_type`, `meta_type`, `cols`,
 #' and (optionally) `idx` params. More complex and cross spatial unit/feature
 #' type sankeys can be set up using the `sankey_plan` param which accepts a
-#' `giottoSankeyPlan` object.
+#' `giottoSankeyPlan` object.\cr
+#' Also possible to directly use data.frames or lists of data.frames and
+#' giottoPolygon objects. See usage section and examples.
 #' @param x data source (gobject, data.frame-like object with relations
 #' between the first two cols provided, or giottoPolygon)
 #' @param y giottoSankeyPlan object or character vector referring to source and
@@ -459,9 +461,24 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #' @inheritDotParams networkD3::sankeyNetwork -Links -Nodes -Source -Target -Value -NodeID
 #' @examples
 #' \dontrun{
-#' x = data.table::data.table(col1 = c('a', 'a', 'b'),
-#'                            col2 = c('x', 'y', 'y'))
+#' x = data.frame(
+#'   col1 = c('a', 'a', 'b'),
+#'   col2 = c('1', '2', '2')
+#' )
 #' sankeyPlot(x)
+#'
+#' y = data.frame(
+#'   col1 = '1',
+#'   col2 = c('A', 'B', 'C')
+#' )
+#'
+#' # combine data.frames of relations
+#' # rbind: note that node "1" is mapped the same for x and y
+#' sankeyPlot(rbind(x,y), fontSize = 20)
+#'
+#' # list: note that node "1" is now considered a different node between x and y
+#' sankeyPlot(list(x,y), fontSize = 20)
+#'
 #' g = GiottoData::loadGiottoMini("vizgen")
 #' # with giottoSankeyPlan
 #' leiden = sankeySet(spat_unit = 'aggregate',
@@ -516,7 +533,7 @@ setMethod(
       nodes = c(nodes, rel_data$nodes)
 
       # update start index
-      node_idx_start = links_dt[, max(target)]
+      node_idx_start = links_dt[, max(source, target)] + 1
     }
 
     # create nodes table
@@ -611,6 +628,7 @@ setMethod(
 setMethod('sankeyPlot', signature(x = 'data.frame', y = 'missing'), function(x, ...) {
   GiottoUtils::package_check("networkD3")
 
+  x = data.table::as.data.table(x)
   res = sankey_compare(data_dt = x)
   links_dt = res$links
 
@@ -627,6 +645,46 @@ setMethod('sankeyPlot', signature(x = 'data.frame', y = 'missing'), function(x, 
     ...
   )
 
+})
+
+#' @rdname sankeyPlot
+#' @export
+setMethod('sankeyPlot', signature(x = 'list', y = 'missing'), function(x, ...) {
+  checkmate::assert_list(x, types = 'data.frame')
+  if (length(x) == 0L) stop('input is empty list')
+
+  # iterate through sankey relations in the list
+  node_idx_start = 0
+  links_dt = data.table::data.table()
+  nodes = c()
+
+  for (dt_i in seq_along(x)) {
+
+    rel_data = sankey_compare(
+      data_dt = data.table::as.data.table(x[[dt_i]]),
+      idx_start = node_idx_start
+    )
+
+    # append data
+    links_dt = rbind(links_dt, rel_data$links)
+    nodes = c(nodes, rel_data$nodes)
+
+    # update start index
+    node_idx_start = links_dt[, max(source, target)] + 1
+  }
+
+  # create nodes table
+  nodes_dt = data.table::data.table(name = nodes)
+
+  sankey_networkd3(
+    Links = links_dt,
+    Nodes = nodes_dt,
+    Source = 'source',
+    Target = 'target',
+    Value = 'value',
+    NodeID = 'name',
+    ...
+  )
 })
 
 
