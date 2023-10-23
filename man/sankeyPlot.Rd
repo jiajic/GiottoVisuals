@@ -4,6 +4,8 @@
 \alias{sankeyPlot}
 \alias{sankeyPlot,giotto,character-method}
 \alias{sankeyPlot,data.frame,missing-method}
+\alias{sankeyPlot,list,missing-method}
+\alias{sankeyPlot,giottoPolygon,giottoPolygon-method}
 \title{Create a sankey plot}
 \usage{
 \S4method{sankeyPlot}{giotto,giottoSankeyPlan}(x, y, meta_type = c("cell", "feat"), ...)
@@ -19,13 +21,18 @@
 )
 
 \S4method{sankeyPlot}{data.frame,missing}(x, y, ...)
+
+\S4method{sankeyPlot}{list,missing}(x, y, ...)
+
+\S4method{sankeyPlot}{giottoPolygon,giottoPolygon}(x, y, ...)
 }
 \arguments{
-\item{x}{data source (gobject or data.frame-like object with relations
-between the first two cols provided)}
+\item{x}{data source (gobject, data.frame-like object with relations
+between the first two cols provided, or giottoPolygon)}
 
 \item{y}{giottoSankeyPlan object or character vector referring to source and
-target columns in metadata}
+target columns in metadata if x is a gobject. Can also be missing or a
+second giottoPolygon (see usage section)}
 
 \item{meta_type}{whether to use 'cell' (cell) or 'feat' (feature) metadata}
 
@@ -66,18 +73,35 @@ right border of the plot.}
 \item{idx}{table subset index for 1 to 1 comparisons}
 }
 \description{
-Create a sankey plot from a giotto object. Pulls from information in the
-metadata. Simple 1 to 1 sankeys can be generated from a single spatial unit
+Create a sankey plot. Pulls from information metadata if giotto object is
+provided. Simple 1 to 1 sankeys can be generated from a single spatial unit
 and feature type using the \code{spat_unit}, \code{feat_type}, \code{meta_type}, \code{cols},
 and (optionally) \code{idx} params. More complex and cross spatial unit/feature
 type sankeys can be set up using the \code{sankey_plan} param which accepts a
-\code{giottoSankeyPlan} object.
+\code{giottoSankeyPlan} object.\cr
+Also possible to directly use data.frames or lists of data.frames and
+giottoPolygon objects. See usage section and examples.
 }
 \examples{
 \dontrun{
-x = data.table::data.table(col1 = c('a', 'a', 'b'),
-                           col2 = c('x', 'y', 'y'))
+x = data.frame(
+  col1 = c('a', 'a', 'b'),
+  col2 = c('1', '2', '2')
+)
 sankeyPlot(x)
+
+y = data.frame(
+  col1 = '1',
+  col2 = c('A', 'B', 'C')
+)
+
+# combine data.frames of relations
+# rbind: note that node "1" is mapped the same for x and y
+sankeyPlot(rbind(x,y), fontSize = 20)
+
+# list: note that node "1" is now considered a different node between x and y
+sankeyPlot(list(x,y), fontSize = 20)
+
 g = GiottoData::loadGiottoMini("vizgen")
 # with giottoSankeyPlan
 leiden = sankeySet(spat_unit = 'aggregate',
