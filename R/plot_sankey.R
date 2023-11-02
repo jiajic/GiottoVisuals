@@ -458,6 +458,9 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #' @param feat_type feature type of metadata
 #' @param meta_type whether to use 'cell' (cell) or 'feat' (feature) metadata
 #' @param idx table subset index for 1 to 1 comparisons
+#' @param focus_names character vector of node names to display. Others will be
+#' omitted.
+#' @param unfocused_color whether to color nodes that are not focused on.
 #' @inheritDotParams networkD3::sankeyNetwork -Links -Nodes -Source -Target -Value -NodeID
 #' @examples
 #' \dontrun{
@@ -478,6 +481,9 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #'
 #' # list: note that node "1" is now considered a different node between x and y
 #' sankeyPlot(list(x,y), fontSize = 20)
+#'
+#' # focus on specific nodes/names
+#' sankeyPlot(rbind(x,y), fontSize = 20, focus_names = c('a', '1', 'B'))
 #'
 #' g = GiottoData::loadGiottoMini("vizgen")
 #' # with giottoSankeyPlan
@@ -509,6 +515,8 @@ setMethod(
   function(x,
            y,
            meta_type = c('cell', 'feat'),
+           focus_names = NULL,
+           unfocused_color = FALSE,
            ...) {
     GiottoUtils::package_check("networkD3")
     meta_type = match.arg(meta_type, choices = c('cell', 'feat'))
@@ -546,6 +554,8 @@ setMethod(
       Target = 'target',
       Value = 'value',
       NodeID = 'name',
+      focus_names = focus_names,
+      unfocused_color = unfocused_color,
       ...
     )
   }
@@ -565,6 +575,8 @@ setMethod(
            feat_type = NULL,
            meta_type = c('cell', 'feat'),
            idx = NULL,
+           focus_names = NULL,
+           unfocused_color = FALSE,
            ...) {
 
     GiottoUtils::package_check("networkD3")
@@ -617,6 +629,8 @@ setMethod(
       Target = 'target',
       Value = 'value',
       NodeID = 'name',
+      focus_names = focus_names,
+      unfocused_color = unfocused_color,
       ...
     )
   }
@@ -625,86 +639,101 @@ setMethod(
 
 #' @rdname sankeyPlot
 #' @export
-setMethod('sankeyPlot', signature(x = 'data.frame', y = 'missing'), function(x, ...) {
-  GiottoUtils::package_check("networkD3")
+setMethod(
+  'sankeyPlot',
+  signature(x = 'data.frame', y = 'missing'),
+  function(x, focus_names = NULL, unfocused_color = FALSE, ...)
+  {
+    GiottoUtils::package_check("networkD3")
 
-  x = data.table::as.data.table(x)
-  res = sankey_compare(data_dt = x)
-  links_dt = res$links
+    x = data.table::as.data.table(x)
+    res = sankey_compare(data_dt = x)
+    links_dt = res$links
 
-  # create nodes table
-  nodes = data.table::data.table(name = res$nodes)
+    # create nodes table
+    nodes = data.table::data.table(name = res$nodes)
 
-  sankey_networkd3(
-    Links = links_dt,
-    Nodes = nodes,
-    Source = 'source',
-    Target = 'target',
-    Value = 'value',
-    NodeID = 'name',
-    ...
-  )
-
-})
-
-#' @rdname sankeyPlot
-#' @export
-setMethod('sankeyPlot', signature(x = 'list', y = 'missing'), function(x, ...) {
-  checkmate::assert_list(x, types = 'data.frame')
-  if (length(x) == 0L) stop('input is empty list')
-
-  # iterate through sankey relations in the list
-  node_idx_start = 0
-  links_dt = data.table::data.table()
-  nodes = c()
-
-  for (dt_i in seq_along(x)) {
-
-    rel_data = sankey_compare(
-      data_dt = data.table::as.data.table(x[[dt_i]]),
-      idx_start = node_idx_start
+    sankey_networkd3(
+      Links = links_dt,
+      Nodes = nodes,
+      Source = 'source',
+      Target = 'target',
+      Value = 'value',
+      NodeID = 'name',
+      focus_names = focus_names,
+      unfocused_color = unfocused_color,
+      ...
     )
 
-    # append data
-    links_dt = rbind(links_dt, rel_data$links)
-    nodes = c(nodes, rel_data$nodes)
+  })
 
-    # update start index
-    node_idx_start = links_dt[, max(source, target)] + 1
-  }
+#' @rdname sankeyPlot
+#' @export
+setMethod(
+  'sankeyPlot',
+  signature(x = 'list', y = 'missing'),
+  function(x, focus_names = NULL, unfocused_color = FALSE, ...)
+  {
+    checkmate::assert_list(x, types = 'data.frame')
+    if (length(x) == 0L) stop('input is empty list')
 
-  # create nodes table
-  nodes_dt = data.table::data.table(name = nodes)
+    # iterate through sankey relations in the list
+    node_idx_start = 0
+    links_dt = data.table::data.table()
+    nodes = c()
 
-  sankey_networkd3(
-    Links = links_dt,
-    Nodes = nodes_dt,
-    Source = 'source',
-    Target = 'target',
-    Value = 'value',
-    NodeID = 'name',
-    ...
-  )
-})
+    for (dt_i in seq_along(x)) {
+
+      rel_data = sankey_compare(
+        data_dt = data.table::as.data.table(x[[dt_i]]),
+        idx_start = node_idx_start
+      )
+
+      # append data
+      links_dt = rbind(links_dt, rel_data$links)
+      nodes = c(nodes, rel_data$nodes)
+
+      # update start index
+      node_idx_start = links_dt[, max(source, target)] + 1
+    }
+
+    # create nodes table
+    nodes_dt = data.table::data.table(name = nodes)
+
+    sankey_networkd3(
+      Links = links_dt,
+      Nodes = nodes_dt,
+      Source = 'source',
+      Target = 'target',
+      Value = 'value',
+      NodeID = 'name',
+      focus_names = focus_names,
+      unfocused_color = unfocused_color,
+      ...
+    )
+  })
 
 
 #' @rdname sankeyPlot
 #' @export
-setMethod('sankeyPlot',
-          signature(x = 'giottoPolygon', y = 'giottoPolygon'),
-          function(x, y, ...) {
-
-            # take the poly_ID cols only from each gpoly
-            # then perform intersect
-            # finally, pass to sankeyPlot
-            terra::intersect(x[,1][], y[,1][])[,1:2] %>%
-              terra::values() %>%
-              data.table::setDT() %>%
-              data.table::setnames(new = c('a_ID', 'b_ID')) %>%
-              data.table::setkeyv(c('a_ID', 'b_ID')) %>%
-              sankeyPlot()
-
-          })
+setMethod(
+  'sankeyPlot',
+  signature(x = 'giottoPolygon',
+            y = 'giottoPolygon'),
+  function(x, y, focus_names = NULL, unfocused_color = FALSE, ...)
+  {
+    # take the poly_ID cols only from each gpoly
+    # then perform intersect
+    # finally, pass to sankeyPlot
+    terra::intersect(x[,1][], y[,1][])[,1:2] %>%
+      terra::values() %>%
+      data.table::setDT() %>%
+      data.table::setnames(new = c('a_ID', 'b_ID')) %>%
+      data.table::setkeyv(c('a_ID', 'b_ID')) %>%
+      sankeyPlot(focus_names = focus_names,
+                 unfocused_color = unfocused_color,
+                 ...)
+  })
 
 
 sankey_networkd3 = function(Links,
@@ -715,18 +744,34 @@ sankey_networkd3 = function(Links,
                             NodeID = 'name',
                             nodePadding = 1,
                             sinksRight = FALSE,
+                            focus_names = NULL,
+                            unfocused_replacer = '',
+                            unfocused_color = FALSE,
                             ...) {
-  networkD3::sankeyNetwork(
-    Links = Links,
-    Nodes = Nodes,
-    Source = 'source',
-    Target = 'target',
-    Value = 'value',
-    NodeID = 'name',
-    nodePadding = nodePadding,
-    sinksRight = sinksRight,
-    ...
-  )
+
+  args_list <- list()
+
+  if (!is.null(focus_names)) {
+    Nodes[!get('name') %in% focus_names, 'name' := unfocused_replacer]
+
+    if (isTRUE(unfocused_color)) {
+      Nodes[, color := as.character(seq(.N))]
+      args_list$NodeGroup <- 'color'
+    }
+  }
+
+  args_list <- c(args_list,
+                 list(Links = Links,
+                      Nodes = Nodes,
+                      Source = Source,
+                      Target = Target,
+                      Value = Value,
+                      NodeID = NodeID,
+                      nodePadding = nodePadding,
+                      sinksRight = sinksRight),
+                 list(...))
+
+  do.call(networkD3::sankeyNetwork, args = args_list)
 }
 
 

@@ -8,7 +8,14 @@
 \alias{sankeyPlot,giottoPolygon,giottoPolygon-method}
 \title{Create a sankey plot}
 \usage{
-\S4method{sankeyPlot}{giotto,giottoSankeyPlan}(x, y, meta_type = c("cell", "feat"), ...)
+\S4method{sankeyPlot}{giotto,giottoSankeyPlan}(
+  x,
+  y,
+  meta_type = c("cell", "feat"),
+  focus_names = NULL,
+  unfocused_color = FALSE,
+  ...
+)
 
 \S4method{sankeyPlot}{giotto,character}(
   x,
@@ -17,14 +24,16 @@
   feat_type = NULL,
   meta_type = c("cell", "feat"),
   idx = NULL,
+  focus_names = NULL,
+  unfocused_color = FALSE,
   ...
 )
 
-\S4method{sankeyPlot}{data.frame,missing}(x, y, ...)
+\S4method{sankeyPlot}{data.frame,missing}(x, focus_names = NULL, unfocused_color = FALSE, ...)
 
-\S4method{sankeyPlot}{list,missing}(x, y, ...)
+\S4method{sankeyPlot}{list,missing}(x, focus_names = NULL, unfocused_color = FALSE, ...)
 
-\S4method{sankeyPlot}{giottoPolygon,giottoPolygon}(x, y, ...)
+\S4method{sankeyPlot}{giottoPolygon,giottoPolygon}(x, y, focus_names = NULL, unfocused_color = FALSE, ...)
 }
 \arguments{
 \item{x}{data source (gobject, data.frame-like object with relations
@@ -35,6 +44,11 @@ target columns in metadata if x is a gobject. Can also be missing or a
 second giottoPolygon (see usage section)}
 
 \item{meta_type}{whether to use 'cell' (cell) or 'feat' (feature) metadata}
+
+\item{focus_names}{character vector of node names to display. Others will be
+omitted.}
+
+\item{unfocused_color}{whether to color nodes that are not focused on.}
 
 \item{...}{
   Arguments passed on to \code{\link[networkD3:sankeyNetwork]{networkD3::sankeyNetwork}}
@@ -101,6 +115,9 @@ sankeyPlot(rbind(x,y), fontSize = 20)
 
 # list: note that node "1" is now considered a different node between x and y
 sankeyPlot(list(x,y), fontSize = 20)
+
+# focus on specific nodes/names
+sankeyPlot(rbind(x,y), fontSize = 20, focus_names = c('a', '1', 'B'))
 
 g = GiottoData::loadGiottoMini("vizgen")
 # with giottoSankeyPlan
