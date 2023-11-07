@@ -139,6 +139,8 @@ getDistinctColors <- function(n) {
     # if too many colors warn about recycling
     if(n > length(broad_colors)) {
       warning('\n not enough unique colors in R, maximum = 444 \n')
+      set.seed(1234)
+      on.exit(set.seed(Sys.time()))
       col_vector = sample(x = broad_colors, size = n, replace = TRUE)
     } else {
       col_vector = sample(x = broad_colors, size = n, replace = FALSE)
