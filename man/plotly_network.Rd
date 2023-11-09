@@ -30,9 +30,8 @@ plotly_network(
 \item{z_end}{default to "sdimz_end"}
 }
 \value{
-edges in network as data.table()
+edges in network as data.table
 }
 \description{
 provide network segment to draw in 3D plot_ly()
 }
-\keyword{internal}
