@@ -10,16 +10,19 @@
 #' @param default_save_name default name to save a plot
 #' @param save_format format (e.g. png, tiff, pdf, ...)
 #' @param show_saved_plot load & display the saved plot
-#' @param ncol number of columns
-#' @param nrow number of rows
-#' @param scale scale
-#' @param base_width width
-#' @param base_height height
-#' @param base_aspect_ratio aspect ratio
-#' @param units units
-#' @param dpi Plot resolution
-#' @param limitsize When TRUE (the default), ggsave will not save images larger than 50x50 inches, to prevent the common error of specifying dimensions in pixels.
-#' @param plot_count count number for plot
+#' @param ncol number of columns for multiplots
+#' @param nrow number of rows for multiplot
+#' @param scale scale of plots
+#' @param base_width width of plot
+#' @param base_height height of plot
+#' @param base_aspect_ratio aspect ratio of plot
+#' @param units plotting units (e.g. in)
+#' @param dpi dpi for each plot if plot is in raster format
+#' @param limitsize When TRUE (the default), ggsave will not save images larger
+#' than 50x50 inches, to prevent the common error of specifying dimensions in
+#' pixels.
+#' @param plot_count manually set the plot count that is appended to a
+#' default_save_name
 #' @param \dots additional parameters to pass downstream save functions
 #' @seealso \code{\link{showSaveParameters}} \code{\link[cowplot]{save_plot}}
 #' \code{\link[grDevices]{png}} \code{\link[grDevices]{tiff}} \code{\link[grDevices]{pdf}}
@@ -238,8 +241,8 @@ general_save_function = function(gobject,
 
 }
 
-#' @describeIn plot_save wrapper for ggplot and general saving. ... passes to the respective save function
-#' @keywords internal
+#' @rdname plot_save
+#' @export
 all_plots_save_function = function(gobject,
                                    plot_object,
                                    save_dir = NULL,
