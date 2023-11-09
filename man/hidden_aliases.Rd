@@ -7,6 +7,9 @@
 \usage{
 \S4method{+}{giottoSankeyPlan,giottoSankeyPlan}(e1, e2)
 }
+\arguments{
+\item{e1, e2}{giottoSankeyPlan}
+}
 \description{
 hidden_aliases
 }

@@ -2,6 +2,7 @@
 % Please edit documentation in R/plot_sankey.R
 \name{sankeyPlot}
 \alias{sankeyPlot}
+\alias{sankeyPlot,giotto,giottoSankeyPlan-method}
 \alias{sankeyPlot,giotto,character-method}
 \alias{sankeyPlot,data.frame,missing-method}
 \alias{sankeyPlot,list,missing-method}

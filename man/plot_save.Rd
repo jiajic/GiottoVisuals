@@ -86,25 +86,28 @@ all_plots_save_function(
 
 \item{show_saved_plot}{load & display the saved plot}
 
-\item{ncol}{number of columns}
+\item{ncol}{number of columns for multiplots}
 
-\item{nrow}{number of rows}
+\item{nrow}{number of rows for multiplot}
 
-\item{scale}{scale}
+\item{scale}{scale of plots}
 
-\item{base_width}{width}
+\item{base_width}{width of plot}
 
-\item{base_height}{height}
+\item{base_height}{height of plot}
 
-\item{base_aspect_ratio}{aspect ratio}
+\item{base_aspect_ratio}{aspect ratio of plot}
 
-\item{units}{units}
+\item{units}{plotting units (e.g. in)}
 
-\item{dpi}{Plot resolution}
+\item{dpi}{dpi for each plot if plot is in raster format}
 
-\item{limitsize}{When TRUE (the default), ggsave will not save images larger than 50x50 inches, to prevent the common error of specifying dimensions in pixels.}
+\item{limitsize}{When TRUE (the default), ggsave will not save images larger
+than 50x50 inches, to prevent the common error of specifying dimensions in
+pixels.}
 
-\item{plot_count}{count number for plot}
+\item{plot_count}{manually set the plot count that is appended to a
+default_save_name}
 
 \item{\dots}{additional parameters to pass downstream save functions}
 }
@@ -116,8 +119,6 @@ Functions to automatically save plots to directory of interest
 \item \code{ggplot_save_function()}: ggplot saving. ... passes to cowplot::save_plot
 
 \item \code{general_save_function()}: base and general saving. ... passes to grDevices png, tiff, pdf, svg
-
-\item \code{all_plots_save_function()}: wrapper for ggplot and general saving. ... passes to the respective save function
 
 }}
 \seealso{
