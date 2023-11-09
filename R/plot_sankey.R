@@ -2,8 +2,13 @@
 # Sankey plotting functionality with networkD3
 # node values are 0 indexed
 
-#' @title S4 giottoSankeyPlan
+
+# giottoSankeyPlan class ####
+
+
+#' @title S4 giottoSankeyPlan class
 #' @name giottoSankeyPlan
+#' @aliases giottoSankeyPlan-class
 #' @description
 #' Object to organize the sets of information to select from a Giotto object's
 #' metadata to compare across annotations from the same or across spatial
@@ -15,7 +20,8 @@
 #' @slot data_type whether the metadata is cell or feat
 #' @slot relations data.table of from and to comparisons between sets. The sets
 #' are referred to as zero indexed integers.
-#' @export
+#' @export giottoSankeyPlan
+#' @exportClass giottoSankeyPlan
 giottoSankeyPlan <- setClass(
   'giottoSankeyPlan',
   slots = list(
@@ -30,6 +36,7 @@ giottoSankeyPlan <- setClass(
     relations = data.table::data.table()
   )
 )
+
 
 setMethod('show', signature = 'giottoSankeyPlan', function(object) {
   cat('giottoSankeyPlan --',
@@ -55,6 +62,7 @@ setGeneric('sankeyPlot', function(x, y, ...) standardGeneric('sankeyPlot'))
 
 # methods ####
 
+# * sankeyRelate ####
 
 #' @name sankeyRelate
 #' @title Set a relation between two sankey sets
@@ -67,17 +75,17 @@ setGeneric('sankeyPlot', function(x, y, ...) standardGeneric('sankeyPlot'))
 #' appended or replace all existing relations
 #' @param \dots additional params to pass
 #' @param value numerical vector (zero indexed) of sets to compare
+NULL
 
 
-
-# get relations ####
+# ** get relations ####
 #' @rdname sankeyRelate
 #' @export
 setMethod('sankeyRelate', signature('giottoSankeyPlan'), function(x, ...) {
   return(x@relations)
 })
 
-# replace relations ####
+# ** replace relations ####
 #' @rdname sankeyRelate
 #' @export
 setMethod(
@@ -175,7 +183,8 @@ setMethod( # remove all
   }
 )
 
-# labels ####
+# sankeyLabel ####
+
 #' @title Get and set the sankey labels information
 #' @name sankeyLabel
 #' @param x giottoSankeyPlan
@@ -194,11 +203,17 @@ sankeyLabel = function(x) {
 
 
 
+# + giottoSankeyPlan combining ####
+
 #' @rdname hidden_aliases
 #' @export
 # Multiple references to the same address are not allowed
 # e1 values will be taken in all such cases
+#' @param e1,e2 giottoSankeyPlan
 setMethod('+', signature('giottoSankeyPlan', 'giottoSankeyPlan'), function(e1, e2) {
+
+  # DT vars
+  from = to = NULL
 
   # update addresses
   e1@set_address = rbind(e1@set_address, e2@set_address)
@@ -244,7 +259,10 @@ setMethod('+', signature('giottoSankeyPlan', 'giottoSankeyPlan'), function(e1, e
 #' @param label (optional) character label for a set
 #' @export
 #' @keywords plotting sankey
-sankeySet = function(spat_unit = NULL, feat_type = NULL, col, index = NULL, label = NA_character_) {
+sankeySet = function(spat_unit = NULL,
+                     feat_type = NULL,
+                     col, index = NULL,
+                     label = NA_character_) {
   x = giottoSankeyPlan(
     set_address = data.table::data.table(
       spat_unit = spat_unit,
@@ -307,6 +325,9 @@ sankeySetAddresses = function(x) {
 #' @return list with 1. node names and 2. data.table with cols source, target,
 #' and value
 sankey_compare = function(data_dt, idx_start = 0) {
+
+  # DT vars
+  source = target = value = NULL
 
   # Produce data.table of source, target, and value for the relation pair
   # This is a table of [links] between nodes
@@ -504,6 +525,7 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 #' sankeyPlot(g, c('louvain_clus', 'leiden_clus'))
 #' }
 #' @keywords plotting sankey
+NULL
 
 
 #' @rdname sankeyPlot
@@ -521,6 +543,9 @@ setMethod(
     GiottoUtils::package_check("networkD3")
     meta_type = match.arg(meta_type, choices = c('cell', 'feat'))
     y@data_type = meta_type
+
+    # DT vars
+    source = target = NULL
 
     # iterate through sankey relations in the giottoSankeyPlan
     node_idx_start = 0
@@ -677,6 +702,9 @@ setMethod(
     checkmate::assert_list(x, types = 'data.frame')
     if (length(x) == 0L) stop('input is empty list')
 
+    # DT vars
+    target = NULL
+
     # iterate through sankey relations in the list
     node_idx_start = 0
     links_dt = data.table::data.table()
@@ -748,6 +776,9 @@ sankey_networkd3 = function(Links,
                             unfocused_replacer = '',
                             unfocused_color = FALSE,
                             ...) {
+
+  # DT vars
+  color = NULL
 
   args_list <- list()
 

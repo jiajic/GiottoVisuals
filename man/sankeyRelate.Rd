@@ -3,6 +3,7 @@
 \name{sankeyRelate}
 \alias{sankeyRelate}
 \alias{sankeyRelate<-}
+\alias{sankeyRelate,giottoSankeyPlan-method}
 \alias{sankeyRelate<-,giottoSankeyPlan,logical,data.frame-method}
 \alias{sankeyRelate<-,giottoSankeyPlan,logical,numeric-method}
 \alias{sankeyRelate<-,giottoSankeyPlan,logical,character-method}

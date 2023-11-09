@@ -280,11 +280,16 @@ set_default_color_discrete_heatmap_clus = function(
 #' nr_feat_polys(polygon_fill_gradient = 'miami')
 #'
 #' # set function level: color vector (2 to n colors)
-#' nr_feat_polys(polygon_fill_gradient = c('green', 'purple'), polygon_fill_gradient_style = 's')
+#' nr_feat_polys(polygon_fill_gradient = c('green', 'purple'),
+#'               polygon_fill_gradient_style = 's')
 #'
-#' nr_feat_polys(polygon_fill_gradient = c('blue', 'yellow', 'red'), polygon_fill_gradient_style = 's')
+#' nr_feat_polys(polygon_fill_gradient = c('blue', 'yellow', 'red'),
+#'               polygon_fill_gradient_style = 's')
 #'
-#' nr_feat_polys(polygon_fill_gradient = c('darkgrey', 'darkblue', 'purple', 'violet', 'cyan'), polygon_fill_gradient_style = 's')
+#' nr_feat_polys(polygon_fill_gradient = c(
+#'                 'darkgrey', 'darkblue', 'purple', 'violet', 'cyan'
+#'               ),
+#'               polygon_fill_gradient_style = 's')
 #' }
 NULL
 
