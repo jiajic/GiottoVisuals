@@ -29,4 +29,3 @@ edges in spatial grid as data.table()
 \description{
 provide grid segment to draw in plot_ly()
 }
-\keyword{internal}
