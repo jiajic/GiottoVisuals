@@ -196,8 +196,8 @@ mid_rescaler <- function(mid) {
 #' @param y_end default to "sdimy_end"
 #' @param z_end default to "sdimz_end"
 #'
-#' @return edges in network as data.table()
-#' @keywords internal
+#' @return edges in network as data.table
+#' @export
 plotly_network <- function(network,
                            x = "sdimx_begin",
                            y = "sdimy_begin",
@@ -238,7 +238,7 @@ plotly_network <- function(network,
 #' @param spatial_grid spatial_grid in giotto object
 #'
 #' @return edges in spatial grid as data.table()
-#' @keywords internal
+#' @export
 plotly_grid <- function(spatial_grid,
                         x_start = "x_start",
                         y_start = "y_start",
@@ -281,7 +281,7 @@ plotly_grid <- function(spatial_grid,
 #' @param mode axis adjustment mode
 #' @param custom_ratio set the ratio artificially
 #' @return edges in spatial grid as data.table()
-#' @keywords internal
+#' @export
 plotly_axis_scale_3D <- function(cell_locations,
                                  sdimx = NULL,
                                  sdimy = NULL,
@@ -328,7 +328,7 @@ plotly_axis_scale_3D <- function(cell_locations,
 #' @param mode axis adjustment mode
 #' @param custom_ratio set the ratio artificially
 #' @return edges in spatial grid as data.table()
-#' @keywords internal
+#' @export
 plotly_axis_scale_2D <- function(cell_locations,
                                  sdimx = NULL,
                                  sdimy = NULL,
