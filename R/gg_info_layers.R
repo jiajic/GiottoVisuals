@@ -1251,6 +1251,7 @@ plot_spat_image_layer_ggplot = function(gg_obj,
         if(dim(img_array)[3] == 1) {
           img_array_RGB = array(NA, dim = c(dim(img_array)[1:2],3))
           img_array_RGB[,,1:3] = img_array
+          img_array_RGB[is.na(img_array_RGB)] = 0
         } else {
           img_array_RGB = img_array
         }
@@ -1320,6 +1321,7 @@ plot_spat_image_layer_ggplot = function(gg_obj,
       if(dim(img_array)[3] == 1) {
         img_array_RGB = array(NA, dim = c(dim(img_array)[1:2],3))
         img_array_RGB[,,1:3] = img_array
+        img_array_RGB[is.na(img_array_RGB)] = 0
       } else {
         img_array_RGB = img_array
       }
