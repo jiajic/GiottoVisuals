@@ -1,4 +1,6 @@
 url: https://drieslab.github.io/GiottoVisuals/
+template:
+  bootstrap: 5
 
 authors:
   Joselyn Chávez:
@@ -32,4 +34,3 @@ navbar:
 home:
   sidebar:
     structure: [links, license, community, citation, authors, dev]
-
