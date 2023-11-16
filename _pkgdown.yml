@@ -4,7 +4,6 @@ authors:
   Joselyn Chávez:
     href: https://josschavezf.github.io
 
-
 template:
   bootstrap: 5
   bslib:
@@ -32,4 +31,3 @@ navbar:
 home:
   sidebar:
     structure: [links, license, community, citation, authors, dev]
-
