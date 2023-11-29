@@ -20,7 +20,7 @@ GiottoVisuals contains the main plotting functions of Giotto Suite
 
 ## Installation
 
-You can install the development version of GiottoVisuals like so:
+You can install GiottoVisuals like:
 
 ``` r
 library(remotes)
