@@ -1,7 +1,11 @@
 url: https://drieslab.github.io/GiottoVisuals/
 
 authors:
-  Joselyn Chávez:
+  Ruben Dries:
+    href: https://www.drieslab.com
+  Guo-Cheng Yuan:
+    href: https://labs.icahn.mssm.edu/yuanlab/
+  Joselyn C. Chávez-Fuentes:
     href: https://josschavezf.github.io
 
 template:
@@ -12,8 +16,11 @@ template:
     primary: "#7E69AE"
     code_font: {google: "JetBrains Mono"}
 
+development:
+  mode: auto
+
 navbar:
-  bg: dark
+  bg: light
   structure:
     left:
     - intro
