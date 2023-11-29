@@ -136,11 +136,11 @@ getDistinctColors <- function(n) {
     admitted_grey_colors = grey_colors[seq(1, 110, 10)]
     broad_colors = c(all_colors_no_grey, admitted_grey_colors)
 
-    # if too many colors warn about recycling
+    set.seed(1234)
+    on.exit(set.seed(Sys.time()))
+    # if too many colors requested, warn about recycling
     if(n > length(broad_colors)) {
       warning('\n not enough unique colors in R, maximum = 444 \n')
-      set.seed(1234)
-      on.exit(set.seed(Sys.time()))
       col_vector = sample(x = broad_colors, size = n, replace = TRUE)
     } else {
       col_vector = sample(x = broad_colors, size = n, replace = FALSE)

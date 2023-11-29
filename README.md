@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GiottoVisuals <img src="man/figures/GiottoLogo.png" align="right" alt="" width="160" />
+# GiottoVisuals <img src="man/figures/logo.png" align="right" alt="" width="160" />
 
 <!-- badges: start -->
 
@@ -20,7 +20,7 @@ GiottoVisuals contains the main plotting functions of Giotto Suite
 
 ## Installation
 
-You can install the development version of GiottoVisuals like so:
+You can install GiottoVisuals like:
 
 ``` r
 library(remotes)
