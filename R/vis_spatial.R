@@ -106,7 +106,7 @@ spatPlot2D_single = function(gobject,
                              save_param = list(),
                              default_save_name = 'spatPlot2D_single') {
 
-  guard_against_notgiotto(gobject)
+  assert_giotto(gobject)
 
   if(verbose == TRUE) {
     cat('\n verbose == TRUE \n')
@@ -581,7 +581,7 @@ spatPlot2D = function(gobject,
                       save_param =  list(),
                       default_save_name = 'spatPlot2D') {
 
-  guard_against_notgiotto(gobject)
+  assert_giotto(gobject)
 
   ## check group_by
   if(is.null(group_by)) {
@@ -1112,7 +1112,7 @@ dimPlot2D_single <- function(gobject,
                              default_save_name = 'dimPlot2D_single'
 ){
 
-  guard_against_notgiotto(gobject)
+  assert_giotto(gobject)
 
   # Set feat_type and spat_unit
   spat_unit = set_default_spat_unit(gobject = gobject,
@@ -1469,7 +1469,7 @@ dimPlot2D = function(gobject,
                      default_save_name = 'dimPlot2D') {
 
   # arg_list <- c(as.list(environment())) # get all args as list
-  guard_against_notgiotto(gobject)
+  assert_giotto(gobject)
 
   ## check group_by
   if(is.null(group_by)) {
@@ -1697,7 +1697,7 @@ plotUMAP_2D = function(gobject,
                        default_save_name = 'UMAP_2D',
                        ...) {
 
-  guard_against_notgiotto(gobject)
+  assert_giotto(gobject)
 
   dimPlot2D(gobject = gobject,
             dim_reduction_to_use = 'umap',
@@ -1723,7 +1723,7 @@ plotUMAP = function(gobject,
                     default_save_name = 'UMAP',
                     ...) {
 
-  guard_against_notgiotto(gobject)
+  assert_giotto(gobject)
 
   dimPlot2D(gobject = gobject,
             dim_reduction_to_use = 'umap',
@@ -1753,7 +1753,7 @@ plotTSNE_2D = function(gobject,
                        default_save_name = 'tSNE_2D',
                        ...) {
 
-  guard_against_notgiotto(gobject)
+  assert_giotto(gobject)
 
   dimPlot2D(gobject = gobject,
             dim_reduction_to_use = 'tsne',
@@ -1779,7 +1779,7 @@ plotTSNE = function(gobject,
                     default_save_name = 'tSNE',
                     ...) {
 
-  guard_against_notgiotto(gobject)
+  assert_giotto(gobject)
 
   dimPlot2D(gobject = gobject,
             dim_reduction_to_use = 'tsne',
@@ -1807,7 +1807,7 @@ plotPCA_2D = function(gobject,
                       default_save_name = 'PCA_2D',
                       ...) {
 
-  guard_against_notgiotto(gobject)
+  assert_giotto(gobject)
 
   dimPlot2D(gobject = gobject,
             dim_reduction_to_use = 'pca',
@@ -1835,7 +1835,7 @@ plotPCA = function(gobject,
                    default_save_name = 'PCA',
                    ...) {
 
-  guard_against_notgiotto(gobject)
+  assert_giotto(gobject)
 
   dimPlot2D(gobject = gobject,
             dim_reduction_to_use = 'pca',

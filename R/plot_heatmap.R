@@ -412,7 +412,7 @@ plotMetaDataHeatmap = function(gobject,
 
   main_factor = ifelse(length(metadata_cols) == 1, metadata_cols, first_meta_col)
   testmain = metaDT[, mean(value), by = c('variable', main_factor)]
-  testmain_matrix <- dcast_dt_string(testmain, 'variable', main_factor, 'V1')
+  testmain_matrix <- dt_dcast_string(testmain, 'variable', main_factor, 'V1')
   testmain_mat = as.matrix(testmain_matrix[,-1]); rownames(testmain_mat) = testmain_matrix$variable
 
   # for clusters
@@ -674,7 +674,7 @@ plotMetaDataCellsHeatmap = function(gobject,
 
   main_factor <- ifelse(length(metadata_cols) == 1, metadata_cols, first_meta_col)
   testmain <- metaDT[, mean(value), by = c('variable', main_factor)]
-  testmain_matrix <- dcast_dt_string(testmain, 'variable', main_factor, 'V1')
+  testmain_matrix <- dt_dcast_string(testmain, 'variable', main_factor, 'V1')
   testmain_mat <- as.matrix(testmain_matrix[,-1]); rownames(testmain_mat) = testmain_matrix$variable
 
   # for clusters
