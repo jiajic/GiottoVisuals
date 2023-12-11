@@ -95,16 +95,16 @@ getColors <- function(pal = 'viridis',
   out = switch(
     pkg_to_use,
     'hcl' = grDevices::hcl.colors(n = n, palette = pal),
-    'base' = get_base_colors(n = n, pal = pal),
-    'RColorBrewer' = get_rcolorbrewer_colors(n = n, pal = pal, strategy = strategy),
-    'viridis' = get_viridis_colors(n = n, pal = pal),
-    'wesanderson' = get_wes_anderson_colors(n = n, pal = pal),
-    'ggsci' = get_ggsci_colors(n = n, pal = pal, strategy = strategy),
-    'nord' = get_nord_colors(n = n, pal = pal),
-    'palettetown' = get_palettetown_colors(n = n, pal = pal, strategy = strategy),
-    'palr' = get_palr_colors(n = n, pal = pal),
-    'NineteenEightyR' = get_ninteeneightyr_colors(n = n, pal = pal, strategy = strategy),
-    'rcartocolor' = get_rcarto_colors(n = n, pal = pal, strategy = strategy)
+    'base' = .get_base_colors(n = n, pal = pal),
+    'RColorBrewer' = .get_rcolorbrewer_colors(n = n, pal = pal, strategy = strategy),
+    'viridis' = .get_viridis_colors(n = n, pal = pal),
+    'wesanderson' = .get_wes_anderson_colors(n = n, pal = pal),
+    'ggsci' = .get_ggsci_colors(n = n, pal = pal, strategy = strategy),
+    'nord' = .get_nord_colors(n = n, pal = pal),
+    'palettetown' = .get_palettetown_colors(n = n, pal = pal, strategy = strategy),
+    'palr' = .get_palr_colors(n = n, pal = pal),
+    'NineteenEightyR' = .get_ninteeneightyr_colors(n = n, pal = pal, strategy = strategy),
+    'rcartocolor' = .get_rcarto_colors(n = n, pal = pal, strategy = strategy)
   )
 
   if(rev) return(rev(out))
@@ -168,7 +168,7 @@ getDistinctColors <- function(n) {
 
 # get palettes ####
 
-get_rcolorbrewer_colors <- function(n, pal, strategy) {
+.get_rcolorbrewer_colors <- function(n, pal, strategy) {
 
   # DT vars
   rn = maxcolors = NULL
@@ -185,7 +185,7 @@ get_rcolorbrewer_colors <- function(n, pal, strategy) {
   return(out)
 }
 
-get_ggsci_colors <- function(n, pal, strategy) {
+.get_ggsci_colors <- function(n, pal, strategy) {
   package_check('ggsci')
 
   pal_fullname <- paste0('ggsci::pal_', pal, '()')
@@ -200,7 +200,7 @@ get_ggsci_colors <- function(n, pal, strategy) {
   )
 }
 
-get_viridis_colors <- function(n, pal = 'viridis') {
+.get_viridis_colors <- function(n, pal = 'viridis') {
   # viridisLite should always be installed if viridis is there
   package_check('viridisLite')
   return(
@@ -218,7 +218,7 @@ get_viridis_colors <- function(n, pal = 'viridis') {
   )
 }
 
-get_base_colors = function(n, pal = 'rainbow') {
+.get_base_colors = function(n, pal = 'rainbow') {
   return(
     switch(
       pal,
@@ -233,18 +233,18 @@ get_base_colors = function(n, pal = 'rainbow') {
   )
 }
 
-get_wes_anderson_colors = function(n, pal) {
+.get_wes_anderson_colors = function(n, pal) {
   package_check('wesanderson')
   out = wesanderson::wes_palette(name = pal, n = n, type = 'continuous')
   return(out)
 }
 
-get_nord_colors = function(n, pal) {
+.get_nord_colors = function(n, pal) {
   package_check('nord')
   return(nord::nord(palette = pal, n = n))
 }
 
-get_palettetown_colors = function(n, pal, strategy) {
+.get_palettetown_colors = function(n, pal, strategy) {
   package_check('palettetown')
   colors = get_continuous_colors(
     palettetown::ichooseyou(pokemon = pal),
@@ -253,7 +253,7 @@ get_palettetown_colors = function(n, pal, strategy) {
   )
 }
 
-get_palr_colors = function(n, pal) {
+.get_palr_colors = function(n, pal) {
   package_check('palr')
   return(
     switch(
@@ -270,7 +270,7 @@ get_palr_colors = function(n, pal) {
   )
 }
 
-get_ninteeneightyr_colors = function(n, pal, strategy) {
+.get_ninteeneightyr_colors = function(n, pal, strategy) {
   package_check('NineteenEightyR', repository = 'github',
                 github_repo = 'm-clark/NineteenEightyR')
 
@@ -293,7 +293,7 @@ get_ninteeneightyr_colors = function(n, pal, strategy) {
   return(get_continuous_colors(col = pal_col, n = n, strategy))
 }
 
-get_rcarto_colors = function(n, pal, strategy) {
+.get_rcarto_colors = function(n, pal, strategy) {
   package_check('rcartocolor', repository = 'CRAN')
 
   pal_col = suppressWarnings({
@@ -369,7 +369,7 @@ simple_palette_factory = function(col, rev = FALSE, strategy = 'interpolate') {
 #' @param strategy policy when insufficient colors are available
 #' @param strategy strategy to use
 #' @seealso [set_default_color_discrete()]
-get_palette_factory = function(pal, rev = FALSE, strategy = 'interpolate') {
+.get_palette_factory = function(pal, rev = FALSE, strategy = 'interpolate') {
 
   function(n) {
     col = getColors(pal = pal, n = n, rev = rev, strategy = 'cutoff')

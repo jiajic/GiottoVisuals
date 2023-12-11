@@ -109,7 +109,7 @@ set_default_color_discrete = function(
       return(simple_palette_factory(col = colors, rev = reverse, strategy = strategy))
     } else { # assume call to getColors() otherwise
       # return wrapped
-      return(get_palette_factory(pal = colors, rev = reverse, strategy = strategy))
+      return(.get_palette_factory(pal = colors, rev = reverse, strategy = strategy))
     }
   }
 }
@@ -360,14 +360,14 @@ set_default_color_continuous <- function(
   # evaluate 'colors'
   switch(
     style,
-    'divergent' = evaluate_color_gradient_divergent(colors = colors,
+    'divergent' = .evaluate_color_gradient_divergent(colors = colors,
                                                     reverse = reverse,
                                                     midpoint = midpoint,
                                                     grad2 = grad2,
                                                     grad = grad,
                                                     gradn = gradn,
                                                     ...),
-    'sequential' = evaluate_color_gradient_sequential(colors = colors,
+    'sequential' = .evaluate_color_gradient_sequential(colors = colors,
                                                       reverse = reverse,
                                                       gradn = gradn,
                                                       grad = grad,
@@ -376,7 +376,7 @@ set_default_color_continuous <- function(
 }
 
 
-evaluate_color_gradient_divergent = function(colors,
+.evaluate_color_gradient_divergent = function(colors,
                                              reverse,
                                              midpoint,
                                              grad2,
@@ -400,7 +400,7 @@ evaluate_color_gradient_divergent = function(colors,
                        ...)
     } else if (length(colors) == 1L) { # assume call to getColors() otherwise
       # return wrapped
-      colors <- get_palette_factory(pal = colors, rev = reverse, strategy = 'cutoff')(256)
+      colors <- .get_palette_factory(pal = colors, rev = reverse, strategy = 'cutoff')(256)
       gradient <- gradn(colors = colors, rescaler = mid_rescaler(mid = midpoint), ...)
     } else { # assume custom palette
       gradient <- gradn(colors = colors, rescaler = mid_rescaler(mid = midpoint), ...)
@@ -413,7 +413,7 @@ evaluate_color_gradient_divergent = function(colors,
   gradient
 }
 
-evaluate_color_gradient_sequential = function(colors,
+.evaluate_color_gradient_sequential = function(colors,
                                               reverse,
                                               gradn,
                                               grad,
@@ -429,7 +429,7 @@ evaluate_color_gradient_sequential = function(colors,
                        ...)
     } else if (length(colors) == 1L) { # assume call to getColors() otherwise
       # return wrapped
-      colors <- get_palette_factory(pal = colors, rev = reverse, strategy = 'cutoff')(256)
+      colors <- .get_palette_factory(pal = colors, rev = reverse, strategy = 'cutoff')(256)
       gradient <- gradn(colors = colors, ...)
     } else { # assume custom palette
       gradient <- gradn(colors = colors, ...)

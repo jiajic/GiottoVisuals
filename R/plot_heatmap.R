@@ -161,20 +161,22 @@ plotHeatmap <- function(gobject,
 
   show_values = match.arg(show_values, choices = c('rescaled', 'z-scaled', 'original'))
 
-  heatmap_data = createHeatmap_DT(gobject = gobject,
-                                  spat_unit = spat_unit,
-                                  feat_type = feat_type,
-                                  expression_values = expression_values,
-                                  feats = feats,
-                                  cluster_column = cluster_column,
-                                  cluster_order = cluster_order,
-                                  cluster_custom_order = cluster_custom_order,
-                                  cluster_cor_method = cluster_cor_method,
-                                  cluster_hclust_method = cluster_hclust_method,
-                                  feat_order = feat_order,
-                                  feat_custom_order = feat_custom_order,
-                                  feat_cor_method = feat_cor_method,
-                                  feat_hclust_method = feat_hclust_method)
+  heatmap_data = .create_heatmap_dt(
+    gobject = gobject,
+    spat_unit = spat_unit,
+    feat_type = feat_type,
+    expression_values = expression_values,
+    feats = feats,
+    cluster_column = cluster_column,
+    cluster_order = cluster_order,
+    cluster_custom_order = cluster_custom_order,
+    cluster_cor_method = cluster_cor_method,
+    cluster_hclust_method = cluster_hclust_method,
+    feat_order = feat_order,
+    feat_custom_order = feat_custom_order,
+    feat_cor_method = feat_cor_method,
+    feat_hclust_method = feat_hclust_method
+  )
 
   cell_order_DT = heatmap_data[['cell_DT']]
   subset_values_DT = heatmap_data[['DT']]
@@ -781,8 +783,8 @@ plotMetaDataCellsHeatmap = function(gobject,
 
 
 
-#' @title createHeatmap_DT
-#' @name createHeatmap_DT
+#' @title Create heatmap data.table
+#' @name .create_heatmap_dt
 #' @description creates order for clusters
 #' @inheritParams data_access_params
 #' @param expression_values expression values to use (e.g. "normalized", "scaled", "custom")
@@ -799,75 +801,88 @@ plotMetaDataCellsHeatmap = function(gobject,
 #' @return list
 #' @details Creates input data.tables for plotHeatmap function.
 #' @keywords internal
-createHeatmap_DT = function(gobject,
-                            spat_unit = NULL,
-                            feat_type = NULL,
-                            expression_values = c('normalized', 'scaled', 'custom'),
-                            feats,
-                            cluster_column = NULL,
-                            cluster_order = c('size', 'correlation', 'custom'),
-                            cluster_custom_order = NULL,
-                            cluster_cor_method = 'pearson',
-                            cluster_hclust_method = 'ward.D',
-                            feat_order = c('correlation', 'custom'),
-                            feat_custom_order = NULL,
-                            feat_cor_method = 'pearson',
-                            feat_hclust_method = 'complete') {
+.create_heatmap_dt <- function(
+    gobject,
+    spat_unit = NULL,
+    feat_type = NULL,
+    expression_values = c('normalized', 'scaled', 'custom'),
+    feats,
+    cluster_column = NULL,
+    cluster_order = c('size', 'correlation', 'custom'),
+    cluster_custom_order = NULL,
+    cluster_cor_method = 'pearson',
+    cluster_hclust_method = 'ward.D',
+    feat_order = c('correlation', 'custom'),
+    feat_custom_order = NULL,
+    feat_cor_method = 'pearson',
+    feat_hclust_method = 'complete'
+) {
 
 
   # Set feat_type and spat_unit
-  spat_unit = set_default_spat_unit(gobject = gobject,
-                                    spat_unit = spat_unit)
-  feat_type = set_default_feat_type(gobject = gobject,
-                                    spat_unit = spat_unit,
-                                    feat_type = feat_type)
+  spat_unit <- set_default_spat_unit(gobject = gobject,
+                                     spat_unit = spat_unit)
+  feat_type <- set_default_feat_type(gobject = gobject,
+                                     spat_unit = spat_unit,
+                                     feat_type = feat_type)
 
 
   # epxression data
-  values = match.arg(expression_values, unique(c('normalized', 'scaled', 'custom', expression_values)))
-  expr_values = get_expression_values(gobject = gobject,
-                                      spat_unit = spat_unit,
-                                      feat_type = feat_type,
-                                      values = values,
-                                      output = 'matrix')
+  values <- match.arg(
+    expression_values,
+    unique(c('normalized', 'scaled', 'custom', expression_values))
+  )
+  expr_values <- get_expression_values(gobject = gobject,
+                                       spat_unit = spat_unit,
+                                       feat_type = feat_type,
+                                       values = values,
+                                       output = 'matrix')
 
   # subset expression data
-  detected_feats = feats[feats %in% rownames(expr_values)]
-  subset_values = expr_values[rownames(expr_values) %in% detected_feats, ]
+  detected_feats <- feats[feats %in% rownames(expr_values)]
+  subset_values <- expr_values[rownames(expr_values) %in% detected_feats, ]
 
   # metadata
-  cell_metadata = pDataDT(gobject,
-                          spat_unit = spat_unit,
-                          feat_type = feat_type)
+  cell_metadata <- pDataDT(gobject,
+                           spat_unit = spat_unit,
+                           feat_type = feat_type)
 
   # feat order
-  feat_order = match.arg(feat_order, c('correlation', 'custom'))
+  feat_order <- match.arg(feat_order, c('correlation', 'custom'))
 
 
   ### cluster order ###
-  clus_sort_names = decide_cluster_order(gobject = gobject,
-                                         spat_unit = spat_unit,
-                                         feat_type = feat_type,
-                                         expression_values = expression_values,
-                                         feats = feats,
-                                         cluster_column = cluster_column,
-                                         cluster_order = cluster_order,
-                                         cluster_custom_order = cluster_custom_order,
-                                         cor_method = cluster_cor_method,
-                                         hclust_method = cluster_hclust_method)
+  clus_sort_names <- .decide_cluster_order(
+    gobject = gobject,
+    spat_unit = spat_unit,
+    feat_type = feat_type,
+    expression_values = expression_values,
+    feats = feats,
+    cluster_column = cluster_column,
+    cluster_order = cluster_order,
+    cluster_custom_order = cluster_custom_order,
+    cor_method = cluster_cor_method,
+    hclust_method = cluster_hclust_method
+  )
 
   ## data.table ##
-  subset_values_DT <- data.table::as.data.table(reshape2::melt(as.matrix(subset_values),
-                                                               varnames = c('feats', 'cells'),
-                                                               value.name = 'expression',
-                                                               as.is = TRUE))
-  subset_values_DT <- merge(subset_values_DT,
-                            by.x = 'cells',
-                            cell_metadata[, c('cell_ID', cluster_column), with = F],
-                            by.y = 'cell_ID')
+  subset_values_DT <- data.table::as.data.table(
+    reshape2::melt(
+      as.matrix(subset_values),
+      varnames = c('feats', 'cells'),
+      value.name = 'expression',
+      as.is = TRUE
+    )
+  )
+  subset_values_DT <- merge(
+    subset_values_DT,
+    by.x = 'cells',
+    cell_metadata[, c('cell_ID', cluster_column), with = FALSE],
+    by.y = 'cell_ID'
+  )
   subset_values_DT[, (cluster_column) := factor(x = get(cluster_column), levels = clus_sort_names)]
 
-  # data.table variables
+  # NSE vars
   z_scores = scale_scores = V1 = cells = NULL
 
   subset_values_DT[, feats := factor(feats, unique(detected_feats))]
@@ -904,7 +919,7 @@ createHeatmap_DT = function(gobject,
   } else if(feat_order == 'custom') {
 
     if(is.null(feat_custom_order)) {
-      stop('\n with custom feat order the feat_custom_order parameter needs to be provided \n')
+      .gstop('with custom feat order, the feat_custom_order parameter needs to be provided')
     }
     subset_values_DT[, 'feats' := factor(feats, feat_custom_order)]
 
@@ -912,5 +927,11 @@ createHeatmap_DT = function(gobject,
 
   cell_order_DT[['cells']] = factor(cell_order_DT[['cells']], levels = as.character(cell_order_DT[['cells']]))
 
-  return(list(DT = subset_values_DT, x_lines = x_lines, cell_DT = cell_order_DT))
+  return(
+    list(
+      DT = subset_values_DT,
+      x_lines = x_lines,
+      cell_DT = cell_order_DT
+    )
+  )
 }

@@ -66,52 +66,54 @@
 #'
 #' @family In Situ visualizations
 #' @export
-spatInSituPlotPoints <- function(gobject,
-                                 show_image = FALSE,
-                                 gimage = NULL,
-                                 image_name = NULL,
-                                 largeImage_name = NULL,
-                                 spat_unit = NULL,
-                                 spat_loc_name = NULL,
-                                 feats = NULL,
-                                 feat_type = 'rna',
-                                 feats_color_code = NULL,
-                                 feat_shape_code = NULL,
-                                 sdimx = 'x',
-                                 sdimy = 'y',
-                                 spat_enr_names = NULL,
-                                 point_size = 1.5,
-                                 stroke = 0.5,
-                                 expand_counts = FALSE,
-                                 count_info_column = 'count',
-                                 jitter = c(0,0),
-                                 show_polygon = TRUE,
-                                 use_overlap = TRUE,
-                                 polygon_feat_type = 'cell',
-                                 polygon_color = 'black',
-                                 polygon_bg_color = 'black',
-                                 polygon_fill = NULL,
-                                 polygon_fill_gradient = NULL,
-                                 polygon_fill_gradient_midpoint =  NULL,
-                                 polygon_fill_gradient_style = c('divergent', 'sequential'),
-                                 polygon_fill_as_factor = NULL,
-                                 polygon_fill_code = NULL,
-                                 polygon_alpha = 0.5,
-                                 polygon_line_size = 0.4,
-                                 axis_text = 8,
-                                 axis_title = 8,
-                                 legend_text = 6,
-                                 coord_fix_ratio = 1,
-                                 background_color = 'black',
-                                 show_legend = TRUE,
-                                 plot_method = c('ggplot', 'scattermore', 'scattermost'),
-                                 plot_last = c('polygons', 'points'),
-                                 show_plot = NA,
-                                 return_plot = NA,
-                                 save_plot = NA,
-                                 save_param =  list(),
-                                 default_save_name = 'spatInSituPlotPoints',
-                                 verbose = TRUE) {
+spatInSituPlotPoints <- function(
+    gobject,
+    show_image = FALSE,
+    gimage = NULL,
+    image_name = NULL,
+    largeImage_name = NULL,
+    spat_unit = NULL,
+    spat_loc_name = NULL,
+    feats = NULL,
+    feat_type = 'rna',
+    feats_color_code = NULL,
+    feat_shape_code = NULL,
+    sdimx = 'x',
+    sdimy = 'y',
+    spat_enr_names = NULL,
+    point_size = 1.5,
+    stroke = 0.5,
+    expand_counts = FALSE,
+    count_info_column = 'count',
+    jitter = c(0,0),
+    show_polygon = TRUE,
+    use_overlap = TRUE,
+    polygon_feat_type = 'cell',
+    polygon_color = 'black',
+    polygon_bg_color = 'black',
+    polygon_fill = NULL,
+    polygon_fill_gradient = NULL,
+    polygon_fill_gradient_midpoint =  NULL,
+    polygon_fill_gradient_style = c('divergent', 'sequential'),
+    polygon_fill_as_factor = NULL,
+    polygon_fill_code = NULL,
+    polygon_alpha = 0.5,
+    polygon_line_size = 0.4,
+    axis_text = 8,
+    axis_title = 8,
+    legend_text = 6,
+    coord_fix_ratio = 1,
+    background_color = 'black',
+    show_legend = TRUE,
+    plot_method = c('ggplot', 'scattermore', 'scattermost'),
+    plot_last = c('polygons', 'points'),
+    show_plot = NA,
+    return_plot = NA,
+    save_plot = NA,
+    save_param =  list(),
+    default_save_name = 'spatInSituPlotPoints',
+    verbose = TRUE
+) {
 
   # set polygon_feat_type
   avail_poly_names = list_spatial_info_names(gobject = gobject)
@@ -426,13 +428,13 @@ spatInSituPlotPoints <- function(gobject,
 
 # hexbin ####
 
-#' @title spatInSituPlotHex_single
-#' @name spatInSituPlotHex_single
+#' @title Spatial in-situ hexbin plot - single
+#' @name .spatInSituPlotHex_single
 #' @description function to plot hexbins at the spatial in situ level
 #' @return ggplot
 #' @details This function can plot one feature for one modality.
 #' @keywords internal
-spatInSituPlotHex_single = function(gobject,
+.spatInSituPlotHex_single = function(gobject,
                                     feat = NULL,
                                     feat_type = 'rna',
                                     sdimx = 'x',
@@ -614,26 +616,28 @@ spatInSituPlotHex = function(gobject,
 
   for(sel_feat in feats) {
 
-    pl = spatInSituPlotHex_single(gobject = gobject,
-                                  feat = sel_feat,
-                                  feat_type = feat_type,
-                                  sdimx = sdimx,
-                                  sdimy = sdimy,
-                                  binwidth = binwidth,
-                                  min_axis_bins = min_axis_bins,
-                                  alpha = alpha,
-                                  show_polygon = show_polygon,
-                                  polygon_feat_type = polygon_feat_type,
-                                  polygon_color = polygon_color,
-                                  polygon_fill = polygon_fill,
-                                  polygon_fill_as_factor = polygon_fill_as_factor,
-                                  polygon_alpha = polygon_alpha,
-                                  polygon_size = polygon_line_size,
-                                  coord_fix_ratio = coord_fix_ratio,
-                                  axis_text = axis_text,
-                                  axis_title = axis_title,
-                                  legend_text = legend_text,
-                                  background_color = background_color)
+    pl = .spatInSituPlotHex_single(
+      gobject = gobject,
+      feat = sel_feat,
+      feat_type = feat_type,
+      sdimx = sdimx,
+      sdimy = sdimy,
+      binwidth = binwidth,
+      min_axis_bins = min_axis_bins,
+      alpha = alpha,
+      show_polygon = show_polygon,
+      polygon_feat_type = polygon_feat_type,
+      polygon_color = polygon_color,
+      polygon_fill = polygon_fill,
+      polygon_fill_as_factor = polygon_fill_as_factor,
+      polygon_alpha = polygon_alpha,
+      polygon_size = polygon_line_size,
+      coord_fix_ratio = coord_fix_ratio,
+      axis_text = axis_text,
+      axis_title = axis_title,
+      legend_text = legend_text,
+      background_color = background_color
+    )
 
     savelist[[sel_feat]] = pl
 
@@ -682,13 +686,13 @@ spatInSituPlotHex = function(gobject,
 
 # density ####
 
-#' @title spatInSituPlotDensity_single
-#' @name spatInSituPlotDensity_single
+#' @title Spatial in-situ density plot - single
+#' @name .spatInSituPlotDensity_single
 #' @description low level function to plot density plots at the spatial in situ level
 #' @return ggplot
 #' @details This function can plot one feature for one modality.
 #' @keywords internal
-spatInSituPlotDensity_single = function(gobject,
+.spatInSituPlotDensity_single = function(gobject,
                                         feat = NULL,
                                         feat_type = 'rna',
                                         sdimx = 'x',
@@ -862,24 +866,26 @@ spatInSituPlotDensity = function(gobject,
 
   for(sel_feat in feats) {
 
-    pl = spatInSituPlotDensity_single(gobject = gobject,
-                                      feat = sel_feat,
-                                      feat_type = feat_type,
-                                      sdimx = sdimx,
-                                      sdimy = sdimy,
-                                      alpha = alpha,
-                                      show_polygon = show_polygon,
-                                      polygon_feat_type = polygon_feat_type,
-                                      polygon_color = polygon_color,
-                                      polygon_fill = polygon_fill,
-                                      polygon_fill_as_factor = polygon_fill_as_factor,
-                                      polygon_alpha = polygon_alpha,
-                                      polygon_size = polygon_line_size,
-                                      coord_fix_ratio = coord_fix_ratio,
-                                      axis_text = axis_text,
-                                      axis_title = axis_title,
-                                      legend_text = legend_text,
-                                      background_color = background_color)
+    pl = .spatInSituPlotDensity_single(
+      gobject = gobject,
+      feat = sel_feat,
+      feat_type = feat_type,
+      sdimx = sdimx,
+      sdimy = sdimy,
+      alpha = alpha,
+      show_polygon = show_polygon,
+      polygon_feat_type = polygon_feat_type,
+      polygon_color = polygon_color,
+      polygon_fill = polygon_fill,
+      polygon_fill_as_factor = polygon_fill_as_factor,
+      polygon_alpha = polygon_alpha,
+      polygon_size = polygon_line_size,
+      coord_fix_ratio = coord_fix_ratio,
+      axis_text = axis_text,
+      axis_title = axis_title,
+      legend_text = legend_text,
+      background_color = background_color
+    )
 
     savelist[[sel_feat]] = pl
 

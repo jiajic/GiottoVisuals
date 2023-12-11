@@ -13,8 +13,8 @@
 
 
 
-#' @title spatPlot2D_single
-#' @name spatPlot2D_single
+#' @title .spatPlot2D_single
+#' @name .spatPlot2D_single
 #' @description Visualize cells according to spatial coordinates
 #' @inheritParams data_access_params
 #' @inheritParams plot_output_params
@@ -45,7 +45,7 @@
 #' @details Description of parameters.
 #' @keywords internal
 #' @seealso \code{\link{spatPlot3D}}
-spatPlot2D_single = function(gobject,
+.spatPlot2D_single = function(gobject,
                              feat_type = NULL,
                              spat_unit = NULL,
                              show_image = F,
@@ -586,7 +586,7 @@ spatPlot2D = function(gobject,
   ## check group_by
   if(is.null(group_by)) {
 
-    spatPlot2D_single(gobject = gobject,
+    .spatPlot2D_single(gobject = gobject,
                       spat_unit = spat_unit,
                       feat_type = feat_type,
                       show_image = show_image,
@@ -724,7 +724,7 @@ spatPlot2D = function(gobject,
         spec_image_name = image_name
       }
 
-      pl = spatPlot2D_single(gobject = temp_gobject,
+      pl = .spatPlot2D_single(gobject = temp_gobject,
                              spat_unit = spat_unit,
                              feat_type = feat_type,
                              show_image = show_image,
@@ -1062,7 +1062,7 @@ spatDeconvPlot = function(gobject,
 # Create a single 2D dimplot. This is looped through by dimPlot2D() if needed.
 #' @noRd
 #' @keywords internal
-dimPlot2D_single <- function(gobject,
+.dimPlot2D_single <- function(gobject,
                              spat_unit = NULL,
                              feat_type = NULL,
                              dim_reduction_to_use = 'umap',
@@ -1474,7 +1474,7 @@ dimPlot2D = function(gobject,
   ## check group_by
   if(is.null(group_by)) {
 
-    dimPlot2D_single(gobject = gobject,
+    .dimPlot2D_single(gobject = gobject,
                      spat_unit = spat_unit,
                      feat_type = feat_type,
                      dim_reduction_to_use = dim_reduction_to_use,
@@ -1583,7 +1583,7 @@ dimPlot2D = function(gobject,
                                   feat_type = feat_type,
                                   cell_ids = subset_cell_IDs)
 
-      pl = dimPlot2D_single(gobject = temp_gobject,
+      pl = .dimPlot2D_single(gobject = temp_gobject,
                             spat_unit = spat_unit,
                             feat_type = feat_type,
                             dim_reduction_to_use = dim_reduction_to_use,
@@ -1630,7 +1630,7 @@ dimPlot2D = function(gobject,
                             return_plot = TRUE,
                             save_plot = FALSE,
                             save_param = list(),
-                            default_save_name = 'dimPlot2D_single')
+                            default_save_name = default_save_name)
 
 
       savelist[[group_id]] <- pl
@@ -4234,12 +4234,12 @@ spatDimCellPlot = function(...) {
 # ** dimension plot ####
 
 
-#' @title dimPlot_2D_plotly
-#' @name dimPlot_2D_plotly
+#' @title .dimPlot_2d_plotly
+#' @name .dimPlot_2d_plotly
 #' @description Visualize cells at their 2D dimension reduction coordinates with plotly
 #' @return plotly object
 #' @keywords internal
-dimPlot_2D_plotly <- function(gobject,
+.dimPlot_2d_plotly <- function(gobject,
                               spat_unit = NULL,
                               feat_type = NULL,
                               dim_reduction_to_use = 'umap',
@@ -4497,12 +4497,12 @@ dimPlot_2D_plotly <- function(gobject,
 }
 
 
-#' @title dimPlot_3D_plotly
-#' @name dimPlot_3D_plotly
+#' @title .dimPlot_3d_plotly
+#' @name .dimPlot_3d_plotly
 #' @description Visualize cells at their 3D dimension reduction coordinates with plotly
 #' @return plotly object
 #' @keywords internal
-dimPlot_3D_plotly <- function(gobject,
+.dimPlot_3d_plotly <- function(gobject,
                               spat_unit = NULL,
                               feat_type = NULL,
                               dim_reduction_to_use = 'umap',
@@ -4820,7 +4820,7 @@ dimPlot3D = function(gobject,
   if(is.null(dim3_to_use)){
     cat('create 2D plot\n')
 
-    pl = dimPlot_2D_plotly(gobject = gobject,
+    pl = .dimPlot_2d_plotly(gobject = gobject,
                            spat_unit = spat_unit,
                            feat_type = feat_type,
                            dim_reduction_to_use = dim_reduction_to_use,
@@ -4851,7 +4851,7 @@ dimPlot3D = function(gobject,
 
   else{
     cat('create 3D plot\n')
-    pl = dimPlot_3D_plotly(gobject = gobject,
+    pl = .dimPlot_3d_plotly(gobject = gobject,
                            spat_unit = spat_unit,
                            feat_type = feat_type,
                            dim_reduction_to_use = dim_reduction_to_use,
@@ -4985,12 +4985,12 @@ plotPCA_3D = function(gobject,
 # ** ####
 # ** spatial 3D plot ####
 
-#' @title spatPlot_2D_plotly
-#' @name spatPlot_2D_plotly
+#' @title .spatPlot_2d_plotly
+#' @name .spatPlot_2d_plotly
 #' @description Visualize cells at their 2D spatial locations with plotly
 #' @return plotly object
 #' @keywords internal
-spatPlot_2D_plotly = function(gobject,
+.spatPlot_2d_plotly = function(gobject,
                               spat_unit = NULL,
                               feat_type = NULL,
                               spat_loc_name = 'raw',
@@ -5236,12 +5236,12 @@ spatPlot_2D_plotly = function(gobject,
 
 
 
-#' @title spatPlot_3D_plotly
-#' @name spatPlot_3D_plotly
+#' @title .spatPlot_3d_plotly
+#' @name .spatPlot_3d_plotly
 #' @description Visualize cells at their 3D spatial locations with plotly
 #' @return plotly object
 #' @keywords internal
-spatPlot_3D_plotly = function(gobject,
+.spatPlot_3d_plotly = function(gobject,
                               spat_unit = NULL,
                               feat_type = NULL,
                               spat_loc_name = 'raw',
@@ -5511,7 +5511,7 @@ spatPlot3D = function(gobject,
   if(is.null(sdimz)){
     cat('create 2D plot\n')
 
-    pl = spatPlot_2D_plotly(gobject = gobject,
+    pl = .spatPlot_2d_plotly(gobject = gobject,
                             spat_unit = spat_unit,
                             feat_type = feat_type,
                             sdimx = sdimx,
@@ -5543,7 +5543,7 @@ spatPlot3D = function(gobject,
   else{
 
     cat('create 3D plot\n')
-    pl = spatPlot_3D_plotly(gobject = gobject,
+    pl = .spatPlot_3d_plotly(gobject = gobject,
                             spat_unit = spat_unit,
                             feat_type = feat_type,
                             sdimx = sdimx,
