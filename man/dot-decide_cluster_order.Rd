@@ -2,7 +2,7 @@
 % Please edit documentation in R/aux_visuals.R
 \name{.decide_cluster_order}
 \alias{.decide_cluster_order}
-\title{.decide_cluster_order}
+\title{Decide cluster order}
 \usage{
 .decide_cluster_order(
   gobject,

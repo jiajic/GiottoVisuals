@@ -116,9 +116,9 @@ Functions to automatically save plots to directory of interest
 }
 \section{Functions}{
 \itemize{
-\item \code{.ggplot_save_function()}: ggplot saving. ... passes to cowplot::save_plot
+\item \code{.ggplot_save_function()}: (internal) ggplot saving. ... passes to cowplot::save_plot
 
-\item \code{.general_save_function()}: base and general saving. ... passes to grDevices png, tiff, pdf, svg
+\item \code{.general_save_function()}: (internal) base and general saving. ... passes to grDevices png, tiff, pdf, svg
 
 }}
 \seealso{

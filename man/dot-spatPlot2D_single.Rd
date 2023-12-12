@@ -64,7 +64,7 @@
   save_plot = NA,
   verbose = FALSE,
   save_param = list(),
-  default_save_name = ".spatPlot2D_single"
+  default_save_name = "spatPlot2D_single"
 )
 }
 \arguments{

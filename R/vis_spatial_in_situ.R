@@ -253,10 +253,6 @@ spatInSituPlotPoints <- function(
 
       data.table::setnames(polygon_dt, old = 'cell_ID', new = 'poly_ID')
 
-      #polygon_info = get_polygon_info(gobject = gobject,
-      #                                polygon_name = polygon_feat_type)
-      #polygon_dt = spatVector_to_dt(polygon_info)
-
       plot = plot_cell_polygon_layer(
         ggobject = plot,
         instrs = instructions(gobject),
@@ -306,10 +302,6 @@ spatInSituPlotPoints <- function(
       polygon_dt = data.table::rbindlist(polygon_combo, fill = TRUE)
 
       data.table::setnames(polygon_dt, old = 'cell_ID', new = 'poly_ID')
-
-      #polygon_info = get_polygon_info(gobject = gobject,
-      #                                polygon_name = polygon_feat_type)
-      #polygon_dt = spatVector_to_dt(polygon_info)
 
       plot = plot_cell_polygon_layer(
         ggobject = plot,
@@ -475,7 +467,10 @@ spatInSituPlotPoints <- function(
 
     polygon_info = get_polygon_info(gobject = gobject,
                                     polygon_name = polygon_feat_type)
-    polygon_dt = spatVector_to_dt(polygon_info)
+    polygon_dt = data.table::as.data.table(
+      polygon_info,
+      geom = "XY"
+    )
 
     plot = plot_cell_polygon_layer(ggobject = plot,
                                    instrs = instructions(gobject),
@@ -728,7 +723,10 @@ spatInSituPlotHex = function(gobject,
 
     polygon_info = get_polygon_info(gobject = gobject,
                                     polygon_name = polygon_feat_type)
-    polygon_dt = spatVector_to_dt(polygon_info)
+    polygon_dt <- data.table::as.data.table(
+      polygon_info,
+      geom = "XY"
+    )
 
     #polygon_dt = combineSpatialCellMetadataInfo(gobject, feat_type = polygon_feat_type)
     #polygon_dt = polygon_dt[[polygon_feat_type]]

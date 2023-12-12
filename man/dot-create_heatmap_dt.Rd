@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_heatmap.R
 \name{.create_heatmap_dt}
 \alias{.create_heatmap_dt}
-\title{.create_heatmap_dt}
+\title{Create heatmap data.table}
 \usage{
 .create_heatmap_dt(
   gobject,

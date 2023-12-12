@@ -116,10 +116,10 @@ setMethod(
   signature(x = 'giottoSankeyPlan', add = 'logical', value = 'numeric'),
   function(x, add, value)
   {
-    if (length(value) != 2L) stop(GiottoUtils::wrap_txt(
+    if (length(value) != 2L) .gstop(
       "When value is provided as numeric/integer, input must be length of 2,",
       "designating nodes 'from' and 'to'"
-    ))
+    )
     value = as.integer(value)
 
     if (add) {

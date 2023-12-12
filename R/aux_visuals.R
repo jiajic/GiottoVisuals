@@ -55,8 +55,12 @@ NULL
                           feat_type = feat_type)
 
   ## check parameters
-  if(is.null(cluster_column)) stop('\n cluster column must be selected \n')
-  if(!cluster_column %in% colnames(cell_metadata)) stop('\n cluster column is not found \n')
+  if(is.null(cluster_column)) .gstop('cluster column must be selected')
+  if(!cluster_column %in% colnames(cell_metadata)) {
+    .gstop('cluster column is not found in',
+           str_bracket(spat_unit), str_bracket(feat_type),
+           'metadata')
+  }
 
   ## cluster order ##
   cluster_order = match.arg(cluster_order, c('size', 'correlation', 'custom'))

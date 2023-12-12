@@ -86,8 +86,8 @@ getColors <- function(pal = 'viridis',
       pkg_to_use = 'palr'
     }
     if(inherits(try_val, 'try-error')) {
-      stop(wrap_txt(pal, 'not discovered in supported palette packages:',
-                    names(pal_names), errWidth = TRUE))
+      .gstop(pal, 'not discovered in supported palette packages:',
+             names(pal_names))
     }
     pal = try_val
   }

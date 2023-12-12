@@ -84,6 +84,7 @@ Collate:
     'dd.R'
     'gg_info_layers.R'
     'globals.R'
+    'gstop.R'
     'plot_dendrogram.R'
     'plot_heatmap.R'
     'plot_sankey.R'
