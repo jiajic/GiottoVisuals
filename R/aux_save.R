@@ -31,9 +31,9 @@ NULL
 
 
 
-#' @describeIn plot_save ggplot saving. ... passes to cowplot::save_plot
+#' @describeIn plot_save (internal) ggplot saving. ... passes to cowplot::save_plot
 #' @keywords internal
-ggplot_save_function = function(gobject,
+.ggplot_save_function = function(gobject,
                                 plot_object,
                                 save_dir = NULL,
                                 save_folder = NULL,
@@ -124,9 +124,9 @@ ggplot_save_function = function(gobject,
 
 
 
-#' @describeIn plot_save base and general saving. ... passes to grDevices png, tiff, pdf, svg
+#' @describeIn plot_save (internal) base and general saving. ... passes to grDevices png, tiff, pdf, svg
 #' @keywords internal
-general_save_function = function(gobject,
+.general_save_function = function(gobject,
                                  plot_object,
                                  save_dir = NULL,
                                  save_folder = NULL,
@@ -266,7 +266,7 @@ all_plots_save_function = function(gobject,
 
   if(any('ggplot' %in% class(plot_object))) {
 
-    ggplot_save_function(gobject = gobject,
+    .ggplot_save_function(gobject = gobject,
                          plot_object = plot_object,
                          save_dir = save_dir,
                          save_folder = save_folder,
@@ -288,7 +288,7 @@ all_plots_save_function = function(gobject,
 
   } else {
 
-    general_save_function(gobject = gobject,
+    .general_save_function(gobject = gobject,
                           plot_object = plot_object,
                           save_dir = save_dir,
                           save_folder = save_folder,

@@ -2,12 +2,12 @@
 % Please edit documentation in R/aux_save.R
 \name{plot_save}
 \alias{plot_save}
-\alias{ggplot_save_function}
-\alias{general_save_function}
+\alias{.ggplot_save_function}
+\alias{.general_save_function}
 \alias{all_plots_save_function}
 \title{Plot saving}
 \usage{
-ggplot_save_function(
+.ggplot_save_function(
   gobject,
   plot_object,
   save_dir = NULL,
@@ -29,7 +29,7 @@ ggplot_save_function(
   ...
 )
 
-general_save_function(
+.general_save_function(
   gobject,
   plot_object,
   save_dir = NULL,
@@ -116,9 +116,9 @@ Functions to automatically save plots to directory of interest
 }
 \section{Functions}{
 \itemize{
-\item \code{ggplot_save_function()}: ggplot saving. ... passes to cowplot::save_plot
+\item \code{.ggplot_save_function()}: (internal) ggplot saving. ... passes to cowplot::save_plot
 
-\item \code{general_save_function()}: base and general saving. ... passes to grDevices png, tiff, pdf, svg
+\item \code{.general_save_function()}: (internal) base and general saving. ... passes to grDevices png, tiff, pdf, svg
 
 }}
 \seealso{
