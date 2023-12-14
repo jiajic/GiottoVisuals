@@ -10,8 +10,3 @@
 #' @import ggplot2
 #' @import utils
 NULL
-
-#' @export
-GiottoUtils::getRainbowColors
-#' @export
-GiottoUtils::getDistinctColors
