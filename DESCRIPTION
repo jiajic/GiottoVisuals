@@ -1,6 +1,6 @@
 Package: GiottoVisuals
 Title: Visuals for the Giotto spatial biology analysis ecosystem
-Version: 0.1.0
+Version: 0.1.0.1
 Authors@R: c(
 	person("Ruben", "Dries", email = "rubendries@gmail.com",
 		 role = c("aut", "cre")),
@@ -27,14 +27,14 @@ Depends:
     base (>= 3.5.0),
     utils (>= 3.5.0),
     R (>= 3.5.0),
-    GiottoUtils,
-    GiottoClass
 Imports:
     checkmate,
     colorRamp2,
     cowplot (>= 0.9.4),
     data.table,
     ggplot2 (>= 3.1.1),
+    GiottoUtils (>= 0.1.0.1),
+    GiottoClass (>= 0.1.0.1),
     ggrepel,
     igraph (>= 1.2.4.1),
     methods,
@@ -84,12 +84,14 @@ Collate:
     'dd.R'
     'gg_info_layers.R'
     'globals.R'
+    'gstop.R'
     'plot_dendrogram.R'
     'plot_heatmap.R'
     'plot_sankey.R'
     'plot_scatter.R'
     'plot_violin.R'
     'spatialDE_visuals.R'
+    'suite_reexports.R'
     'vis_spatial.R'
     'vis_spatial_in_situ.R'
     'viz_spatial_network.R'

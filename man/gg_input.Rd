@@ -2,7 +2,7 @@
 % Please edit documentation in R/aux_visuals.R
 \name{gg_input}
 \alias{gg_input}
-\title{gg_input}
+\title{gg input}
 \usage{
 gg_input(ggobject)
 }

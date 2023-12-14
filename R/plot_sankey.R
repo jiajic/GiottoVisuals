@@ -116,10 +116,10 @@ setMethod(
   signature(x = 'giottoSankeyPlan', add = 'logical', value = 'numeric'),
   function(x, add, value)
   {
-    if (length(value) != 2L) stop(GiottoUtils::wrap_txt(
+    if (length(value) != 2L) .gstop(
       "When value is provided as numeric/integer, input must be length of 2,",
       "designating nodes 'from' and 'to'"
-    ))
+    )
     value = as.integer(value)
 
     if (add) {
@@ -314,7 +314,7 @@ sankeySetAddresses = function(x) {
 
 
 #' @title Calculations for a sankey relationship pair
-#' @name sankey_compare
+#' @name .sankey_compare
 #' @description
 #' Generate the data.table of source, target, and value for a relation pair as
 #' well as the list of node names to be used with sankey plotting.
@@ -324,7 +324,7 @@ sankeySetAddresses = function(x) {
 #' @keywords internal
 #' @return list with 1. node names and 2. data.table with cols source, target,
 #' and value
-sankey_compare = function(data_dt, idx_start = 0) {
+.sankey_compare = function(data_dt, idx_start = 0) {
 
   # DT vars
   source = target = value = NULL
@@ -371,17 +371,17 @@ sankey_compare = function(data_dt, idx_start = 0) {
 
 
 
-#' @name sankey_relation_pair
+#' @name .sankey_relation_pair
 #' @title Calculations for a sankey relationship pair
 #' @description
 #' Get matched values to compare from the giotto object. Comparison columns
-#' are then passed as a data.table to `sankey_compare` to be calculated.
+#' are then passed as a data.table to `.sankey_compare` to be calculated.
 #' @param g giotto object
 #' @param gsp giottoSankeyPlan object
 #' @param rel_idx index of relation pair in `gsp`
 #' @param node_idx_start starting index to assign new nodes
 #' @keywords internal
-sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
+.sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
 
   rel = gsp@relations[rel_idx]
   from_address = sankeySetAddresses(gsp)[rel$from + 1]
@@ -443,7 +443,7 @@ sankey_relation_pair = function(g, gsp, rel_idx, node_idx_start = 0) {
   test_dt = meta_from[meta_to]
   test_dt[, (id_col) := NULL]
 
-  res = sankey_compare(data_dt = test_dt,
+  res = .sankey_compare(data_dt = test_dt,
                        idx_start = node_idx_start)
 
   return(res)
@@ -554,7 +554,7 @@ setMethod(
 
     for (rel_i in seq(nrow(sankeyRelate(y)))) {
 
-      rel_data = sankey_relation_pair(
+      rel_data = .sankey_relation_pair(
         g = x,
         gsp = y,
         rel_idx = rel_i,
@@ -572,7 +572,7 @@ setMethod(
     # create nodes table
     nodes = data.table::data.table(name = nodes)
 
-    sankey_networkd3(
+    .sankey_networkd3(
       Links = links_dt,
       Nodes = nodes,
       Source = 'source',
@@ -641,13 +641,13 @@ setMethod(
     }
     test_dt = meta_cm[][, y, with = FALSE]
 
-    res = sankey_compare(data_dt = test_dt)
+    res = .sankey_compare(data_dt = test_dt)
     links_dt = res$links
 
     # create nodes table
     nodes = data.table::data.table(name = res$nodes)
 
-    sankey_networkd3(
+    .sankey_networkd3(
       Links = links_dt,
       Nodes = nodes,
       Source = 'source',
@@ -672,13 +672,13 @@ setMethod(
     GiottoUtils::package_check("networkD3")
 
     x = data.table::as.data.table(x)
-    res = sankey_compare(data_dt = x)
+    res = .sankey_compare(data_dt = x)
     links_dt = res$links
 
     # create nodes table
     nodes = data.table::data.table(name = res$nodes)
 
-    sankey_networkd3(
+    .sankey_networkd3(
       Links = links_dt,
       Nodes = nodes,
       Source = 'source',
@@ -712,7 +712,7 @@ setMethod(
 
     for (dt_i in seq_along(x)) {
 
-      rel_data = sankey_compare(
+      rel_data = .sankey_compare(
         data_dt = data.table::as.data.table(x[[dt_i]]),
         idx_start = node_idx_start
       )
@@ -728,7 +728,7 @@ setMethod(
     # create nodes table
     nodes_dt = data.table::data.table(name = nodes)
 
-    sankey_networkd3(
+    .sankey_networkd3(
       Links = links_dt,
       Nodes = nodes_dt,
       Source = 'source',
@@ -764,21 +764,27 @@ setMethod(
   })
 
 
-sankey_networkd3 = function(Links,
-                            Nodes,
-                            Source = 'source',
-                            Target = 'target',
-                            Value = 'value',
-                            NodeID = 'name',
-                            nodePadding = 1,
-                            sinksRight = FALSE,
-                            focus_names = NULL,
-                            unfocused_replacer = '',
-                            unfocused_color = FALSE,
-                            ...) {
 
-  # DT vars
-  color = NULL
+#' @name .sankey_networkd3
+#' @title Create networkd3 sankey
+#' @description Wrapper for networkd3's sankeyNetwork function. Adds some
+#' additional params for controlling the plot.
+#' @keywords internal
+.sankey_networkd3 <- function(Links,
+                              Nodes,
+                              Source = 'source',
+                              Target = 'target',
+                              Value = 'value',
+                              NodeID = 'name',
+                              nodePadding = 1,
+                              sinksRight = FALSE,
+                              focus_names = NULL,
+                              unfocused_replacer = '',
+                              unfocused_color = FALSE,
+                              ...) {
+
+  # NSE vars
+  color <- NULL
 
   args_list <- list()
 

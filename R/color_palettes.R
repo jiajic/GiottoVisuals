@@ -86,8 +86,8 @@ getColors <- function(pal = 'viridis',
       pkg_to_use = 'palr'
     }
     if(inherits(try_val, 'try-error')) {
-      stop(wrap_txt(pal, 'not discovered in supported palette packages:',
-                    names(pal_names), errWidth = TRUE))
+      .gstop(pal, 'not discovered in supported palette packages:',
+             names(pal_names))
     }
     pal = try_val
   }
@@ -95,16 +95,16 @@ getColors <- function(pal = 'viridis',
   out = switch(
     pkg_to_use,
     'hcl' = grDevices::hcl.colors(n = n, palette = pal),
-    'base' = get_base_colors(n = n, pal = pal),
-    'RColorBrewer' = get_rcolorbrewer_colors(n = n, pal = pal, strategy = strategy),
-    'viridis' = get_viridis_colors(n = n, pal = pal),
-    'wesanderson' = get_wes_anderson_colors(n = n, pal = pal),
-    'ggsci' = get_ggsci_colors(n = n, pal = pal, strategy = strategy),
-    'nord' = get_nord_colors(n = n, pal = pal),
-    'palettetown' = get_palettetown_colors(n = n, pal = pal, strategy = strategy),
-    'palr' = get_palr_colors(n = n, pal = pal),
-    'NineteenEightyR' = get_ninteeneightyr_colors(n = n, pal = pal, strategy = strategy),
-    'rcartocolor' = get_rcarto_colors(n = n, pal = pal, strategy = strategy)
+    'base' = .get_base_colors(n = n, pal = pal),
+    'RColorBrewer' = .get_rcolorbrewer_colors(n = n, pal = pal, strategy = strategy),
+    'viridis' = .get_viridis_colors(n = n, pal = pal),
+    'wesanderson' = .get_wes_anderson_colors(n = n, pal = pal),
+    'ggsci' = .get_ggsci_colors(n = n, pal = pal, strategy = strategy),
+    'nord' = .get_nord_colors(n = n, pal = pal),
+    'palettetown' = .get_palettetown_colors(n = n, pal = pal, strategy = strategy),
+    'palr' = .get_palr_colors(n = n, pal = pal),
+    'NineteenEightyR' = .get_ninteeneightyr_colors(n = n, pal = pal, strategy = strategy),
+    'rcartocolor' = .get_rcarto_colors(n = n, pal = pal, strategy = strategy)
   )
 
   if(rev) return(rev(out))
@@ -115,60 +115,11 @@ getColors <- function(pal = 'viridis',
 
 
 
-#' @title getDistinctColors
-#' @description Returns a number of distinct colors based on the RGB scale
-#' @param n number of colors wanted
-#' @return character vector of hexadecimal distinct colors
-#' @export
-getDistinctColors <- function(n) {
-
-  if(n < 1) stop(wrap_txt('getDistinctColors \'n\' colors wanted must be at least 1\n', errWidth = TRUE), call. = FALSE)
-
-  qual_col_pals <- RColorBrewer::brewer.pal.info[RColorBrewer::brewer.pal.info$category == 'qual',]
-  col_vector <- unique(unlist(mapply(RColorBrewer::brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals))));
-
-  if(n > length(col_vector)) {
-
-    # get all possible colors
-    all_colors = grDevices::colors()
-    all_colors_no_grey = grep(x = all_colors, pattern = 'grey|gray', value = T, invert = T)
-    grey_colors = grep(x = all_colors, pattern = 'grey', value = T, invert = F)
-    admitted_grey_colors = grey_colors[seq(1, 110, 10)]
-    broad_colors = c(all_colors_no_grey, admitted_grey_colors)
-
-    set.seed(1234)
-    on.exit(set.seed(Sys.time()))
-    # if too many colors requested, warn about recycling
-    if(n > length(broad_colors)) {
-      warning('\n not enough unique colors in R, maximum = 444 \n')
-      col_vector = sample(x = broad_colors, size = n, replace = TRUE)
-    } else {
-      col_vector = sample(x = broad_colors, size = n, replace = FALSE)
-    }
-
-  } else {
-
-    xxx <- grDevices::col2rgb(col_vector);
-    dist_mat <- as.matrix(stats::dist(t(xxx)));
-    diag(dist_mat) <- 1e10;
-    while (length(col_vector) > n) {
-      minv <- apply(dist_mat,1,function(x)min(x));
-      idx <- which(minv==min(minv))[1];
-      dist_mat <- dist_mat[-idx, -idx];
-      col_vector <- col_vector[-idx]
-    }
-
-  }
-  return(col_vector)
-}
-
-
-
 
 
 # get palettes ####
 
-get_rcolorbrewer_colors <- function(n, pal, strategy) {
+.get_rcolorbrewer_colors <- function(n, pal, strategy) {
 
   # DT vars
   rn = maxcolors = NULL
@@ -185,7 +136,7 @@ get_rcolorbrewer_colors <- function(n, pal, strategy) {
   return(out)
 }
 
-get_ggsci_colors <- function(n, pal, strategy) {
+.get_ggsci_colors <- function(n, pal, strategy) {
   package_check('ggsci')
 
   pal_fullname <- paste0('ggsci::pal_', pal, '()')
@@ -200,7 +151,7 @@ get_ggsci_colors <- function(n, pal, strategy) {
   )
 }
 
-get_viridis_colors <- function(n, pal = 'viridis') {
+.get_viridis_colors <- function(n, pal = 'viridis') {
   # viridisLite should always be installed if viridis is there
   package_check('viridisLite')
   return(
@@ -218,7 +169,7 @@ get_viridis_colors <- function(n, pal = 'viridis') {
   )
 }
 
-get_base_colors = function(n, pal = 'rainbow') {
+.get_base_colors = function(n, pal = 'rainbow') {
   return(
     switch(
       pal,
@@ -233,18 +184,18 @@ get_base_colors = function(n, pal = 'rainbow') {
   )
 }
 
-get_wes_anderson_colors = function(n, pal) {
+.get_wes_anderson_colors = function(n, pal) {
   package_check('wesanderson')
   out = wesanderson::wes_palette(name = pal, n = n, type = 'continuous')
   return(out)
 }
 
-get_nord_colors = function(n, pal) {
+.get_nord_colors = function(n, pal) {
   package_check('nord')
   return(nord::nord(palette = pal, n = n))
 }
 
-get_palettetown_colors = function(n, pal, strategy) {
+.get_palettetown_colors = function(n, pal, strategy) {
   package_check('palettetown')
   colors = get_continuous_colors(
     palettetown::ichooseyou(pokemon = pal),
@@ -253,7 +204,7 @@ get_palettetown_colors = function(n, pal, strategy) {
   )
 }
 
-get_palr_colors = function(n, pal) {
+.get_palr_colors = function(n, pal) {
   package_check('palr')
   return(
     switch(
@@ -270,7 +221,7 @@ get_palr_colors = function(n, pal) {
   )
 }
 
-get_ninteeneightyr_colors = function(n, pal, strategy) {
+.get_ninteeneightyr_colors = function(n, pal, strategy) {
   package_check('NineteenEightyR', repository = 'github',
                 github_repo = 'm-clark/NineteenEightyR')
 
@@ -293,7 +244,7 @@ get_ninteeneightyr_colors = function(n, pal, strategy) {
   return(get_continuous_colors(col = pal_col, n = n, strategy))
 }
 
-get_rcarto_colors = function(n, pal, strategy) {
+.get_rcarto_colors = function(n, pal, strategy) {
   package_check('rcartocolor', repository = 'CRAN')
 
   pal_col = suppressWarnings({
@@ -369,7 +320,7 @@ simple_palette_factory = function(col, rev = FALSE, strategy = 'interpolate') {
 #' @param strategy policy when insufficient colors are available
 #' @param strategy strategy to use
 #' @seealso [set_default_color_discrete()]
-get_palette_factory = function(pal, rev = FALSE, strategy = 'interpolate') {
+.get_palette_factory = function(pal, rev = FALSE, strategy = 'interpolate') {
 
   function(n) {
     col = getColors(pal = pal, n = n, rev = rev, strategy = 'cutoff')
