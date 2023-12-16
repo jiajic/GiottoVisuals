@@ -1,5 +1,5 @@
 
-# Giotto Visuals 0.1.1 (TBD)
+# Giotto Visuals 0.1.1 (2023/12/16)
 
 ## Breaking Changes
 - Removed: `getDistinctColors()` to *GiottoUtils*
