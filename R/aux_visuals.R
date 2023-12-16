@@ -5,8 +5,8 @@ NULL
 
 # clusters ####
 
-#' @title decide_cluster_order
-#' @name decide_cluster_order
+#' @title Decide cluster order
+#' @name .decide_cluster_order
 #' @description creates order for clusters
 #' @inheritParams data_access_params
 #' @param expression_values expression values to use (e.g. "normalized", "scaled", "custom")
@@ -19,7 +19,7 @@ NULL
 #' @return custom
 #' @details Calculates order for clusters.
 #' @keywords internal
-decide_cluster_order = function(gobject,
+.decide_cluster_order = function(gobject,
                                 spat_unit = NULL,
                                 feat_type = NULL,
                                 expression_values = c('normalized', 'scaled', 'custom'),
@@ -55,8 +55,12 @@ decide_cluster_order = function(gobject,
                           feat_type = feat_type)
 
   ## check parameters
-  if(is.null(cluster_column)) stop('\n cluster column must be selected \n')
-  if(!cluster_column %in% colnames(cell_metadata)) stop('\n cluster column is not found \n')
+  if(is.null(cluster_column)) .gstop('cluster column must be selected')
+  if(!cluster_column %in% colnames(cell_metadata)) {
+    .gstop('cluster column is not found in',
+           str_bracket(spat_unit), str_bracket(feat_type),
+           'metadata')
+  }
 
   ## cluster order ##
   cluster_order = match.arg(cluster_order, c('size', 'correlation', 'custom'))
@@ -113,7 +117,7 @@ aes_string2 <- function(...){
 }
 
 
-#' @title gg_input
+#' @title gg input
 #' @name gg_input
 #' @description modular handling of ggplot inputs for functions that may either
 #' append additional information to a ggplot object or be where the ggobject is
