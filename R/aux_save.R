@@ -71,7 +71,7 @@ NULL
   if(is.null(base_width)) base_width = readGiottoInstructions(gobject, param = 'width')
   if(is.null(base_height)) base_height = readGiottoInstructions(gobject, param = 'height')
   if(is.null(base_aspect_ratio)) base_aspect_ratio = 1.1
-  if(is.null(units)) units = 'in'
+  if(is.null(units)) units = readGiottoInstructions(gobject, param = "units")
 
   ## checking
   dpi = as.numeric(dpi)
@@ -142,7 +142,6 @@ NULL
                                  plot_count = NULL,
                                  ...) {
 
-
   if(is.null(plot_object)) {
     stop('\t there is no object to plot \t')
   }
@@ -166,7 +165,7 @@ NULL
   if(is.null(base_width)) base_width = readGiottoInstructions(gobject, param = 'width')
   if(is.null(base_height)) base_height = readGiottoInstructions(gobject, param = 'height')
   if(is.null(base_aspect_ratio)) base_aspect_ratio = 1.1
-  if(is.null(units)) units = 'px'
+  if(is.null(units)) units = readGiottoInstructions(gobject, param = "units")
 
   ## checking
   dpi = as.numeric(dpi)
