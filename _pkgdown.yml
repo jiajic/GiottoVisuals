@@ -25,6 +25,7 @@ navbar:
     left:
     - intro
     - reference
+    - news
     right:
     - suite
     - github
@@ -32,6 +33,9 @@ navbar:
     reference:
       text: Documentation
       href: reference/index.html
+    news:
+      text: News
+      href: news/index.html
     suite:
       text: Suite
       href: https://drieslab.github.io/Giotto/
