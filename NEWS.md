@@ -1,4 +1,9 @@
 
+# GiottoVisuals 0.1.2 (2023/01/12)
+
+## bug fixes
+- fix `ComplexHeatmap` saving size issue [#861](https://github.com/drieslab/Giotto/issues/861) by rbutleriii
+
 # GiottoVisuals 0.1.1 (2023/12/16)
 
 ## Breaking Changes
