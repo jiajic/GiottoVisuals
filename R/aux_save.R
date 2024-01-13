@@ -40,7 +40,7 @@ NULL
                                   save_name = NULL,
                                   default_save_name = "giotto_plot",
                                   save_format = NULL,
-                                  show_saved_plot = F,
+                                  show_saved_plot = FALSE,
                                   ncol = 1,
                                   nrow = 1,
                                   scale = 1,
@@ -133,7 +133,7 @@ NULL
                                    save_name = NULL,
                                    default_save_name = "giotto_plot",
                                    save_format = c("png", "tiff", "pdf", "svg"),
-                                   show_saved_plot = F,
+                                   show_saved_plot = FALSE,
                                    base_width = NULL,
                                    base_height = NULL,
                                    base_aspect_ratio = NULL,
@@ -198,7 +198,7 @@ NULL
     }
 
     if (save_format == "pdf") {
-      grDevices::pdf(file = full_location, width = base_width, height = base_height, useDingbats = F, ...)
+      grDevices::pdf(file = full_location, width = base_width, height = base_height, useDingbats = FALSE, ...)
       print(plot_object)
       grDevices::dev.off()
     }
@@ -238,7 +238,7 @@ all_plots_save_function <- function(gobject,
                                     save_name = NULL,
                                     default_save_name = "giotto_plot",
                                     save_format = NULL,
-                                    show_saved_plot = F,
+                                    show_saved_plot = FALSE,
                                     ncol = 1,
                                     nrow = 1,
                                     scale = 1,
