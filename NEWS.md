@@ -1,7 +1,7 @@
 
 # GiottoVisuals 0.1.3 (2024/01/25)
 ## bug fixes
-- fix color gradient when using param `point_shape = "no_border"`
+- fix plotting color gradient when using param `point_shape = "no_border"`
 
 # GiottoVisuals 0.1.2 (2023/01/12)
 
