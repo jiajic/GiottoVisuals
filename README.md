@@ -9,7 +9,7 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![codecov](https://codecov.io/github/drieslab/GiottoVisuals/graph/badge.svg?token=F4ga1Ahbhw)](https://codecov.io/github/drieslab/GiottoVisuals)
-[![R-CMD-check](https://github.com/drieslab/GiottoVisuals/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/drieslab/GiottoVisuals/actions/workflows/R-CMD-check.yml)
+[![R-CMD-check](https://github.com/drieslab/GiottoVisuals/actions/workflows/main_check.yml/badge.svg)](https://github.com/drieslab/GiottoVisuals/actions/workflows/main_check.yml)
 [![GitHub
 issues](https://img.shields.io/github/issues/drieslab/Giotto)](https://github.com/drieslab/Giotto/issues)
 [![GitHub
