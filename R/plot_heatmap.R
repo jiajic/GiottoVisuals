@@ -232,7 +232,8 @@ plotHeatmap <- function(gobject,
     instrs = instructions(gobject),
     midpoint = midpoint,
     style = gradient_style,
-    guide = ggplot2::guide_colorbar(title = '')
+    guide = ggplot2::guide_colorbar(title = ''),
+    type = "fill"
   )
 
   if(is.null(feat_label_selection)) {
@@ -335,36 +336,38 @@ plotHeatmap <- function(gobject,
 #' is by default on the z-scores. Other options are the original values or z-scores rescaled per feature (-1 to 1).
 #' @seealso \code{\link{plotMetaDataCellsHeatmap}} for numeric cell annotation instead of feature expression.
 #' @export
-plotMetaDataHeatmap = function(gobject,
-                               spat_unit = NULL,
-                               feat_type = NULL,
-                               expression_values =  c("normalized", "scaled", "custom"),
-                               metadata_cols = NULL,
-                               selected_feats = NULL,
-                               first_meta_col = NULL,
-                               second_meta_col = NULL,
-                               show_values = c('zscores', 'original', 'zscores_rescaled'),
-                               custom_cluster_order = NULL,
-                               clus_cor_method = 'pearson',
-                               clus_cluster_method = 'complete',
-                               custom_feat_order = NULL,
-                               feat_cor_method = 'pearson',
-                               feat_cluster_method = 'complete',
-                               gradient_color = NULL,
-                               gradient_midpoint = 0,
-                               gradient_style = c('divergent', 'sequential'),
-                               gradient_limits = NULL,
-                               x_text_size = 10,
-                               x_text_angle = 45,
-                               y_text_size = 10,
-                               strip_text_size = 8,
-                               title = NULL,
-                               plot_title = deprecated(),
-                               show_plot = NA,
-                               return_plot = NA,
-                               save_plot = NA,
-                               save_param =  list(),
-                               default_save_name = 'plotMetaDataHeatmap') {
+plotMetaDataHeatmap = function(
+    gobject,
+    spat_unit = NULL,
+    feat_type = NULL,
+    expression_values =  c("normalized", "scaled", "custom"),
+    metadata_cols = NULL,
+    selected_feats = NULL,
+    first_meta_col = NULL,
+    second_meta_col = NULL,
+    show_values = c('zscores', 'original', 'zscores_rescaled'),
+    custom_cluster_order = NULL,
+    clus_cor_method = 'pearson',
+    clus_cluster_method = 'complete',
+    custom_feat_order = NULL,
+    feat_cor_method = 'pearson',
+    feat_cluster_method = 'complete',
+    gradient_color = NULL,
+    gradient_midpoint = 0,
+    gradient_style = c('divergent', 'sequential'),
+    gradient_limits = NULL,
+    x_text_size = 10,
+    x_text_angle = 45,
+    y_text_size = 10,
+    strip_text_size = 8,
+    title = NULL,
+    plot_title = deprecated(),
+    show_plot = NA,
+    return_plot = NA,
+    save_plot = NA,
+    save_param =  list(),
+    default_save_name = 'plotMetaDataHeatmap'
+) {
 
   # deprecate
   if (GiottoUtils::is_present(plot_title)) {
@@ -381,12 +384,14 @@ plotMetaDataHeatmap = function(gobject,
                                     spat_unit = spat_unit,
                                     feat_type = feat_type)
 
-  metaDT = calculateMetaTable(gobject = gobject,
-                              spat_unit = spat_unit,
-                              feat_type = feat_type,
-                              expression_values = expression_values,
-                              metadata_cols = metadata_cols,
-                              selected_feats = selected_feats)
+  metaDT = calculateMetaTable(
+    gobject = gobject,
+    spat_unit = spat_unit,
+    feat_type = feat_type,
+    expression_values = expression_values,
+    metadata_cols = metadata_cols,
+    selected_feats = selected_feats
+  )
 
   # data.table variables
   zscores = value = NULL
@@ -412,7 +417,7 @@ plotMetaDataHeatmap = function(gobject,
 
   ## order of feats and clusters
 
-  main_factor = ifelse(length(metadata_cols) == 1, metadata_cols, first_meta_col)
+  main_factor = ifelse(length(metadata_cols) == 1L, metadata_cols, first_meta_col)
   testmain = metaDT[, mean(value), by = c('variable', main_factor)]
   testmain_matrix <- dt_dcast_string(testmain, 'variable', main_factor, 'V1')
   testmain_mat = as.matrix(testmain_matrix[,-1]); rownames(testmain_mat) = testmain_matrix$variable
@@ -420,7 +425,7 @@ plotMetaDataHeatmap = function(gobject,
   # for clusters
   if(is.null(custom_cluster_order)) {
     cormatrix = cor_flex(x = testmain_mat, method = clus_cor_method)
-    cordist = stats::as.dist(1 - cormatrix, diag = T, upper = T)
+    cordist = stats::as.dist(1 - cormatrix, diag = TRUE, upper = TRUE)
     corclus = stats::hclust(d = cordist, method = clus_cluster_method)
     clus_names = rownames(cormatrix)
     names(clus_names) = 1:length(clus_names)
@@ -474,7 +479,8 @@ plotMetaDataHeatmap = function(gobject,
       colors = gradient_color,
       instrs = instructions(gobject),
       midpoint = gradient_midpoint,
-      style = gradient_style
+      style = gradient_style,
+      type = "fill"
     )
     pl <- pl + ggplot2::theme_classic()
     pl <- pl + ggplot2::theme(axis.text.x = ggplot2::element_text(size = x_text_size, angle = x_text_angle, hjust = 1, vjust = 1),
@@ -541,7 +547,8 @@ plotMetaDataHeatmap = function(gobject,
         colors = gradient_color,
         instrs = instructions(gobject),
         midpoint = gradient_midpoint,
-        style = gradient_style
+        style = gradient_style,
+        type = "fill"
       )
       pl <- pl + ggplot2::facet_grid(stats::reformulate('factor_2_column'))
       pl <- pl + ggplot2::theme_classic()
@@ -724,7 +731,8 @@ plotMetaDataCellsHeatmap = function(gobject,
       colors = gradient_color,
       instrs = instructions(gobject),
       midpoint = gradient_midpoint,
-      style = gradient_style
+      style = gradient_style,
+      type = "fill"
     )
     pl <- pl + ggplot2::theme_classic()
     pl <- pl + ggplot2::theme(axis.text.x = ggplot2::element_text(size = x_text_size, angle = x_text_angle, hjust = 1, vjust = 1),
@@ -752,7 +760,8 @@ plotMetaDataCellsHeatmap = function(gobject,
         colors = gradient_color,
         instrs = instructions(gobject),
         midpoint = gradient_midpoint,
-        style = gradient_style
+        style = gradient_style,
+        type = "fill"
       )
       pl <- pl + ggplot2::facet_grid(stats::reformulate('factor_2_column'))
       pl <- pl + ggplot2::theme_classic()

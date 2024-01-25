@@ -22,39 +22,41 @@
 #' @details Description of parameters.
 #' @keywords internal
 #' @noRd
-plot_spat_point_layer_ggplot = function(ggobject,
-                                        instrs = NULL,
-                                        sdimx = NULL,
-                                        sdimy = NULL,
-                                        cell_locations_metadata_selected,
-                                        cell_locations_metadata_other,
-                                        cell_color = NULL,
-                                        color_as_factor = T,
-                                        cell_color_code = NULL,
-                                        cell_color_gradient = NULL,
-                                        gradient_midpoint = NULL,
-                                        gradient_style = 'divergent',
-                                        gradient_limits = NULL,
-                                        select_cell_groups = NULL,
-                                        select_cells = NULL,
-                                        point_size = 2,
-                                        point_alpha = 1,
-                                        point_border_col = 'lightgrey',
-                                        point_border_stroke = 0.1,
-                                        show_cluster_center = F,
-                                        show_center_label = T,
-                                        center_point_size = 4,
-                                        center_point_border_col = 'black',
-                                        center_point_border_stroke = 0.1,
-                                        label_size = 4,
-                                        label_fontface = 'bold',
-                                        show_other_cells = T,
-                                        other_cell_color = 'lightgrey',
-                                        other_point_size = 1,
-                                        show_legend = TRUE) {
+plot_spat_point_layer_ggplot = function(
+    ggobject,
+    instrs = NULL,
+    sdimx = NULL,
+    sdimy = NULL,
+    cell_locations_metadata_selected,
+    cell_locations_metadata_other,
+    cell_color = NULL,
+    color_as_factor = TRUE,
+    cell_color_code = NULL,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = 'divergent',
+    gradient_limits = NULL,
+    select_cell_groups = NULL,
+    select_cells = NULL,
+    point_size = 2,
+    point_alpha = 1,
+    point_border_col = 'lightgrey',
+    point_border_stroke = 0.1,
+    show_cluster_center = FALSE,
+    show_center_label = TRUE,
+    center_point_size = 4,
+    center_point_border_col = 'black',
+    center_point_border_stroke = 0.1,
+    label_size = 4,
+    label_fontface = 'bold',
+    show_other_cells = TRUE,
+    other_cell_color = 'lightgrey',
+    other_point_size = 1,
+    show_legend = TRUE
+) {
 
   ## specify spatial dimensions first
-  if(is.null(sdimx) | is.null(sdimy)) {
+  if(is.null(sdimx) || is.null(sdimy)) {
 
     warning(wrap_txt("plot_method = ggplot, but spatial dimensions for sdimx and/or sdimy are not specified.
             It will default to the 'sdimx' and 'sdimy' "))
@@ -63,28 +65,33 @@ plot_spat_point_layer_ggplot = function(ggobject,
   }
 
 
-  ## point parameters ##
+  ### point parameters ##
   point_size = as.numeric(point_size)
   point_alpha = as.numeric(point_alpha)
   point_border_stroke = as.numeric(point_border_stroke)
+
   center_point_size = as.numeric(center_point_size)
   center_point_border_stroke = as.numeric(center_point_border_stroke)
+
   label_size = as.numeric(label_size)
   other_point_size = as.numeric(other_point_size)
 
+
   ## ggplot object
-  pl = ggobject
+  pl <- ggobject
 
   ## first plot other non-selected cells
-  if((!is.null(select_cells) | !is.null(select_cell_groups)) & show_other_cells == TRUE) {
+  if ((!is.null(select_cells) || !is.null(select_cell_groups)) &&
+      isTRUE(show_other_cells)) {
 
-    #print('OTHER CELLS WILL BE PLOTTED')
-
-    pl <- pl + ggplot2::geom_point(data = cell_locations_metadata_other,
-                                   aes_string(x = sdimx, sdimy),
-                                   color = other_cell_color,
-                                   show.legend = F,
-                                   size = other_point_size, alpha = point_alpha)
+    pl <- pl + ggplot2::geom_point(
+      data = cell_locations_metadata_other,
+      aes_string(x = sdimx, sdimy),
+      color = other_cell_color,
+      show.legend = FALSE,
+      size = other_point_size,
+      alpha = point_alpha
+    )
   }
 
 
@@ -101,56 +108,85 @@ plot_spat_point_layer_ggplot = function(ggobject,
   # cell color default
   if(is.null(cell_color)) {
 
-    cell_color = 'lightblue'
-    pl <- pl + ggplot2::geom_point(data = cell_locations_metadata_selected,
-                                   aes_string(x = sdimx, y = sdimy),
-                                   show.legend = show_legend, shape = 21,
-                                   fill = cell_color, size = point_size,
-                                   stroke = point_border_stroke, color = point_border_col,
-                                   alpha = point_alpha)
+    cell_color <- "lightblue"
+    pl <- pl + ggplot2::geom_point(
+      data = cell_locations_metadata_selected,
+      aes_string(x = sdimx, y = sdimy),
+      show.legend = show_legend,
+      shape = 21,
+      fill = cell_color,
+      size = point_size,
+      stroke = point_border_stroke,
+      color = point_border_col,
+      alpha = point_alpha
+    )
 
 
-  } else if(length(cell_color) > 1) {
+  } else if(length(cell_color) > 1L) {
 
-    if(is.numeric(cell_color) | is.factor(cell_color)) {
-      if(nrow(cell_locations_metadata_selected) != length(cell_color)) stop('\n vector needs to be the same lengths as number of cells \n')
-      cell_locations_metadata_selected[['temp_color']] = cell_color
+    if (is.numeric(cell_color) || is.factor(cell_color)) { # cell_color is numeric
+      if (nrow(cell_locations_metadata_selected) != length(cell_color)) {
+        stop('\n vector needs to be the same lengths as number of cells \n')
+      }
+      cell_locations_metadata_selected[['temp_color']] <- cell_color
 
-      pl <- pl + ggplot2::geom_point(data = cell_locations_metadata_selected,
-                                     aes_string2(x = sdimx, y = sdimy, fill = 'temp_color'),
-                                     show.legend = show_legend, shape = 21,
-                                     size = point_size,
-                                     color = point_border_col, stroke = point_border_stroke,
-                                     alpha = point_alpha)
+      pl <- pl + ggplot2::geom_point(
+        data = cell_locations_metadata_selected,
+        aes_string2(x = sdimx, y = sdimy, fill = 'temp_color'),
+        show.legend = show_legend,
+        shape = 21,
+        size = point_size,
+        color = point_border_col,
+        stroke = point_border_stroke,
+        alpha = point_alpha
+      )
 
-    } else if(is.character(cell_color)) {
-      if(!all(cell_color %in% grDevices::colors())) stop('cell_color is not numeric, a factor or vector of colors \n')
+    } else if(is.character(cell_color)) { # cell_color is hex codes
+      if (!all(cell_color %in% grDevices::colors())) {
+        stop('cell_color is not numeric, a factor or vector of colors \n')
+      }
 
-      pl <- pl + ggplot2::geom_point(data = cell_locations_metadata_selected,
-                                     aes_string2(x = sdimx, y = sdimy),
-                                     show.legend = show_legend, shape = 21, fill = cell_color,
-                                     size = point_size,
-                                     color = point_border_col, stroke = point_border_stroke,
-                                     alpha = point_alpha)
+      pl <- pl + ggplot2::geom_point(
+        data = cell_locations_metadata_selected,
+        aes_string2(x = sdimx, y = sdimy),
+        show.legend = show_legend,
+        shape = 21,
+        fill = cell_color,
+        size = point_size,
+        color = point_border_col,
+        stroke = point_border_stroke,
+        alpha = point_alpha
+      )
     }
 
-  } else if(is.character(cell_color)) {
-    if(!cell_color %in% colnames(cell_locations_metadata_selected)) {
-      if(!cell_color %in% grDevices::colors()) stop(cell_color,' is not a color or a column name \n')
-      pl <- pl + ggplot2::geom_point(data = cell_locations_metadata_selected,
-                                     aes_string2(x = sdimx, y = sdimy),
-                                     show.legend = show_legend, shape = 21, fill = cell_color,
-                                     size = point_size,
-                                     color = point_border_col, stroke = point_border_stroke,
-                                     alpha = point_alpha)
+  } else if (is.character(cell_color)) {
+    if (!cell_color %in% colnames(cell_locations_metadata_selected)) {
+      if (!cell_color %in% grDevices::colors()) {
+        stop(cell_color,' is not a color or a column name \n')
+      }
+      pl <- pl + ggplot2::geom_point(
+        data = cell_locations_metadata_selected,
+        aes_string2(x = sdimx, y = sdimy),
+        show.legend = show_legend,
+        shape = 21,
+        fill = cell_color,
+        size = point_size,
+        color = point_border_col,
+        stroke = point_border_stroke,
+        alpha = point_alpha
+      )
 
     } else {
 
-      class_cell_color = class(cell_locations_metadata_selected[[cell_color]])
+      class_cell_color <- class(cell_locations_metadata_selected[[cell_color]])
 
-      if((class_cell_color == 'integer' | class_cell_color == 'numeric') & color_as_factor == FALSE) {
+      if ((class_cell_color %in% c("integer", "numeric")) &&
+          !isTRUE(color_as_factor)) {
         # set upper and lower limits
-        if(!is.null(gradient_limits) & is.vector(gradient_limits) & length(gradient_limits) == 2) {
+        if (!is.null(gradient_limits) &&
+            is.vector(gradient_limits) &&
+            length(gradient_limits) == 2) {
+
           lower_lim = gradient_limits[[1]]
           upper_lim = gradient_limits[[2]]
 
@@ -160,54 +196,70 @@ plot_spat_point_layer_ggplot = function(ggobject,
           cell_locations_metadata_selected[[cell_color]] = limit_numeric_data
         }
 
-        pl <- pl + ggplot2::geom_point(data = cell_locations_metadata_selected,
-                                       aes_string2(x = sdimx, y = sdimy, fill = cell_color),
-                                       show.legend = show_legend, shape = 21,
-                                       size = point_size,
-                                       color = point_border_col,
-                                       stroke = point_border_stroke,
-                                       alpha = point_alpha)
+        pl <- pl + ggplot2::geom_point(
+          data = cell_locations_metadata_selected,
+          aes_string2(x = sdimx, y = sdimy, fill = cell_color),
+          show.legend = show_legend,
+          shape = 21,
+          size = point_size,
+          color = point_border_col,
+          stroke = point_border_stroke,
+          alpha = point_alpha
+        )
 
 
 
       } else {
 
         # convert character or numeric to factor
-        if(color_as_factor == TRUE) {
+        if(isTRUE(color_as_factor)) {
           factor_data = factor(cell_locations_metadata_selected[[cell_color]])
           cell_locations_metadata_selected[[cell_color]] <- factor_data
         }
 
         # if you want to show centers or labels then calculate centers
-        if(show_cluster_center == TRUE | show_center_label == TRUE) {
+        if(isTRUE(show_cluster_center) || isTRUE(show_center_label)) {
           annotated_DT_centers = cell_locations_metadata_selected[, .(center_1 = stats::median(get('sdimx')),
                                                                       center_2 = stats::median(get('sdimy'))), by = cell_color]
           factor_center_data = factor(annotated_DT_centers[[cell_color]])
           annotated_DT_centers[[cell_color]] <- factor_center_data
         }
 
-        pl <- pl + ggplot2::geom_point(data = cell_locations_metadata_selected,
-                                       aes_string2(x = sdimx, y = sdimy, fill = cell_color),
-                                       show.legend = show_legend, shape = 21, size = point_size,
-                                       color = point_border_col, stroke = point_border_stroke,
-                                       alpha = point_alpha)
+        pl <- pl + ggplot2::geom_point(
+          data = cell_locations_metadata_selected,
+          aes_string2(x = sdimx, y = sdimy, fill = cell_color),
+          show.legend = show_legend,
+          shape = 21,
+          size = point_size,
+          color = point_border_col,
+          stroke = point_border_stroke,
+          alpha = point_alpha
+        )
 
 
         ## plot centers
-        if(show_cluster_center == TRUE & (color_as_factor == TRUE | class_cell_color %in% c('character', 'factor'))) {
+        if (isTRUE(show_cluster_center) &&
+            (isTRUE(color_as_factor) || class_cell_color %in% c('character', 'factor'))) {
 
-          pl <- pl + ggplot2::geom_point(data = annotated_DT_centers,
-                                         aes_string2(x = 'center_1', y = 'center_2', fill = cell_color),
-                                         color = center_point_border_col, stroke = center_point_border_stroke,
-                                         size = center_point_size, shape = 21,
-                                         alpha = point_alpha)
+          pl <- pl + ggplot2::geom_point(
+            data = annotated_DT_centers,
+            aes_string2(x = 'center_1', y = 'center_2', fill = cell_color),
+            color = center_point_border_col,
+            stroke = center_point_border_stroke,
+            size = center_point_size,
+            shape = 21,
+            alpha = point_alpha
+          )
         }
 
         ## plot labels
-        if(show_center_label == TRUE) {
-          pl <- pl + ggrepel::geom_text_repel(data = annotated_DT_centers,
-                                              aes_string2(x = 'center_1', y = 'center_2', label = cell_color),
-                                              size = label_size, fontface = label_fontface)
+        if(isTRUE(show_center_label)) {
+          pl <- pl + ggrepel::geom_text_repel(
+            data = annotated_DT_centers,
+            aes_string2(x = 'center_1', y = 'center_2', label = cell_color),
+            size = label_size,
+            fontface = label_fontface
+          )
         }
 
       }
@@ -217,23 +269,26 @@ plot_spat_point_layer_ggplot = function(ggobject,
 
         pl <- pl + ggplot2::scale_fill_manual(values = cell_color_code)
 
-      } else if(color_as_factor == T) {
+      } else if (isTRUE(color_as_factor)) {
 
         number_colors = length(unique(factor_data))
         cell_color_code = set_default_color_discrete_cell(instrs = instrs)(n = number_colors)
         names(cell_color_code) = unique(factor_data)
         pl <- pl + ggplot2::scale_fill_manual(values = cell_color_code)
 
-      } else if(color_as_factor == F){
+      } else if (!isTRUE(color_as_factor)){
 
         if(is.null(gradient_midpoint)) {
           gradient_midpoint = stats::median(cell_locations_metadata_selected[[cell_color]])
         }
 
-        pl <- pl + set_default_color_continuous_cell(colors = cell_color_gradient,
-                                                     instrs = instrs,
-                                                     style = gradient_style,
-                                                     midpoint = gradient_midpoint)
+        pl <- pl + set_default_color_continuous_cell(
+          colors = cell_color_gradient,
+          instrs = instrs,
+          style = gradient_style,
+          midpoint = gradient_midpoint,
+          type = "fill",
+        )
 
       }
     }
@@ -255,61 +310,66 @@ plot_spat_point_layer_ggplot = function(ggobject,
 #' @details Description of parameters.
 #' @keywords internal
 #' @noRd
-plot_spat_point_layer_ggplot_noFILL = function(ggobject,
-                                               instrs = NULL,
-                                               sdimx = NULL,
-                                               sdimy = NULL,
-                                               cell_locations_metadata_selected,
-                                               cell_locations_metadata_other,
-                                               cell_color = NULL,
-                                               color_as_factor = T,
-                                               cell_color_code = NULL,
-                                               cell_color_gradient = NULL,
-                                               gradient_midpoint = NULL,
-                                               gradient_style = 'divergent',
-                                               gradient_limits = NULL,
-                                               select_cell_groups = NULL,
-                                               select_cells = NULL,
-                                               point_size = 2,
-                                               point_alpha = 1,
-                                               show_cluster_center = F,
-                                               show_center_label = T,
-                                               center_point_size = 4,
-                                               label_size = 4,
-                                               label_fontface = 'bold',
-                                               show_other_cells = T,
-                                               other_cell_color = 'lightgrey',
-                                               other_point_size = 1,
-                                               show_legend = TRUE
+plot_spat_point_layer_ggplot_noFILL = function(
+    ggobject,
+    instrs = NULL,
+    sdimx = NULL,
+    sdimy = NULL,
+    cell_locations_metadata_selected,
+    cell_locations_metadata_other,
+    cell_color = NULL,
+    color_as_factor = TRUE,
+    cell_color_code = NULL,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = 'divergent',
+    gradient_limits = NULL,
+    select_cell_groups = NULL,
+    select_cells = NULL,
+    point_size = 2,
+    point_alpha = 1,
+    show_cluster_center = FALSE,
+    show_center_label = TRUE,
+    center_point_size = 4,
+    label_size = 4,
+    label_fontface = 'bold',
+    show_other_cells = TRUE,
+    other_cell_color = 'lightgrey',
+    other_point_size = 1,
+    show_legend = TRUE
 
 ) {
 
   ## specify spatial dimensions first
-  if(is.null(sdimx) | is.null(sdimy)) {
-
-    warning("plot_method = ggplot, but spatial dimensions for sdimx and/or sdimy are not specified. \n
-            It will default to the 'sdimx' and 'sdimy' ")
-    sdimx = 'sdimx'
-    sdimy = 'sdimy'
+  if(is.null(sdimx) || is.null(sdimy)) {
+    warning(wrap_txt("plot_method = ggplot, but spatial dimensions for sdimx and/or sdimy are not specified.
+                     It will default to the 'sdimx' and 'sdimy'"))
+    sdimx <- 'sdimx'
+    sdimy <- 'sdimy'
   }
 
   ## point parameters ##
-  point_size = as.numeric(point_size)
-  point_alpha = as.numeric(point_alpha)
-  center_point_size = as.numeric(center_point_size)
-  label_size = as.numeric(label_size)
-  other_point_size = as.numeric(other_point_size)
+  point_size <- as.numeric(point_size)
+  point_alpha <- as.numeric(point_alpha)
+  center_point_size <- as.numeric(center_point_size)
+  label_size <- as.numeric(label_size)
+  other_point_size <- as.numeric(other_point_size)
 
 
   ## ggplot object
-  pl = ggobject
+  pl <- ggobject
 
   ## first plot other non-selected cells
-  if((!is.null(select_cells) | !is.null(select_cell_groups)) & show_other_cells == TRUE) {
-    pl <- pl + ggplot2::geom_point(data = cell_locations_metadata_other,
-                                   aes_string(x = sdimx, sdimy),
-                                   color = other_cell_color,
-                                   show.legend = F, size = other_point_size, alpha = point_alpha)
+  if ((!is.null(select_cells) || !is.null(select_cell_groups)) &&
+      isTRUE(show_other_cells)) {
+    pl <- pl + ggplot2::geom_point(
+      data = cell_locations_metadata_other,
+      aes_string(x = sdimx, sdimy),
+      color = other_cell_color,
+      show.legend = FALSE,
+      size = other_point_size,
+      alpha = point_alpha
+    )
   }
 
 
@@ -323,50 +383,77 @@ plot_spat_point_layer_ggplot_noFILL = function(ggobject,
   # 2.3.2 factor column or character to factor
 
   # cell color default
-  if(is.null(cell_color)) {
+  if (is.null(cell_color)) {
 
-    cell_color = 'lightblue'
-    pl <- pl + ggplot2::geom_point(data = cell_locations_metadata_selected,
-                                   aes_string(x = sdimx, y = sdimy),
-                                   show.legend = show_legend, shape = 19,
-                                   color = cell_color, size = point_size,
-                                   alpha = point_alpha)
+    cell_color <- "lightblue"
+    pl <- pl + ggplot2::geom_point(
+      data = cell_locations_metadata_selected,
+      aes_string(x = sdimx, y = sdimy),
+      show.legend = show_legend,
+      shape = 19,
+      color = cell_color,
+      size = point_size,
+      alpha = point_alpha
+    )
 
 
-  } else if(length(cell_color) > 1) {
+  } else if (length(cell_color) > 1) {
 
-    if(is.numeric(cell_color) | is.factor(cell_color)) {
-      if(nrow(cell_locations_metadata_selected) != length(cell_color)) stop('\n vector needs to be the same lengths as number of cells \n')
-      cell_locations_metadata_selected[['temp_color']] = cell_color
+    if (is.numeric(cell_color) || is.factor(cell_color)) {
+      if (nrow(cell_locations_metadata_selected) != length(cell_color)) {
+        stop('\n vector needs to be the same lengths as number of cells \n')
+      }
+      cell_locations_metadata_selected[['temp_color']] <- cell_color
 
-      pl = pl + ggplot2::geom_point(data = cell_locations_metadata_selected, aes_string2(x = sdimx, y = sdimy, color = 'temp_color'),
-                                    show.legend = show_legend, shape = 19, size = point_size, alpha = point_alpha)
+      pl = pl + ggplot2::geom_point(
+        data = cell_locations_metadata_selected,
+        aes_string2(x = sdimx, y = sdimy, color = 'temp_color'),
+        show.legend = show_legend,
+        shape = 19,
+        size = point_size,
+        alpha = point_alpha
+      )
 
     } else if(is.character(cell_color)) {
-      if(!all(cell_color %in% grDevices::colors())) stop('cell_color is not numeric, a factor or vector of colors \n')
+      if(!all(cell_color %in% grDevices::colors())) {
+        stop('cell_color is not numeric, a factor or vector of colors \n')
+      }
 
-      pl = pl + ggplot2::geom_point(data = cell_locations_metadata_selected,
-                                    aes_string2(x = sdimx, y = sdimy),
-                                    show.legend = show_legend, shape = 19,
-                                    color = cell_color, size = point_size,
-                                    alpha = point_alpha)
+      pl = pl + ggplot2::geom_point(
+        data = cell_locations_metadata_selected,
+        aes_string2(x = sdimx, y = sdimy),
+        show.legend = show_legend, shape = 19,
+        color = cell_color, size = point_size,
+        alpha = point_alpha
+      )
     }
 
   } else if(is.character(cell_color)) {
-    if(!cell_color %in% colnames(cell_locations_metadata_selected)) {
-      if(!cell_color %in% grDevices::colors()) stop(cell_color,' is not a color or a column name \n')
-      pl = pl + ggplot2::geom_point(data = cell_locations_metadata_selected,
-                                    aes_string2(x = sdimx, y = sdimy),
-                                    show.legend = show_legend, shape = 19, color = cell_color, size = point_size,
-                                    alpha = point_alpha)
+    if (!cell_color %in% colnames(cell_locations_metadata_selected)) {
+      if (!cell_color %in% grDevices::colors()) {
+        stop(cell_color,' is not a color or a column name \n')
+      }
+      pl = pl + ggplot2::geom_point(
+        data = cell_locations_metadata_selected,
+        aes_string2(x = sdimx, y = sdimy),
+        show.legend = show_legend,
+        shape = 19,
+        color = cell_color,
+        size = point_size,
+        alpha = point_alpha
+      )
 
     } else {
 
-      class_cell_color = class(cell_locations_metadata_selected[[cell_color]])
+      class_cell_color <- class(cell_locations_metadata_selected[[cell_color]])
 
-      if((class_cell_color == 'integer' | class_cell_color == 'numeric') & color_as_factor == FALSE) {
+      if (class_cell_color %in% c("integer", "numeric") &&
+          !isTRUE(color_as_factor)) {
         # set upper and lower limits
-        if(!is.null(gradient_limits) & is.vector(gradient_limits) & length(gradient_limits) == 2) {
+        if(!is.null(gradient_limits) &&
+           is.vector(gradient_limits) &&
+           length(gradient_limits) == 2) {
+
           lower_lim = gradient_limits[[1]]
           upper_lim = gradient_limits[[2]]
 
@@ -376,74 +463,94 @@ plot_spat_point_layer_ggplot_noFILL = function(ggobject,
           cell_locations_metadata_selected[[cell_color]] = limit_numeric_data
         }
 
-        pl <- pl + ggplot2::geom_point(data = cell_locations_metadata_selected,
-                                       aes_string2(x = sdimx, y = sdimy, color = cell_color),
-                                       show.legend = show_legend, shape = 19, size = point_size,
-                                       alpha = point_alpha)
+        pl <- pl + ggplot2::geom_point(
+          data = cell_locations_metadata_selected,
+          aes_string2(x = sdimx, y = sdimy, color = cell_color),
+          show.legend = show_legend,
+          shape = 19,
+          size = point_size,
+          alpha = point_alpha
+        )
 
 
 
       } else {
 
         # convert character or numeric to factor
-        if(color_as_factor == TRUE) {
+        if (isTRUE(color_as_factor)) {
           factor_data = factor(cell_locations_metadata_selected[[cell_color]])
           cell_locations_metadata_selected[[cell_color]] <- factor_data
         }
 
         # if you want to show centers or labels then calculate centers
-        if(show_cluster_center == TRUE | show_center_label == TRUE) {
-          annotated_DT_centers = cell_locations_metadata_selected[, .(center_1 = stats::median(get('sdimx')),
-                                                                      center_2 = stats::median(get('sdimy'))), by = cell_color]
-          factor_center_data = factor(annotated_DT_centers[[cell_color]])
+        if (isTRUE(show_cluster_center) || isTRUE(show_center_label)) {
+          annotated_DT_centers <- cell_locations_metadata_selected[, .(center_1 = stats::median(get('sdimx')),
+                                                                       center_2 = stats::median(get('sdimy'))), by = cell_color]
+          factor_center_data <- factor(annotated_DT_centers[[cell_color]])
           annotated_DT_centers[[cell_color]] <- factor_center_data
         }
 
-        pl <- pl + ggplot2::geom_point(data = cell_locations_metadata_selected,
-                                       aes_string2(x = sdimx, y = sdimy, color = cell_color),
-                                       show.legend = show_legend, shape = 19, size = point_size,
-                                       alpha = point_alpha)
+        pl <- pl + ggplot2::geom_point(
+          data = cell_locations_metadata_selected,
+          aes_string2(x = sdimx, y = sdimy, color = cell_color),
+          show.legend = show_legend,
+          shape = 19,
+          size = point_size,
+          alpha = point_alpha
+        )
 
 
         ## plot centers
-        if(show_cluster_center == TRUE & (color_as_factor == TRUE | class_cell_color %in% c('character', 'factor'))) {
+        if (isTRUE(show_cluster_center) &&
+            (isTRUE(color_as_factor) || class_cell_color %in% c('character', 'factor'))) {
 
-          pl <- pl + ggplot2::geom_point(data = annotated_DT_centers,
-                                         aes_string2(x = 'center_1', y = 'center_2', color = cell_color),
-                                         size = center_point_size, shape = 19, alpha = point_alpha)
+          pl <- pl + ggplot2::geom_point(
+            data = annotated_DT_centers,
+            aes_string2(x = 'center_1', y = 'center_2', color = cell_color),
+            size = center_point_size,
+            shape = 19,
+            alpha = point_alpha
+          )
         }
 
         ## plot labels
-        if(show_center_label == TRUE) {
-          pl <- pl + ggrepel::geom_text_repel(data = annotated_DT_centers,
-                                              aes_string2(x = 'center_1', y = 'center_2', label = cell_color),
-                                              size = label_size, fontface = label_fontface, alpha = point_alpha)
+        if (isTRUE(show_center_label)) {
+          pl <- pl + ggrepel::geom_text_repel(
+            data = annotated_DT_centers,
+            aes_string2(x = 'center_1', y = 'center_2', label = cell_color),
+            size = label_size,
+            fontface = label_fontface,
+            alpha = point_alpha
+          )
         }
 
       }
 
       ## specificy colors to use
-      if(!is.null(cell_color_code)) {
+      if (!is.null(cell_color_code)) {
 
         pl <- pl + ggplot2::scale_color_manual(values = cell_color_code)
 
-      } else if(color_as_factor == T) {
+      } else if (isTRUE(color_as_factor)) {
 
         number_colors = length(unique(factor_data))
         cell_color_code = set_default_color_discrete_cell(instrs = instrs)(n = number_colors)
         names(cell_color_code) = unique(factor_data)
         pl <- pl + ggplot2::scale_color_manual(values = cell_color_code)
 
-      } else if(color_as_factor == F){
+      } else if (!isTRUE(color_as_factor)){
 
-        if(is.null(gradient_midpoint)) {
+        if (is.null(gradient_midpoint)) {
           gradient_midpoint = stats::median(cell_locations_metadata_selected[[cell_color]])
         }
 
-        pl <- pl + set_default_color_continuous_cell(colors = cell_color_gradient,
-                                                     instrs = instrs,
-                                                     style = gradient_style,
-                                                     midpoint = gradient_midpoint)
+        pl <- pl + set_default_color_continuous_cell(
+          colors = cell_color_gradient,
+          instrs = instrs,
+          style = gradient_style,
+          midpoint = gradient_midpoint,
+          type = "color",
+        )
 
       }
     }
@@ -469,36 +576,37 @@ plot_spat_point_layer_ggplot_noFILL = function(ggobject,
 #' @details Description of parameters.
 #' @keywords internal
 #' @noRd
-plot_spat_voronoi_layer_ggplot = function(ggobject,
-                                          instrs = NULL,
-                                          sdimx = NULL,
-                                          sdimy = NULL,
-                                          cell_locations_metadata_selected,
-                                          cell_locations_metadata_other,
-                                          cell_color = NULL,
-                                          color_as_factor = T,
-                                          cell_color_code = NULL,
-                                          cell_color_gradient = NULL,
-                                          gradient_midpoint = NULL,
-                                          gradient_style = 'divergent',
-                                          gradient_limits = NULL,
-                                          select_cell_groups = NULL,
-                                          select_cells = NULL,
-                                          point_size = 2,
-                                          point_alpha = 1,
-                                          show_cluster_center = F,
-                                          show_center_label = T,
-                                          center_point_size = 4,
-                                          label_size = 4,
-                                          label_fontface = 'bold',
-                                          show_other_cells = T,
-                                          other_cell_color = 'lightgrey',
-                                          other_point_size = 1,
-                                          background_color = 'white',
-                                          vor_border_color = 'white',
-                                          vor_max_radius = 200,
-                                          vor_alpha = 1,
-                                          show_legend = TRUE
+plot_spat_voronoi_layer_ggplot = function(
+    ggobject,
+    instrs = NULL,
+    sdimx = NULL,
+    sdimy = NULL,
+    cell_locations_metadata_selected,
+    cell_locations_metadata_other,
+    cell_color = NULL,
+    color_as_factor = T,
+    cell_color_code = NULL,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = 'divergent',
+    gradient_limits = NULL,
+    select_cell_groups = NULL,
+    select_cells = NULL,
+    point_size = 2,
+    point_alpha = 1,
+    show_cluster_center = F,
+    show_center_label = T,
+    center_point_size = 4,
+    label_size = 4,
+    label_fontface = 'bold',
+    show_other_cells = T,
+    other_cell_color = 'lightgrey',
+    other_point_size = 1,
+    background_color = 'white',
+    vor_border_color = 'white',
+    vor_max_radius = 200,
+    vor_alpha = 1,
+    show_legend = TRUE
 
 ) {
 
@@ -541,10 +649,14 @@ plot_spat_voronoi_layer_ggplot = function(ggobject,
 
     combn_cell_locations_metadata = rbind(cell_locations_metadata_selected, cell_locations_metadata_other)
 
-    pl = pl + ggforce::geom_voronoi_tile(data = combn_cell_locations_metadata,
-                                         aes(x = sdimx, y = sdimy, group = -1L, fill = as.factor(temp_color)),
-                                         colour = vor_border_color, max.radius = vor_max_radius, show.legend = show_legend,
-                                         alpha = vor_alpha)
+    pl = pl + ggforce::geom_voronoi_tile(
+      data = combn_cell_locations_metadata,
+      aes(x = sdimx, y = sdimy, group = -1L, fill = as.factor(temp_color)),
+      colour = vor_border_color,
+      max.radius = vor_max_radius,
+      show.legend = show_legend,
+      alpha = vor_alpha
+    )
 
     if(show_other_cells == TRUE) {
       pl = pl + ggplot2::scale_fill_manual(values = c(selected = cell_color, other = other_cell_color))
@@ -557,20 +669,24 @@ plot_spat_voronoi_layer_ggplot = function(ggobject,
 
 
 
-  } else if(length(cell_color) > 1) {
+  } else if(length(cell_color) > 1L) {
 
     ## 2. continuous vector to convert to colors ##
-    if(is.numeric(cell_color) | is.factor(cell_color)) {
-      if(nrow(cell_locations_metadata_selected) != length(cell_color)) stop('\n vector needs to be the same lengths as number of cells \n')
+    if (is.numeric(cell_color) || is.factor(cell_color)) {
+      if (nrow(cell_locations_metadata_selected) != length(cell_color)) {
+        stop('\n vector needs to be the same lengths as number of cells \n')
+      }
 
       cell_locations_metadata_selected[['temp_color']] = cell_color
       if(!is.null(cell_locations_metadata_other)) cell_locations_metadata_other[['temp_color']] = NA
       combn_cell_locations_metadata = rbind(cell_locations_metadata_selected, cell_locations_metadata_other)
 
-      pl = pl + ggforce::geom_voronoi_tile(data = combn_cell_locations_metadata,
-                                           aes(x = sdimx, y = sdimy, group = -1L, fill = temp_color),
-                                           colour = vor_border_color, max.radius = vor_max_radius, show.legend = show_legend,
-                                           alpha = vor_alpha)
+      pl = pl + ggforce::geom_voronoi_tile(
+        data = combn_cell_locations_metadata,
+        aes(x = sdimx, y = sdimy, group = -1L, fill = temp_color),
+        colour = vor_border_color, max.radius = vor_max_radius, show.legend = show_legend,
+        alpha = vor_alpha
+      )
 
       if(is.null(gradient_midpoint)) {
         gradient_midpoint = stats::median(cell_locations_metadata_selected[['temp_color']])
@@ -578,11 +694,14 @@ plot_spat_voronoi_layer_ggplot = function(ggobject,
 
       mybg_color = ifelse(show_other_cells == TRUE, other_cell_color, background_color)
 
-      pl <- pl + set_default_color_continuous_cell(colors = cell_color_gradient,
-                                                   instrs = instrs,
-                                                   midpoint = gradient_midpoint,
-                                                   style = gradient_style,
-                                                   na.value = mybg_color)
+      pl <- pl + set_default_color_continuous_cell(
+        colors = cell_color_gradient,
+        instrs = instrs,
+        midpoint = gradient_midpoint,
+        style = gradient_style,
+        na.value = mybg_color,
+        type = "fill"
+      )
 
       # theme specific changes
       pl = pl + theme(legend.title = element_blank())
@@ -592,20 +711,28 @@ plot_spat_voronoi_layer_ggplot = function(ggobject,
 
       ## 3. character vector to convert to colors ##
 
-      if(!all(cell_color %in% grDevices::colors())) stop('cell_color is not numeric, a factor or vector of colors \n')
+      if(!all(cell_color %in% grDevices::colors())) {
+        stop('cell_color is not numeric, a factor or vector of colors \n')
+      }
 
-      if(nrow(cell_locations_metadata_selected) != length(cell_color)) stop('\n vector needs to be the same lengths as number of cells \n')
+      if(nrow(cell_locations_metadata_selected) != length(cell_color)) {
+        stop('\n vector needs to be the same lengths as number of cells \n')
+      }
 
-      other_cell_color = ifelse(show_other_cells == TRUE, other_cell_color, background_color)
+      other_cell_color = ifelse(isTRUE(show_other_cells), other_cell_color, background_color)
 
       cell_locations_metadata_selected[['temp_color']] = cell_color
       if(!is.null(cell_locations_metadata_other)) cell_locations_metadata_other[['temp_color']] = other_cell_color
       combn_cell_locations_metadata = rbind(cell_locations_metadata_selected, cell_locations_metadata_other)
 
-      pl = pl + ggforce::geom_voronoi_tile(data = combn_cell_locations_metadata,
-                                           aes(x = sdimx, y = sdimy, group = -1L, fill = temp_color),
-                                           colour = vor_border_color, max.radius = vor_max_radius, show.legend = show_legend,
-                                           alpha = vor_alpha)
+      pl = pl + ggforce::geom_voronoi_tile(
+        data = combn_cell_locations_metadata,
+        aes(x = sdimx, y = sdimy, group = -1L, fill = temp_color),
+        colour = vor_border_color,
+        max.radius = vor_max_radius,
+        show.legend = show_legend,
+        alpha = vor_alpha
+      )
 
       my_color_code = unique(combn_cell_locations_metadata[['temp_color']])
       names(my_color_code) = my_color_code
@@ -631,10 +758,14 @@ plot_spat_voronoi_layer_ggplot = function(ggobject,
       if(!is.null(cell_locations_metadata_other)) cell_locations_metadata_other[['temp_color']] = 'other'
       combn_cell_locations_metadata = rbind(cell_locations_metadata_selected, cell_locations_metadata_other)
 
-      pl = pl + ggforce::geom_voronoi_tile(data = combn_cell_locations_metadata,
-                                           aes(x = sdimx, y = sdimy, group = -1L, fill = temp_color),
-                                           colour = vor_border_color, max.radius = vor_max_radius, show.legend = show_legend,
-                                           alpha = vor_alpha)
+      pl = pl + ggforce::geom_voronoi_tile(
+        data = combn_cell_locations_metadata,
+        aes(x = sdimx, y = sdimy, group = -1L, fill = temp_color),
+        colour = vor_border_color,
+        max.radius = vor_max_radius,
+        show.legend = show_legend,
+        alpha = vor_alpha
+      )
 
       my_color_code = unique(combn_cell_locations_metadata[['temp_color']])
       names(my_color_code) = my_color_code
@@ -647,12 +778,15 @@ plot_spat_voronoi_layer_ggplot = function(ggobject,
 
       class_cell_color = class(cell_locations_metadata_selected[[cell_color]])
 
-      if((class_cell_color == 'integer' | class_cell_color == 'numeric') & color_as_factor == FALSE) {
+      if((class_cell_color %in% c("integer", "numeric")) && !isTRUE(color_as_factor)) {
 
         ## 5. use continuous column from metadata ##
 
         # set upper and lower limits
-        if(!is.null(gradient_limits) & is.vector(gradient_limits) & length(gradient_limits) == 2) {
+        if (!is.null(gradient_limits) &&
+            is.vector(gradient_limits) &&
+            length(gradient_limits) == 2L) {
+
           lower_lim = gradient_limits[[1]]
           upper_lim = gradient_limits[[2]]
 
@@ -668,23 +802,30 @@ plot_spat_voronoi_layer_ggplot = function(ggobject,
         if(!is.null(cell_locations_metadata_other)) cell_locations_metadata_other[['temp_color']] = NA
         combn_cell_locations_metadata = rbind(cell_locations_metadata_selected, cell_locations_metadata_other)
 
-        pl = pl + ggforce::geom_voronoi_tile(data = combn_cell_locations_metadata,
-                                             aes(x = sdimx, y = sdimy, group = -1L, fill = temp_color),
-                                             colour = vor_border_color, max.radius = vor_max_radius, show.legend = show_legend,
-                                             alpha = vor_alpha)
+        pl = pl + ggforce::geom_voronoi_tile(
+          data = combn_cell_locations_metadata,
+          aes(x = sdimx, y = sdimy, group = -1L, fill = temp_color),
+          colour = vor_border_color,
+          max.radius = vor_max_radius,
+          show.legend = show_legend,
+          alpha = vor_alpha
+        )
 
-        mybg_color = ifelse(show_other_cells == TRUE, other_cell_color, background_color)
+        mybg_color <- ifelse(isTRUE(show_other_cells), other_cell_color, background_color)
 
-        if(is.null(gradient_midpoint)) {
+        if (is.null(gradient_midpoint)) {
           gradient_midpoint = stats::median(cell_locations_metadata_selected[['temp_color']])
         }
 
-        pl = pl + set_default_color_continuous_cell(colors = cell_color_gradient,
-                                                    instrs = instrs,
-                                                    midpoint = gradient_midpoint,
-                                                    style = gradient_style,
-                                                    na.value = mybg_color,
-                                                    name = cell_color)
+        pl = pl + set_default_color_continuous_cell(
+          colors = cell_color_gradient,
+          instrs = instrs,
+          midpoint = gradient_midpoint,
+          style = gradient_style,
+          na.value = mybg_color,
+          name = cell_color,
+          type = "fill"
+        )
 
 
 
@@ -699,7 +840,7 @@ plot_spat_voronoi_layer_ggplot = function(ggobject,
         }
 
         # if you want to show centers or labels then calculate centers
-        if(show_cluster_center == TRUE | show_center_label == TRUE) {
+        if(show_cluster_center == TRUE || show_center_label == TRUE) {
           annotated_DT_centers = cell_locations_metadata_selected[, .(center_1 = stats::median(get('sdimx')),
                                                                       center_2 = stats::median(get('sdimy'))), by = cell_color]
           factor_center_data = factor(annotated_DT_centers[[cell_color]])
@@ -710,22 +851,26 @@ plot_spat_voronoi_layer_ggplot = function(ggobject,
         if(!is.null(cell_locations_metadata_other)) cell_locations_metadata_other[['temp_color']] = 'other'
         combn_cell_locations_metadata = rbind(cell_locations_metadata_selected, cell_locations_metadata_other)
 
-        pl = pl + ggforce::geom_voronoi_tile(data = combn_cell_locations_metadata,
-                                             aes(x = sdimx, y = sdimy, group = -1L, fill = temp_color),
-                                             colour = vor_border_color, max.radius = vor_max_radius, show.legend = show_legend,
-                                             alpha = vor_alpha)
+        pl = pl + ggforce::geom_voronoi_tile(
+          data = combn_cell_locations_metadata,
+          aes(x = sdimx, y = sdimy, group = -1L, fill = temp_color),
+          colour = vor_border_color,
+          max.radius = vor_max_radius,
+          show.legend = show_legend,
+          alpha = vor_alpha
+        )
 
 
-        other_cell_color = ifelse(show_other_cells == TRUE, other_cell_color, background_color)
+        other_cell_color = ifelse(isTRUE(show_other_cells), other_cell_color, background_color)
 
-        ## specificy colors to use
+        ## specify colors to use
         if(!is.null(cell_color_code)) {
 
           cell_color_code[['other']] = other_cell_color
           pl = pl + ggplot2::scale_fill_manual(values = cell_color_code,
                                                name = cell_color)
 
-        } else if(color_as_factor == T) {
+        } else if(isTRUE(color_as_factor)) {
 
           number_colors = length(unique(factor_data))
           cell_color_code = set_default_color_discrete_cell(instrs = instrs)(n = number_colors)
@@ -737,18 +882,25 @@ plot_spat_voronoi_layer_ggplot = function(ggobject,
         }
 
         ## plot centers
-        if(show_cluster_center == TRUE & (color_as_factor == TRUE | class_cell_color %in% c('character', 'factor'))) {
+        if(isTRUE(show_cluster_center) &&
+           (isTRUE(color_as_factor) || class_cell_color %in% c('character', 'factor'))) {
 
-          pl <- pl + ggplot2::geom_point(data = annotated_DT_centers,
-                                         aes_string2(x = 'center_1', y = 'center_2', color = cell_color),
-                                         size = center_point_size, shape = 19)
+          pl <- pl + ggplot2::geom_point(
+            data = annotated_DT_centers,
+            aes_string2(x = 'center_1', y = 'center_2', color = cell_color),
+            size = center_point_size,
+            shape = 19
+          )
         }
 
         ## plot labels
-        if(show_center_label == TRUE) {
-          pl <- pl + ggrepel::geom_text_repel(data = annotated_DT_centers,
-                                              aes_string2(x = 'center_1', y = 'center_2', label = cell_color),
-                                              size = label_size, fontface = label_fontface)
+        if(isTRUE(show_center_label)) {
+          pl <- pl + ggrepel::geom_text_repel(
+            data = annotated_DT_centers,
+            aes_string2(x = 'center_1', y = 'center_2', label = cell_color),
+            size = label_size,
+            fontface = label_fontface
+          )
         }
 
       }
@@ -761,19 +913,28 @@ plot_spat_voronoi_layer_ggplot = function(ggobject,
 
   ## lastly overlay POINTS ##
   ## first plot other non-selected cells
-  if((!is.null(select_cells) | !is.null(select_cell_groups)) & show_other_cells == TRUE) {
+  if((!is.null(select_cells) || !is.null(select_cell_groups))
+     && isTRUE(show_other_cells)) {
 
-    pl <- pl + ggplot2::geom_point(data = cell_locations_metadata_other,
-                                   aes_string(x = sdimx, sdimy),
-                                   color = 'black', show.legend = F, size = other_point_size,
-                                   alpha = point_alpha)
+    pl <- pl + ggplot2::geom_point(
+      data = cell_locations_metadata_other,
+      aes_string(x = sdimx, sdimy),
+      color = 'black',
+      show.legend = FALSE,
+      size = other_point_size,
+      alpha = point_alpha
+    )
   }
 
   ## plot selected cells
-  pl <- pl + ggplot2::geom_point(data = cell_locations_metadata_selected,
-                                 aes_string(x = sdimx, y = sdimy),
-                                 show.legend = F, color = 'black', size = point_size,
-                                 alpha = point_alpha)
+  pl <- pl + ggplot2::geom_point(
+    data = cell_locations_metadata_selected,
+    aes_string(x = sdimx, y = sdimy),
+    show.legend = FALSE,
+    color = 'black',
+    size = point_size,
+    alpha = point_alpha
+  )
 
 
   return(pl)
@@ -826,7 +987,7 @@ plot_cell_polygon_layer = function(ggobject = NULL,
 
   # create layer
   if (!is.null(ggobject) &&
-     methods::is(ggobject, 'ggplot')) {
+      methods::is(ggobject, 'ggplot')) {
     pl = ggobject
   } else {
     pl = ggplot2::ggplot()
@@ -872,7 +1033,8 @@ plot_cell_polygon_layer = function(ggobject = NULL,
         instrs = instrs,
         midpoint = fill_gradient_midpoint,
         style = fill_gradient_style,
-        guide = ggplot2::guide_colorbar(title = '')
+        guide = ggplot2::guide_colorbar(title = ''),
+        type = "fill"
       )
     }
 
@@ -1326,14 +1488,21 @@ plot_spat_image_layer_ggplot = function(gg_obj,
         img_array_RGB = img_array
       }
 
-      gg_obj = gg_obj + annotation_raster(img_array_RGB,
-                                          xmin = xmin, xmax = xmax,
-                                          ymin = ymin, ymax = ymax)
+      gg_obj <- gg_obj +
+        annotation_raster(img_array_RGB,
+                          xmin = xmin, xmax = xmax,
+                          ymin = ymin, ymax = ymax)
     }
 
   }
 
-  if(!is.null(spatlocs))  gg_obj = gg_obj + geom_point(data = spatlocs, aes_string(sdimx, sdimy), alpha = 0.5, size = 0.4)
+  if(!is.null(spatlocs)) {
+    gg_obj <- gg_obj +
+      geom_point(data = spatlocs,
+                 aes_string(sdimx, sdimy),
+                 alpha = 0.5,
+                 size = 0.4)
+  }
 
   return(gg_obj)
 
@@ -1473,35 +1642,36 @@ plot_network_layer_ggplot = function(ggobject,
 #' @details Description of parameters.
 #' @keywords internal
 #' @noRd
-plot_point_layer_ggplot = function(ggobject,
-                                   instrs = NULL,
-                                   annotated_DT_selected,
-                                   annotated_DT_other,
-                                   cell_color = NULL,
-                                   color_as_factor = T,
-                                   cell_color_code = NULL,
-                                   cell_color_gradient = NULL,
-                                   gradient_midpoint = 0,
-                                   gradient_style = 'divergent',
-                                   gradient_limits = NULL,
-                                   select_cell_groups = NULL,
-                                   select_cells = NULL,
-                                   point_size = 1,
-                                   point_alpha = 1,
-                                   point_border_col = 'black',
-                                   point_border_stroke = 0.1,
-                                   show_cluster_center = F,
-                                   show_center_label = T,
-                                   center_point_size = 4,
-                                   center_point_border_col = 'black',
-                                   center_point_border_stroke = 0.1,
-                                   label_size = 4,
-                                   label_fontface = 'bold',
-                                   edge_alpha = NULL,
-                                   show_other_cells = T,
-                                   other_cell_color = 'lightgrey',
-                                   other_point_size = 0.5,
-                                   show_legend = T
+plot_point_layer_ggplot = function(
+    ggobject,
+    instrs = NULL,
+    annotated_DT_selected,
+    annotated_DT_other,
+    cell_color = NULL,
+    color_as_factor = TRUE,
+    cell_color_code = NULL,
+    cell_color_gradient = NULL,
+    gradient_midpoint = 0,
+    gradient_style = 'divergent',
+    gradient_limits = NULL,
+    select_cell_groups = NULL,
+    select_cells = NULL,
+    point_size = 1,
+    point_alpha = 1,
+    point_border_col = 'black',
+    point_border_stroke = 0.1,
+    show_cluster_center = FALSE,
+    show_center_label = TRUE,
+    center_point_size = 4,
+    center_point_border_col = 'black',
+    center_point_border_stroke = 0.1,
+    label_size = 4,
+    label_fontface = 'bold',
+    edge_alpha = NULL,
+    show_other_cells = TRUE,
+    other_cell_color = 'lightgrey',
+    other_point_size = 0.5,
+    show_legend = TRUE
 ) {
 
 
@@ -1666,10 +1836,13 @@ plot_point_layer_ggplot = function(ggobject,
         if(is.null(gradient_midpoint)) {
           gradient_midpoint = stats::median(annotated_DT_selected[[cell_color]])
         }
-        pl <- pl + set_default_color_continuous_cell(colors = cell_color_gradient,
-                                                     instrs = instrs,
-                                                     midpoint = gradient_midpoint,
-                                                     style = gradient_style)
+        pl <- pl + set_default_color_continuous_cell(
+          colors = cell_color_gradient,
+          instrs = instrs,
+          midpoint = gradient_midpoint,
+          style = gradient_style,
+          type = "fill"
+        )
 
       }
     }
@@ -1860,10 +2033,13 @@ plot_point_layer_ggplot_noFILL = function(ggobject,
         if(is.null(gradient_midpoint)) {
           gradient_midpoint = stats::median(annotated_DT_selected[[cell_color]])
         }
-        pl <- pl + set_default_color_continuous_cell(colors = cell_color_gradient,
-                                                     instrs = instrs,
-                                                     midpoint = gradient_midpoint,
-                                                     style = gradient_style)
+        pl <- pl + set_default_color_continuous_cell(
+          colors = cell_color_gradient,
+          instrs = instrs,
+          midpoint = gradient_midpoint,
+          style = gradient_style,
+          type = "color"
+        )
 
       }
     }

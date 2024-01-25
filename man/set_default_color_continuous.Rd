@@ -11,13 +11,13 @@
 \usage{
 set_default_color_continuous(
   colors = NULL,
-  instr_pal,
-  instr_rev,
   midpoint = NULL,
   style = c("divergent", "sequential"),
-  type_default = NULL,
-  type = c("fill", "color"),
-  ...
+  ...,
+  instr_pal,
+  instr_rev,
+  data_default = NULL,
+  type = c("fill", "color")
 )
 
 set_default_color_continuous_cell(
@@ -25,8 +25,8 @@ set_default_color_continuous_cell(
   instrs,
   midpoint = NULL,
   style = "divergent",
-  type_default = NULL,
-  ...
+  ...,
+  data_default = NULL
 )
 
 set_default_color_continuous_poly(
@@ -58,27 +58,27 @@ set_default_color_continuous_CCcom_dotplot(
   instrs,
   midpoint = NULL,
   style = "divergent",
+  ...,
   type = c("fill", "color"),
-  type_default = list(pal = c("darkblue", "blue", "white", "red", "darkred")),
-  ...
+  data_default = list(pal = c("darkblue", "blue", "white", "red", "darkred"))
 )
 }
 \arguments{
 \item{colors}{character or \code{NULL}. 2 to n number of hex color codes or 1 single
 name of a palette to use can be passed}
 
-\item{instr_pal, instr_rev}{used by upstream function to pass specific \code{giottoInstructions} params}
-
 \item{midpoint}{numeric. midpoint value of color gradient}
 
 \item{style}{scale color scale around \code{midpoint} (divergent) or starting from
 minimum value (sequential)}
 
-\item{type_default}{data type specific default to use}
+\item{\dots}{additional params to pass to respective ggplot fill_gradient functions}
+
+\item{instr_pal, instr_rev}{used by upstream function to pass specific \code{giottoInstructions} params}
+
+\item{data_default}{data type (e.g. cells, polys, heatmap) specific default colors to use}
 
 \item{type}{whether setting is for ggplot2 'fill' or 'color' type function}
-
-\item{\dots}{additional params to pass to respective ggplot fill_gradient functions}
 
 \item{instrs}{\code{giottoInstructions} object (output of \code{instructions(gobject)})}
 }
@@ -89,8 +89,8 @@ default gradient if \code{NULL} is passed.
 
 Supports colors setting at four levels:
 \itemize{
-\item \strong{type specific defaults} - defaults for a sepecific feature or type of
-plot can be passed through \code{type_default} param
+\item \strong{type specific defaults} - defaults for a specific feature or type of
+plot can be passed through \code{data_default} param
 \item \strong{global options} (general session setting with blanket color palette type effects)
 \itemize{
 \item options('giotto.color_c_pal) - palette to use. Default for 'divergent'
