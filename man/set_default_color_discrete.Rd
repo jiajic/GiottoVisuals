@@ -10,10 +10,10 @@
 \usage{
 set_default_color_discrete(
   colors = NULL,
+  ...,
   instr_pal,
   instr_rev,
-  instr_strategy,
-  ...
+  instr_strategy
 )
 
 set_default_color_discrete_cell(colors = NULL, instrs, ...)
@@ -27,9 +27,9 @@ set_default_color_discrete_heatmap_clus(colors = NULL, instrs, ...)
 \arguments{
 \item{colors}{accepts color inputs}
 
-\item{instr_pal, instr_rev, instr_strategy}{used by upstream function to pass specific \code{giottoInstructions} params}
-
 \item{\dots}{additional params to pass}
+
+\item{instr_pal, instr_rev, instr_strategy}{used by upstream function to pass specific \code{giottoInstructions} params}
 
 \item{instrs}{\code{giottoInstructions} object (output of \code{instructions(gobject)})}
 }

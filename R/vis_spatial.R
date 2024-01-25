@@ -123,7 +123,7 @@
                                     feat_type = feat_type)
 
   ## giotto image ##
-  if(show_image == TRUE) {
+  if (isTRUE(show_image)) {
 
     if(!is.null(gimage)) {
       gimage = gimage
@@ -2211,56 +2211,58 @@ spatDimPlot = function(gobject, ...) {
 #' @family spatial feature expression visualizations
 #' @export
 #' @seealso \code{\link{spatGenePlot3D}}
-spatFeatPlot2D_single <- function(gobject,
-                                  spat_unit = NULL,
-                                  feat_type = NULL,
-                                  show_image = F,
-                                  gimage = NULL,
-                                  image_name = NULL,
-                                  largeImage_name = NULL,
-                                  spat_loc_name = 'raw',
-                                  sdimx = 'sdimx',
-                                  sdimy = 'sdimy',
-                                  spat_enr_names = NULL,
-                                  expression_values = c('normalized', 'scaled', 'custom'),
-                                  feats,
-                                  order = TRUE,
-                                  cell_color_gradient = NULL,
-                                  gradient_midpoint = NULL,
-                                  gradient_style = c('divergent', 'sequential'),
-                                  gradient_limits = NULL,
-                                  show_network = F,
-                                  network_color = NULL,
-                                  spatial_network_name = 'Delaunay_network',
-                                  edge_alpha = NULL,
-                                  show_grid = F,
-                                  grid_color = NULL,
-                                  spatial_grid_name = 'spatial_grid',
-                                  midpoint = 0,
-                                  scale_alpha_with_expression = FALSE,
-                                  point_shape = c('border', 'no_border', 'voronoi'),
-                                  point_size = 1,
-                                  point_alpha = 1,
-                                  point_border_col = 'black',
-                                  point_border_stroke = 0.1,
-                                  coord_fix_ratio = 1,
-                                  show_legend = T,
-                                  legend_text = 8,
-                                  background_color = 'white',
-                                  vor_border_color = 'white',
-                                  vor_alpha = 1,
-                                  vor_max_radius = 200,
-                                  axis_text = 8,
-                                  axis_title = 8,
-                                  cow_n_col = NULL,
-                                  cow_rel_h = 1,
-                                  cow_rel_w = 1,
-                                  cow_align = 'h',
-                                  show_plot = NA,
-                                  return_plot = NA,
-                                  save_plot = NA,
-                                  save_param =  list(),
-                                  default_save_name = 'spatFeatPlot2D_single') {
+spatFeatPlot2D_single <- function(
+    gobject,
+    spat_unit = NULL,
+    feat_type = NULL,
+    show_image = F,
+    gimage = NULL,
+    image_name = NULL,
+    largeImage_name = NULL,
+    spat_loc_name = 'raw',
+    sdimx = 'sdimx',
+    sdimy = 'sdimy',
+    spat_enr_names = NULL,
+    expression_values = c('normalized', 'scaled', 'custom'),
+    feats,
+    order = TRUE,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = c('divergent', 'sequential'),
+    gradient_limits = NULL,
+    show_network = FALSE,
+    network_color = NULL,
+    spatial_network_name = 'Delaunay_network',
+    edge_alpha = NULL,
+    show_grid = FALSE,
+    grid_color = NULL,
+    spatial_grid_name = 'spatial_grid',
+    midpoint = 0,
+    scale_alpha_with_expression = FALSE,
+    point_shape = c('border', 'no_border', 'voronoi'),
+    point_size = 1,
+    point_alpha = 1,
+    point_border_col = 'black',
+    point_border_stroke = 0.1,
+    coord_fix_ratio = 1,
+    show_legend = TRUE,
+    legend_text = 8,
+    background_color = 'white',
+    vor_border_color = 'white',
+    vor_alpha = 1,
+    vor_max_radius = 200,
+    axis_text = 8,
+    axis_title = 8,
+    cow_n_col = NULL,
+    cow_rel_h = 1,
+    cow_rel_w = 1,
+    cow_align = 'h',
+    show_plot = NA,
+    return_plot = NA,
+    save_plot = NA,
+    save_param =  list(),
+    default_save_name = 'spatFeatPlot2D_single'
+) {
 
 
   # data.table variables
@@ -2508,11 +2510,14 @@ spatFeatPlot2D_single <- function(gobject,
 
       ## scale and labs ##
       pl <- pl + ggplot2::scale_alpha_continuous(guide = 'none')
-      pl <- pl + set_default_color_continuous_cell(colors = cell_color_gradient,
-                                                   instrs = instructions(gobject),
-                                                   midpoint = gradient_midpoint,
-                                                   style = gradient_style,
-                                                   guide = guide_colorbar(title = ''))
+      pl <- pl + set_default_color_continuous_cell(
+        colors = cell_color_gradient,
+        instrs = instructions(gobject),
+        midpoint = gradient_midpoint,
+        style = gradient_style,
+        guide = guide_colorbar(title = ''),
+        type = "fill"
+      )
       pl <- pl + ggplot2::labs(x = 'coord x', y = 'coord y', title = feat)
 
 
@@ -2543,11 +2548,14 @@ spatFeatPlot2D_single <- function(gobject,
 
       ## scale and labs ##
       pl <- pl + ggplot2::scale_alpha_continuous(guide = 'none')
-      pl <- pl + set_default_color_continuous_cell(colors = cell_color_gradient,
-                                                   instrs = instructions(gobject),
-                                                   midpoint = gradient_midpoint,
-                                                   style = gradient_style,
-                                                   guide = guide_colorbar(title = ''))
+      pl <- pl + set_default_color_continuous_cell(
+        colors = cell_color_gradient,
+        instrs = instructions(gobject),
+        midpoint = gradient_midpoint,
+        style = gradient_style,
+        guide = guide_colorbar(title = ''),
+        type = "color"
+      )
       pl <- pl + ggplot2::labs(x = 'coord x', y = 'coord y', title = feat)
 
     }
@@ -2612,7 +2620,8 @@ spatFeatPlot2D_single <- function(gobject,
         instrs = instructions(gobject),
         midpoint = gradient_midpoint,
         style = gradient_style,
-        guide = guide_colorbar(title = '')
+        guide = guide_colorbar(title = ''),
+        type = "fill"
       )
       pl <- pl + ggplot2::labs(x = 'coord x', y = 'coord y', title = feat)
 
@@ -3222,7 +3231,8 @@ dimFeatPlot2D <- function(gobject,
           instrs = instructions(gobject),
           midpoint = gradient_midpoint,
           style = gradient_style,
-          guide = guide_colorbar(title = '')
+          guide = guide_colorbar(title = ''),
+          type = "fill"
         )
       }
 
@@ -3250,7 +3260,8 @@ dimFeatPlot2D <- function(gobject,
           instrs = instructions(gobject),
           midpoint = gradient_midpoint,
           style = gradient_style,
-          guide = guide_colorbar(title = '')
+          guide = guide_colorbar(title = ''),
+          type = "color"
         )
       }
     }

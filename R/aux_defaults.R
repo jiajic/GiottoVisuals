@@ -80,10 +80,10 @@ NULL
 #' @export
 set_default_color_discrete = function(
     colors = NULL,
+    ...,
     instr_pal,
     instr_rev,
-    instr_strategy,
-    ...
+    instr_strategy
 ) {
 
   # global giotto options
@@ -223,8 +223,8 @@ set_default_color_discrete_heatmap_clus = function(
 #' `midpoint` param only supplied when using color scale with 3 colors.\cr\cr
 #'
 #' Supports colors setting at four levels:
-#' - **type specific defaults** - defaults for a sepecific feature or type of
-#' plot can be passed through `type_default` param
+#' - **type specific defaults** - defaults for a specific feature or type of
+#' plot can be passed through `data_default` param
 #' - **global options** (general session setting with blanket color palette type effects)
 #'    - options('giotto.color_c_pal) - palette to use. Default for 'divergent'
 #' data is blue, white, red, for sequential, it is 'viridis'
@@ -240,7 +240,7 @@ set_default_color_discrete_heatmap_clus = function(
 #' @param midpoint numeric. midpoint value of color gradient
 #' @param style scale color scale around `midpoint` (divergent) or starting from
 #' minimum value (sequential)
-#' @param type_default data type specific default to use
+#' @param data_default data type (e.g. cells, polys, heatmap) specific default colors to use
 #' @param type whether setting is for ggplot2 'fill' or 'color' type function
 #' @param \dots additional params to pass to respective ggplot fill_gradient functions
 #' @examples
@@ -302,19 +302,19 @@ NULL
 #' @export
 set_default_color_continuous <- function(
     colors = NULL, # used for function inputs
-    instr_pal,
-    instr_rev,
     midpoint = NULL,
     style = c('divergent', 'sequential'),
-    type_default = NULL,
-    type = c('fill', 'color'),
-    ...
+    ...,
+    instr_pal,
+    instr_rev,
+    data_default = NULL,
+    type = c('fill', 'color')
 ) {
 
   if(!is.null(midpoint)) checkmate::assert_numeric(midpoint)
   if(!is.null(instr_pal)) checkmate::assert_character(instr_pal)
   if(!is.null(instr_rev)) checkmate::assert_logical(instr_rev)
-  if(!is.null(type_default)) checkmate::assert_list(type_default)
+  if(!is.null(data_default)) checkmate::assert_list(data_default)
 
   style <- g_match_arg(style[1], choices = c('divergent', 'sequential'))
   type <- g_match_arg(type[1], choices = c('fill', 'color'))
@@ -348,8 +348,8 @@ set_default_color_continuous <- function(
   # get 'colors' either from param input or options
   if (is.null(colors)) { # function-level input
     if (is.null(instr_pal)) { # instructions-level input (data type specific)
-      if (!is.null(type_default)) { # global-level input (gradient style specific)
-        colors <- type_default$pal
+      if (!is.null(data_default)) { # global-level input (gradient style specific)
+        colors <- data_default$pal
       } else colors <- opt_pal
     } else colors <- instr_pal
   }
@@ -376,14 +376,10 @@ set_default_color_continuous <- function(
 }
 
 
-.evaluate_color_gradient_divergent = function(colors,
-                                             reverse,
-                                             midpoint,
-                                             grad2,
-                                             grad,
-                                             gradn,
-                                             ...) {
-  if(is.null(midpoint)) midpoint = 0
+.evaluate_color_gradient_divergent <- function(
+    colors, reverse, midpoint, ..., grad2, grad, gradn
+) {
+  if(is.null(midpoint)) midpoint <- 0
 
   if (inherits(colors, 'character')) {
     if(length(colors) == 3L) { # assume simple palette if 3 entries in vector
@@ -413,11 +409,9 @@ set_default_color_continuous <- function(
   gradient
 }
 
-.evaluate_color_gradient_sequential = function(colors,
-                                              reverse,
-                                              gradn,
-                                              grad,
-                                              ...) {
+.evaluate_color_gradient_sequential <- function(
+    colors, reverse, ..., gradn, grad
+) {
   if (inherits(colors, 'character')) {
     if(length(colors) == 3L) { # assume simple palette if 3 entries in vector
       if(reverse) colors <- rev(colors)
@@ -450,8 +444,8 @@ set_default_color_continuous_cell <- function(
     instrs,
     midpoint = NULL,
     style = 'divergent',
-    type_default = NULL,
-    ...
+    ...,
+    data_default = NULL
 ) {
 
   # read instructions
@@ -464,7 +458,7 @@ set_default_color_continuous_cell <- function(
     instr_rev = instr_rev,
     midpoint = midpoint,
     style = style,
-    type_default = type_default,
+    data_default = data_default,
     ...
   )
 }
@@ -538,7 +532,7 @@ set_default_color_continuous_CCcom_heatmap = function(
     instr_rev = instr_rev,
     midpoint = midpoint,
     style = style,
-    type_default = list(
+    data_default = list(
       pal = c('darkblue', 'blue', 'white', 'red', 'darkred')
     ),
     ...
@@ -552,11 +546,11 @@ set_default_color_continuous_CCcom_dotplot = function(
     instrs,
     midpoint = NULL,
     style = 'divergent',
+    ...,
     type = c('fill', 'color'),
-    type_default = list(
+    data_default = list(
       pal = c('darkblue', 'blue', 'white', 'red', 'darkred')
-    ),
-    ...
+    )
 ) {
 
   # read instructions
@@ -569,7 +563,7 @@ set_default_color_continuous_CCcom_dotplot = function(
     instr_rev = instr_rev,
     midpoint = midpoint,
     style = style,
-    type_default = type_default,
+    data_default = data_default,
     type = type,
     ...
   )
