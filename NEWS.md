@@ -1,7 +1,11 @@
 
-# GiottoVisuals 0.1.3 (2024/01/25)
+# GiottoVisuals 0.1.4 (2024/01/25)
 ## bug fixes
 - fix plotting color gradient when using param `point_shape = "no_border"`
+- fix image NA value [#865](https://github.com/drieslab/Giotto/issues/865) by rbutleriii
+
+## new
+- `gg_annotation_raster()` internal generic for adding a `giottoImage`, `giottoLargeImage`, or `list` thereof to a `ggplot` object
 
 # GiottoVisuals 0.1.2 (2023/01/12)
 

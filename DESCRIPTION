@@ -1,6 +1,6 @@
 Package: GiottoVisuals
 Title: Visuals for the Giotto spatial biology analysis ecosystem
-Version: 0.1.3
+Version: 0.1.4
 Authors@R: c(
 	person("Ruben", "Dries", email = "rubendries@gmail.com",
 		 role = c("aut", "cre")),
@@ -82,6 +82,8 @@ Collate:
     'colorRamp2.R'
     'color_palettes.R'
     'dd.R'
+    'generics.R'
+    'gg_annotation_raster.R'
     'gg_info_layers.R'
     'globals.R'
     'gstop.R'
