@@ -14,9 +14,9 @@
 \S4method{gg_annotation_raster}{gg,giottoLargeImage}(ggobj, gimage, ...)
 }
 \arguments{
-\item{gimage}{\code{giottoLargeImage}, \code{giottoImage} or \code{list} thereof}
+\item{ggobj}{ggplot2 \code{gg} object}
 
-\item{gg}{ggplot2 gg object}
+\item{gimage}{\code{giottoLargeImage}, \code{giottoImage} or \code{list} thereof}
 }
 \value{
 \code{gg} object with images to plot appended as annotation rasters
