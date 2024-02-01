@@ -1,4 +1,8 @@
 
+# GiottoVisuls 0.1.5 (TBD)
+## new
+- `mixHSV()` vectorized color mixing in HSV space for overlapping colors in plots
+
 # GiottoVisuals 0.1.4 (2024/01/25)
 ## bug fixes
 - fix plotting color gradient when using param `point_shape = "no_border"`
