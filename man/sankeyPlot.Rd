@@ -99,44 +99,48 @@ giottoPolygon objects. See usage section and examples.
 }
 \examples{
 \dontrun{
-x = data.frame(
-  col1 = c('a', 'a', 'b'),
-  col2 = c('1', '2', '2')
+x <- data.frame(
+  col1 = c("a", "a", "b"),
+  col2 = c("1", "2", "2")
 )
 sankeyPlot(x)
 
-y = data.frame(
-  col1 = '1',
-  col2 = c('A', 'B', 'C')
+y <- data.frame(
+  col1 = "1",
+  col2 = c("A", "B", "C")
 )
 
 # combine data.frames of relations
 # rbind: note that node "1" is mapped the same for x and y
-sankeyPlot(rbind(x,y), fontSize = 20)
+sankeyPlot(rbind(x, y), fontSize = 20)
 
 # list: note that node "1" is now considered a different node between x and y
-sankeyPlot(list(x,y), fontSize = 20)
+sankeyPlot(list(x, y), fontSize = 20)
 
 # focus on specific nodes/names
-sankeyPlot(rbind(x,y), fontSize = 20, focus_names = c('a', '1', 'B'))
+sankeyPlot(rbind(x, y), fontSize = 20, focus_names = c("a", "1", "B"))
 
-g = GiottoData::loadGiottoMini("vizgen")
+g <- GiottoData::loadGiottoMini("vizgen")
 # with giottoSankeyPlan
-leiden = sankeySet(spat_unit = 'aggregate',
-                   feat_type = 'rna',
-                   col = 'leiden_clus')
-louvain = sankeySet(spat_unit = 'aggregate',
-                    feat_type = 'rna',
-                    col = 'louvain_clus')
+leiden <- sankeySet(
+  spat_unit = "aggregate",
+  feat_type = "rna",
+  col = "leiden_clus"
+)
+louvain <- sankeySet(
+  spat_unit = "aggregate",
+  feat_type = "rna",
+  col = "louvain_clus"
+)
 # place defined sets into same object
-plan = leiden + louvain
+plan <- leiden + louvain
 # assign relationships to compare
-sankeyRelate(plan) = c(0,1)
+sankeyRelate(plan) <- c(0, 1)
 sankeyPlot(g, plan)
 
 # with single set of metadata
-activeSpatUnit(g) = 'aggregate'
-sankeyPlot(g, c('louvain_clus', 'leiden_clus'))
+activeSpatUnit(g) <- "aggregate"
+sankeyPlot(g, c("louvain_clus", "leiden_clus"))
 }
 }
 \keyword{plotting}

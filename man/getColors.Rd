@@ -34,7 +34,7 @@ pulled without modification starting from the first value. If more are requested
 than exist then the palette will be made continuous\cr
 }
 \examples{
-f <- system.file("ex/elev.tif", package="terra")
+f <- system.file("ex/elev.tif", package = "terra")
 r <- terra::rast(f)
-terra::plot(r, col = getColors(pal = 'Spectral', n = 100))
+terra::plot(r, col = getColors(pal = "Spectral", n = 100))
 }

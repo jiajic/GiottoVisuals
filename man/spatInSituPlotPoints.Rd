@@ -158,12 +158,12 @@ Function to plot multiple features for multiple modalities at the spatial in sit
 \examples{
 \dontrun{
 library(GiottoVisuals)
-g <- GiottoData::loadGiottoMini('vizgen')
+g <- GiottoData::loadGiottoMini("vizgen")
 
 spatInSituPlotPoints(
   g,
-  polygon_feat_type = 'aggregate',
-  polygon_fill = 'nr_feats',
+  polygon_feat_type = "aggregate",
+  polygon_fill = "nr_feats",
   polygon_fill_as_factor = FALSE,
   polygon_line_size = 0.1,
   polygon_alpha = 1
@@ -171,9 +171,9 @@ spatInSituPlotPoints(
 
 spatInSituPlotPoints(
   g,
-  polygon_feat_type = 'aggregate',
-  spat_enr_names = 'cluster_metagene',
-  polygon_fill = '1',
+  polygon_feat_type = "aggregate",
+  spat_enr_names = "cluster_metagene",
+  polygon_fill = "1",
   polygon_fill_as_factor = FALSE,
   polygon_alpha = 1
 )

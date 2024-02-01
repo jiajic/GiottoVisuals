@@ -35,7 +35,7 @@ to \code{c1} or \code{c2} values during mixing.
 # with black background
 a <- GiottoVisuals::simple_palette_factory(c("green", "black"))(255)
 b <- GiottoVisuals::simple_palette_factory(c("red", "black", "blue"))(255)
-x <- mixHSV(a,b, base_color = "black")
+x <- mixHSV(a, b, base_color = "black")
 
 op <- par(no.readonly = TRUE)
 par(bg = "black")
@@ -51,7 +51,7 @@ par(op)
 # with white background
 a <- GiottoVisuals::simple_palette_factory(c("green", "white"))(255)
 b <- GiottoVisuals::simple_palette_factory(c("red", "white", "blue"))(255)
-x <- mixHSV(a,b, base_color = "white")
+x <- mixHSV(a, b, base_color = "white")
 
 plot(seq(255), y = rep(2, 255), col = a, pch = 15, ylim = c(0, 3), bg = "black")
 points(seq(255), y = rep(1.5, 255), col = b, pch = 15)
