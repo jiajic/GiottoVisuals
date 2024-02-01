@@ -46,7 +46,7 @@
     gobject,
     feat_type = NULL,
     spat_unit = NULL,
-    show_image = F,
+    show_image = FALSE,
     gimage = NULL,
     image_name = NULL,
     largeImage_name = NULL,
@@ -55,7 +55,7 @@
     sdimy = "sdimy",
     spat_enr_names = NULL,
     cell_color = NULL,
-    color_as_factor = T,
+    color_as_factor = TRUE,
     cell_color_code = NULL,
     cell_color_gradient = NULL,
     gradient_midpoint = NULL,
@@ -68,27 +68,27 @@
     point_alpha = 1,
     point_border_col = "black",
     point_border_stroke = 0.1,
-    show_cluster_center = F,
-    show_center_label = F,
+    show_cluster_center = FALSE,
+    show_center_label = FALSE,
     center_point_size = 4,
     center_point_border_col = "black",
     center_point_border_stroke = 0.1,
     label_size = 4,
     label_fontface = "bold",
-    show_network = F,
+    show_network = FALSE,
     spatial_network_name = "Delaunay_network",
     network_color = NULL,
     network_alpha = 1,
-    show_grid = F,
+    show_grid = FALSE,
     spatial_grid_name = "spatial_grid",
     grid_color = NULL,
-    show_other_cells = T,
+    show_other_cells = TRUE,
     other_cell_color = "lightgrey",
     other_point_size = 1,
     other_cells_alpha = 0.1,
     coord_fix_ratio = 1,
     title = NULL,
-    show_legend = T,
+    show_legend = TRUE,
     legend_text = 8,
     legend_symbol_size = 1,
     background_color = "white",
@@ -104,10 +104,6 @@
     save_param = list(),
     default_save_name = "spatPlot2D_single") {
   assert_giotto(gobject)
-
-  if (verbose == TRUE) {
-    cat("\n verbose == TRUE \n")
-  }
 
   # Check params
   if (!is.null(image_name) && !is.null(largeImage_name)) stop("Only one type of image can be used at a time")
@@ -284,7 +280,7 @@
   ### create 2D plot with ggplot ###
   # cat('create 2D plot with ggplot \n')
 
-  if (verbose == TRUE) {
+  if (isTRUE(verbose)) {
     cat("Data table with selected information (e.g. cells): \n")
     print(cell_locations_metadata_selected[1:5, ])
 
@@ -298,7 +294,7 @@
   pl <- pl + ggplot2::theme_bw()
 
   ## plot image ##
-  if (show_image == TRUE & !is.null(gimage)) {
+  if (isTRUE(show_image) && !is.null(gimage)) {
     pl <- plot_spat_image_layer_ggplot(
       gg_obj = pl,
       gobject = gobject,
@@ -312,7 +308,7 @@
   }
 
   ## plot spatial network
-  if (!is.null(spatial_network) & show_network == TRUE) {
+  if (!is.null(spatial_network) && isTRUE(show_network)) {
     if (is.null(network_color)) network_color <- "red"
     pl <- pl + ggplot2::geom_segment(
       data = spatial_network, aes(
@@ -341,8 +337,9 @@
   }
 
   ## plot point layer
-  if (point_shape == "border") {
-    pl <- plot_spat_point_layer_ggplot(
+  pl <- switch(
+    point_shape,
+    "border" = plot_spat_point_layer_ggplot(
       ggobject = pl,
       instrs = instructions(gobject),
       sdimx = sdimx,
@@ -373,9 +370,8 @@
       other_cell_color = other_cell_color,
       other_point_size = other_point_size,
       show_legend = show_legend
-    )
-  } else if (point_shape == "no_border") {
-    pl <- plot_spat_point_layer_ggplot_noFILL(
+    ),
+    "no_border" = plot_spat_point_layer_ggplot_noFILL(
       ggobject = pl,
       instrs = instructions(gobject),
       sdimx = sdimx,
@@ -402,9 +398,8 @@
       other_cell_color = other_cell_color,
       other_point_size = other_point_size,
       show_legend = show_legend
-    )
-  } else if (point_shape == "voronoi") {
-    pl <- plot_spat_voronoi_layer_ggplot(
+    ),
+    "voronoi" = plot_spat_voronoi_layer_ggplot(
       ggobject = pl,
       instrs = instructions(gobject),
       sdimx = sdimx,
@@ -436,7 +431,7 @@
       vor_alpha = vor_alpha,
       show_legend = show_legend
     )
-  }
+  )
 
 
 
