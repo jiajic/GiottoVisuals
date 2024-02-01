@@ -5,6 +5,7 @@
 #' @importFrom methods slot new
 #' @importFrom methods setGeneric setMethod
 #' @importFrom colorRamp2 colorRamp2
+#' @importFrom grDevices hsv rgb2hsv
 #' @import GiottoUtils
 #' @import GiottoClass
 #' @import ggplot2
