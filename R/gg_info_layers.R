@@ -100,8 +100,8 @@ plot_spat_point_layer_ggplot <- function(
   # 2.3.2 factor column or character to factor
 
 
-  # cell color default
-  if (is.null(cell_color)) {
+  # [cell color & plotting] ************************************************* #
+  if (is.null(cell_color)) { # default
     cell_color <- "lightblue"
     pl <- pl + ggplot2::geom_point(
       data = cell_locations_metadata_selected,
@@ -115,6 +115,8 @@ plot_spat_point_layer_ggplot <- function(
       alpha = point_alpha
     )
   } else if (length(cell_color) > 1L) {
+    # cell color is a vector of mappings or specific hex codes
+
     if (is.numeric(cell_color) || is.factor(cell_color)) { # cell_color is numeric
       if (nrow(cell_locations_metadata_selected) != length(cell_color)) {
         stop("\n vector needs to be the same lengths as number of cells \n")
@@ -150,6 +152,7 @@ plot_spat_point_layer_ggplot <- function(
     }
   } else if (is.character(cell_color)) {
     if (!cell_color %in% colnames(cell_locations_metadata_selected)) {
+      # assume single hex code color to plot all points as
       if (!cell_color %in% grDevices::colors()) {
         stop(cell_color, " is not a color or a column name \n")
       }
@@ -165,10 +168,12 @@ plot_spat_point_layer_ggplot <- function(
         alpha = point_alpha
       )
     } else {
+      # color by metadata column
       class_cell_color <- class(cell_locations_metadata_selected[[cell_color]])
 
       if ((class_cell_color %in% c("integer", "numeric")) &&
         !isTRUE(color_as_factor)) {
+        # color as continuous values
         # set upper and lower limits
         if (!is.null(gradient_limits) &&
           is.vector(gradient_limits) &&
@@ -194,6 +199,7 @@ plot_spat_point_layer_ggplot <- function(
           alpha = point_alpha
         )
       } else {
+        # color as discrete values
         # convert character or numeric to factor
         if (isTRUE(color_as_factor)) {
           factor_data <- factor(cell_locations_metadata_selected[[cell_color]])
