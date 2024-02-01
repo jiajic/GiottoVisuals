@@ -17,43 +17,48 @@
 showClusterDendrogram <- function(gobject,
                                   spat_unit = NULL,
                                   feat_type = NULL,
-                                  expression_values = c('normalized', 'scaled', 'custom'),
+                                  expression_values = c("normalized", "scaled", "custom"),
                                   cluster_column,
-                                  cor = c('pearson', 'spearman'),
-                                  distance = 'ward.D',
+                                  cor = c("pearson", "spearman"),
+                                  distance = "ward.D",
                                   h = NULL,
-                                  h_color = 'red',
+                                  h_color = "red",
                                   rotate = FALSE,
                                   show_plot = NA,
                                   return_plot = NA,
                                   save_plot = NA,
                                   save_param = list(),
-                                  default_save_name = 'showClusterDendrogram',
+                                  default_save_name = "showClusterDendrogram",
                                   ...) {
-
   # verify if optional package is installed
   package_check(pkg_name = "ggdendro", repository = "CRAN")
 
-  values = match.arg(expression_values, unique(c('normalized', 'scaled', 'custom', expression_values)))
+  values <- match.arg(expression_values, unique(c("normalized", "scaled", "custom", expression_values)))
 
   # Set feat_type and spat_unit
-  spat_unit = set_default_spat_unit(gobject = gobject,
-                                    spat_unit = spat_unit)
-  feat_type = set_default_feat_type(gobject = gobject,
-                                    spat_unit = spat_unit,
-                                    feat_type = feat_type)
+  spat_unit <- set_default_spat_unit(
+    gobject = gobject,
+    spat_unit = spat_unit
+  )
+  feat_type <- set_default_feat_type(
+    gobject = gobject,
+    spat_unit = spat_unit,
+    feat_type = feat_type
+  )
 
-  metatable = calculateMetaTable(gobject = gobject,
-                                 spat_unit = spat_unit,
-                                 feat_type = feat_type,
-                                 expression_values = values,
-                                 metadata_cols = cluster_column)
+  metatable <- calculateMetaTable(
+    gobject = gobject,
+    spat_unit = spat_unit,
+    feat_type = feat_type,
+    expression_values = values,
+    metadata_cols = cluster_column
+  )
 
-  pl = create_cluster_dendrogram(
+  pl <- create_cluster_dendrogram(
     data = metatable,
-    clus_col = 'uniq_ID',
-    var_col = 'variable',
-    val_col = 'value',
+    clus_col = "uniq_ID",
+    var_col = "variable",
+    val_col = "value",
     cor = cor,
     distance = distance,
     h = h,
@@ -93,46 +98,43 @@ showClusterDendrogram <- function(gobject,
 #' @param rotate rotate dendrogram 90 degrees
 #' @inheritDotParams ggdendro::ggdendrogram
 #' @export
-create_cluster_dendrogram = function(data,
-                                     clus_col = names(data)[[1]],
-                                     var_col = names(data)[[2]],
-                                     val_col = names(data)[[3]],
-                                     cor = c('pearson', 'spearman'),
-                                     distance = 'ward.D',
-                                     h = NULL,
-                                     h_color = 'red',
-                                     rotate = FALSE,
-                                     ...) {
-
+create_cluster_dendrogram <- function(data,
+                                      clus_col = names(data)[[1]],
+                                      var_col = names(data)[[2]],
+                                      val_col = names(data)[[3]],
+                                      cor = c("pearson", "spearman"),
+                                      distance = "ward.D",
+                                      h = NULL,
+                                      h_color = "red",
+                                      rotate = FALSE,
+                                      ...) {
   checkmate::assert_data_table(data)
   checkmate::assert_character(clus_col)
   checkmate::assert_character(var_col)
   checkmate::assert_character(val_col)
-  cor = match.arg(cor, c('pearson', 'spearman'))
+  cor <- match.arg(cor, c("pearson", "spearman"))
 
-  dcast_metatable = data.table::dcast.data.table(
+  dcast_metatable <- data.table::dcast.data.table(
     data = data,
-    formula = paste0(var_col, '~', clus_col),
+    formula = paste0(var_col, "~", clus_col),
     value.var = val_col
   )
-  testmatrix = dt_to_matrix(x = dcast_metatable)
+  testmatrix <- dt_to_matrix(x = dcast_metatable)
 
   # correlation
-  cormatrix = cor_flex(x = testmatrix, method = cor)
-  cordist = stats::as.dist(1 - cormatrix, diag = TRUE, upper = TRUE)
-  corclus = stats::hclust(d = cordist, method = distance)
+  cormatrix <- cor_flex(x = testmatrix, method = cor)
+  cordist <- stats::as.dist(1 - cormatrix, diag = TRUE, upper = TRUE)
+  corclus <- stats::hclust(d = cordist, method = distance)
 
-  cordend = stats::as.dendrogram(object = corclus)
+  cordend <- stats::as.dendrogram(object = corclus)
 
   # plot dendrogram
-  pl = ggdendro::ggdendrogram(data = cordend, rotate = rotate, ...)
+  pl <- ggdendro::ggdendrogram(data = cordend, rotate = rotate, ...)
 
   # add horizontal or vertical lines
-  if(!is.null(h)) {
-    pl = pl + ggplot2::geom_hline(yintercept = h, col = h_color)
+  if (!is.null(h)) {
+    pl <- pl + ggplot2::geom_hline(yintercept = h, col = h_color)
   }
 
   pl
 }
-
-

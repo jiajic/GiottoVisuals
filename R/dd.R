@@ -1,4 +1,3 @@
-
 # ------------------------------------------------------------------------- #
 # This script contains reusable dummy documentation / templates for
 # commonly used params.
@@ -207,5 +206,3 @@ NULL
 #' @title hidden_aliases
 #' @name hidden_aliases
 NULL
-
-

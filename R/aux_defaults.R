@@ -1,6 +1,3 @@
-
-
-
 # default plot n cols ####
 #' @title Set default ncols in plotting grid
 #' @name set_default_cow_n_col
@@ -11,11 +8,10 @@
 #' calculated if `NULL` is passed.
 #' @param nr_plots number of plots to use with cowplot
 #' @export
-set_default_cow_n_col = function(cow_n_col = NULL,
-                                 nr_plots) {
-
-  if(is.null(cow_n_col)) {
-    cow_n_col = ceiling(sqrt(nr_plots))
+set_default_cow_n_col <- function(cow_n_col = NULL,
+                                  nr_plots) {
+  if (is.null(cow_n_col)) {
+    cow_n_col <- ceiling(sqrt(nr_plots))
   } else {
     cow_n_col
   }
@@ -78,24 +74,24 @@ NULL
 #' Wrap this for specific things (plots or types of features) that need defaults setting.
 #' @param instr_pal,instr_rev,instr_strategy used by upstream function to pass specific `giottoInstructions` params
 #' @export
-set_default_color_discrete = function(
+set_default_color_discrete <- function(
     colors = NULL,
     ...,
     instr_pal,
     instr_rev,
-    instr_strategy
-) {
-
+    instr_strategy) {
   # global giotto options
-  opt_pal <- getOption('giotto.color_d_pal', 'distinct')
-  opt_rev <- getOption('giotto.color_d_rev', FALSE)
-  opt_strategy <- getOption('giotto.color_d_strategy', 'interpolate')
+  opt_pal <- getOption("giotto.color_d_pal", "distinct")
+  opt_rev <- getOption("giotto.color_d_rev", FALSE)
+  opt_strategy <- getOption("giotto.color_d_strategy", "interpolate")
 
   # get 'colors' either from param input or options
   if (is.null(colors)) {
     if (is.null(instr_pal)) {
       colors <- opt_pal
-    } else colors <- instr_pal
+    } else {
+      colors <- instr_pal
+    }
   }
 
   # get 'reverse' and 'strategy'
@@ -103,9 +99,10 @@ set_default_color_discrete = function(
   strategy <- ifelse(is.null(instr_strategy), opt_strategy, instr_strategy)
 
   # evaluate 'colors'
-  if (inherits(colors, 'function')) return(colors)
-  else if (inherits(colors, 'character')) {
-    if(length(colors) > 1) { # assume simple palette if multiple entries in vector
+  if (inherits(colors, "function")) {
+    return(colors)
+  } else if (inherits(colors, "character")) {
+    if (length(colors) > 1) { # assume simple palette if multiple entries in vector
       return(simple_palette_factory(col = colors, rev = reverse, strategy = strategy))
     } else { # assume call to getColors() otherwise
       # return wrapped
@@ -117,16 +114,14 @@ set_default_color_discrete = function(
 
 #' @rdname set_default_color_discrete
 #' @export
-set_default_color_discrete_cell = function(
+set_default_color_discrete_cell <- function(
     colors = NULL,
     instrs,
-    ...
-) {
-
+    ...) {
   # read instructions
-  instr_pal = readGiottoInstructions(instrs, 'cell_color_d_pal', NULL)
-  instr_rev = readGiottoInstructions(instrs, 'cell_color_d_rev', NULL)
-  instr_strategy = readGiottoInstructions(instrs, 'cell_color_d_strategy', NULL)
+  instr_pal <- readGiottoInstructions(instrs, "cell_color_d_pal", NULL)
+  instr_rev <- readGiottoInstructions(instrs, "cell_color_d_rev", NULL)
+  instr_strategy <- readGiottoInstructions(instrs, "cell_color_d_strategy", NULL)
 
   set_default_color_discrete(
     colors = colors,
@@ -139,16 +134,14 @@ set_default_color_discrete_cell = function(
 
 #' @rdname set_default_color_discrete
 #' @export
-set_default_color_discrete_poly = function(
+set_default_color_discrete_poly <- function(
     colors = NULL,
     instrs,
-    ...
-) {
-
+    ...) {
   # read instructions
-  instr_pal = readGiottoInstructions(instrs, 'poly_color_d_pal', NULL)
-  instr_rev = readGiottoInstructions(instrs, 'poly_color_d_rev', NULL)
-  instr_strategy = readGiottoInstructions(instrs, 'poly_color_d_strategy', NULL)
+  instr_pal <- readGiottoInstructions(instrs, "poly_color_d_pal", NULL)
+  instr_rev <- readGiottoInstructions(instrs, "poly_color_d_rev", NULL)
+  instr_strategy <- readGiottoInstructions(instrs, "poly_color_d_strategy", NULL)
 
   set_default_color_discrete(
     colors = colors,
@@ -161,16 +154,14 @@ set_default_color_discrete_poly = function(
 
 #' @rdname set_default_color_discrete
 #' @export
-set_default_color_discrete_feat = function(
+set_default_color_discrete_feat <- function(
     colors = NULL,
     instrs,
-    ...
-) {
-
+    ...) {
   # read instructions
-  instr_pal = readGiottoInstructions(instrs, 'feat_color_pal', NULL)
-  instr_rev = readGiottoInstructions(instrs, 'feat_color_rev', NULL)
-  instr_strategy = readGiottoInstructions(instrs, 'feat_color_strategy', NULL)
+  instr_pal <- readGiottoInstructions(instrs, "feat_color_pal", NULL)
+  instr_rev <- readGiottoInstructions(instrs, "feat_color_rev", NULL)
+  instr_strategy <- readGiottoInstructions(instrs, "feat_color_strategy", NULL)
 
   set_default_color_discrete(
     colors = colors,
@@ -183,16 +174,14 @@ set_default_color_discrete_feat = function(
 
 #' @rdname set_default_color_discrete
 #' @export
-set_default_color_discrete_heatmap_clus = function(
+set_default_color_discrete_heatmap_clus <- function(
     colors = NULL,
     instrs,
-    ...
-) {
-
+    ...) {
   # read instructions
-  instr_pal = readGiottoInstructions(instrs, 'heatmap_clus_color_pal', NULL)
-  instr_rev = readGiottoInstructions(instrs, 'heatmap_clus_color_rev', NULL)
-  instr_strategy = readGiottoInstructions(instrs, 'heatmap_clus_color_strategy', NULL)
+  instr_pal <- readGiottoInstructions(instrs, "heatmap_clus_color_pal", NULL)
+  instr_rev <- readGiottoInstructions(instrs, "heatmap_clus_color_rev", NULL)
+  instr_strategy <- readGiottoInstructions(instrs, "heatmap_clus_color_strategy", NULL)
 
   set_default_color_discrete(
     colors = colors,
@@ -247,49 +236,56 @@ set_default_color_discrete_heatmap_clus = function(
 #' \dontrun{
 #' library(GiottoVisuals)
 #'
-#' g = GiottoData::loadGiottoMini('vizgen')
+#' g <- GiottoData::loadGiottoMini("vizgen")
 #'
-#' nr_feat_polys = function(...) {
+#' nr_feat_polys <- function(...) {
 #'   spatInSituPlotPoints(g,
-#'                        polygon_fill = 'nr_feats',
-#'                        polygon_fill_as_factor = F,
-#'                        polygon_feat_type = 'aggregate',
-#'                        polygon_line_size = 0.1,
-#'                        polygon_alpha = 1,
-#'                        ...)
+#'     polygon_fill = "nr_feats",
+#'     polygon_fill_as_factor = F,
+#'     polygon_feat_type = "aggregate",
+#'     polygon_line_size = 0.1,
+#'     polygon_alpha = 1,
+#'     ...
+#'   )
 #' }
 #'
 #' # default
 #' nr_feat_polys()
 #'
 #' # set global option level: viridis
-#' options('giotto.color_c_pal' = 'v')
+#' options("giotto.color_c_pal" = "v")
 #' nr_feat_polys()
 #'
 #' # set instructions level: magma
-#' instructions(g, 'poly_color_c_pal') = 'magma'
+#' instructions(g, "poly_color_c_pal") <- "magma"
 #' nr_feat_polys()
 #'
-#' instructions(g, 'poly_color_c_rev') = TRUE
+#' instructions(g, "poly_color_c_rev") <- TRUE
 #' nr_feat_polys()
-#' nr_feat_polys(polygon_fill_gradient_style = 's')
+#' nr_feat_polys(polygon_fill_gradient_style = "s")
 #'
 #'
 #' # set function level: miami
-#' instructions(g, 'poly_color_c_rev') = FALSE
-#' nr_feat_polys(polygon_fill_gradient = 'miami')
+#' instructions(g, "poly_color_c_rev") <- FALSE
+#' nr_feat_polys(polygon_fill_gradient = "miami")
 #'
 #' # set function level: color vector (2 to n colors)
-#' nr_feat_polys(polygon_fill_gradient = c('green', 'purple'),
-#'               polygon_fill_gradient_style = 's')
+#' nr_feat_polys(
+#'   polygon_fill_gradient = c("green", "purple"),
+#'   polygon_fill_gradient_style = "s"
+#' )
 #'
-#' nr_feat_polys(polygon_fill_gradient = c('blue', 'yellow', 'red'),
-#'               polygon_fill_gradient_style = 's')
+#' nr_feat_polys(
+#'   polygon_fill_gradient = c("blue", "yellow", "red"),
+#'   polygon_fill_gradient_style = "s"
+#' )
 #'
-#' nr_feat_polys(polygon_fill_gradient = c(
-#'                 'darkgrey', 'darkblue', 'purple', 'violet', 'cyan'
-#'               ),
-#'               polygon_fill_gradient_style = 's')
+#' nr_feat_polys(
+#'   polygon_fill_gradient = c(
+#'     "darkgrey", "darkblue", "purple", "violet", "cyan"
+#'   ),
+#'   polygon_fill_gradient_style = "s"
+#' )
 #' }
 NULL
 
@@ -303,135 +299,140 @@ NULL
 set_default_color_continuous <- function(
     colors = NULL, # used for function inputs
     midpoint = NULL,
-    style = c('divergent', 'sequential'),
+    style = c("divergent", "sequential"),
     ...,
     instr_pal,
     instr_rev,
     data_default = NULL,
-    type = c('fill', 'color')
-) {
+    type = c("fill", "color")) {
+  if (!is.null(midpoint)) checkmate::assert_numeric(midpoint)
+  if (!is.null(instr_pal)) checkmate::assert_character(instr_pal)
+  if (!is.null(instr_rev)) checkmate::assert_logical(instr_rev)
+  if (!is.null(data_default)) checkmate::assert_list(data_default)
 
-  if(!is.null(midpoint)) checkmate::assert_numeric(midpoint)
-  if(!is.null(instr_pal)) checkmate::assert_character(instr_pal)
-  if(!is.null(instr_rev)) checkmate::assert_logical(instr_rev)
-  if(!is.null(data_default)) checkmate::assert_list(data_default)
-
-  style <- g_match_arg(style[1], choices = c('divergent', 'sequential'))
-  type <- g_match_arg(type[1], choices = c('fill', 'color'))
+  style <- g_match_arg(style[1], choices = c("divergent", "sequential"))
+  type <- g_match_arg(type[1], choices = c("fill", "color"))
 
   # select gradient functions to use
-  grad <- switch(
-    type,
-    'fill' = ggplot2::scale_fill_gradient,
-    'color' = ggplot2::scale_color_gradient
+  grad <- switch(type,
+    "fill" = ggplot2::scale_fill_gradient,
+    "color" = ggplot2::scale_color_gradient
   )
-  gradn <- switch(
-    type,
-    'fill' = ggplot2::scale_fill_gradientn,
-    'color' = ggplot2::scale_color_gradientn
+  gradn <- switch(type,
+    "fill" = ggplot2::scale_fill_gradientn,
+    "color" = ggplot2::scale_color_gradientn
   )
-  grad2 <- switch(
-    type,
-    'fill' = ggplot2::scale_fill_gradient2,
-    'color' = ggplot2::scale_color_gradient2
+  grad2 <- switch(type,
+    "fill" = ggplot2::scale_fill_gradient2,
+    "color" = ggplot2::scale_color_gradient2
   )
 
   # global giotto options
-  opt_pal <- switch(
-    style,
-    'divergent' = getOption('giotto.color_c_pal', c('blue', 'white', 'red')), # default diverging scale,
-    'sequential' = getOption('giotto.color_c_pal', 'viridis')
+  opt_pal <- switch(style,
+    "divergent" = getOption("giotto.color_c_pal", c("blue", "white", "red")), # default diverging scale,
+    "sequential" = getOption("giotto.color_c_pal", "viridis")
   )
 
-  opt_rev <- getOption('giotto.color_c_rev', FALSE)
+  opt_rev <- getOption("giotto.color_c_rev", FALSE)
 
   # get 'colors' either from param input or options
   if (is.null(colors)) { # function-level input
     if (is.null(instr_pal)) { # instructions-level input (data type specific)
       if (!is.null(data_default)) { # global-level input (gradient style specific)
         colors <- data_default$pal
-      } else colors <- opt_pal
-    } else colors <- instr_pal
+      } else {
+        colors <- opt_pal
+      }
+    } else {
+      colors <- instr_pal
+    }
   }
 
   # get 'reverse'
   reverse <- ifelse(is.null(instr_rev), opt_rev, instr_rev)
 
   # evaluate 'colors'
-  switch(
-    style,
-    'divergent' = .evaluate_color_gradient_divergent(colors = colors,
-                                                    reverse = reverse,
-                                                    midpoint = midpoint,
-                                                    grad2 = grad2,
-                                                    grad = grad,
-                                                    gradn = gradn,
-                                                    ...),
-    'sequential' = .evaluate_color_gradient_sequential(colors = colors,
-                                                      reverse = reverse,
-                                                      gradn = gradn,
-                                                      grad = grad,
-                                                      ...)
+  switch(style,
+    "divergent" = .evaluate_color_gradient_divergent(
+      colors = colors,
+      reverse = reverse,
+      midpoint = midpoint,
+      grad2 = grad2,
+      grad = grad,
+      gradn = gradn,
+      ...
+    ),
+    "sequential" = .evaluate_color_gradient_sequential(
+      colors = colors,
+      reverse = reverse,
+      gradn = gradn,
+      grad = grad,
+      ...
+    )
   )
 }
 
 
 .evaluate_color_gradient_divergent <- function(
-    colors, reverse, midpoint, ..., grad2, grad, gradn
-) {
-  if(is.null(midpoint)) midpoint <- 0
+    colors, reverse, midpoint, ..., grad2, grad, gradn) {
+  if (is.null(midpoint)) midpoint <- 0
 
-  if (inherits(colors, 'character')) {
-    if(length(colors) == 3L) { # assume simple palette if 3 entries in vector
-      if(reverse) colors <- rev(colors)
-      gradient <- grad2(low = colors[[1]],
-                        mid = colors[[2]],
-                        high = colors[[3]],
-                        midpoint = midpoint,
-                        ...)
-    } else if(length(colors) == 2L) {
+  if (inherits(colors, "character")) {
+    if (length(colors) == 3L) { # assume simple palette if 3 entries in vector
       if (reverse) colors <- rev(colors)
-      gradient <- grad(low = colors[[1]],
-                       high = colors[[2]],
-                       ...)
+      gradient <- grad2(
+        low = colors[[1]],
+        mid = colors[[2]],
+        high = colors[[3]],
+        midpoint = midpoint,
+        ...
+      )
+    } else if (length(colors) == 2L) {
+      if (reverse) colors <- rev(colors)
+      gradient <- grad(
+        low = colors[[1]],
+        high = colors[[2]],
+        ...
+      )
     } else if (length(colors) == 1L) { # assume call to getColors() otherwise
       # return wrapped
-      colors <- .get_palette_factory(pal = colors, rev = reverse, strategy = 'cutoff')(256)
+      colors <- .get_palette_factory(pal = colors, rev = reverse, strategy = "cutoff")(256)
       gradient <- gradn(colors = colors, rescaler = mid_rescaler(mid = midpoint), ...)
     } else { # assume custom palette
       gradient <- gradn(colors = colors, rescaler = mid_rescaler(mid = midpoint), ...)
     }
-  } else if (inherits(colors, 'ScaleContinuous')) {
+  } else if (inherits(colors, "ScaleContinuous")) {
     gradient <- colors
   } else {
-    stop('set_default_color_continuous: unsupported \'color\' input')
+    stop("set_default_color_continuous: unsupported 'color' input")
   }
   gradient
 }
 
 .evaluate_color_gradient_sequential <- function(
-    colors, reverse, ..., gradn, grad
-) {
-  if (inherits(colors, 'character')) {
-    if(length(colors) == 3L) { # assume simple palette if 3 entries in vector
-      if(reverse) colors <- rev(colors)
-      gradient <- gradn(colors = colors, ...)
-    } else if(length(colors) == 2L) {
+    colors, reverse, ..., gradn, grad) {
+  if (inherits(colors, "character")) {
+    if (length(colors) == 3L) { # assume simple palette if 3 entries in vector
       if (reverse) colors <- rev(colors)
-      gradient <- grad(low = colors[[1]],
-                       high = colors[[2]],
-                       ...)
+      gradient <- gradn(colors = colors, ...)
+    } else if (length(colors) == 2L) {
+      if (reverse) colors <- rev(colors)
+      gradient <- grad(
+        low = colors[[1]],
+        high = colors[[2]],
+        ...
+      )
     } else if (length(colors) == 1L) { # assume call to getColors() otherwise
       # return wrapped
-      colors <- .get_palette_factory(pal = colors, rev = reverse, strategy = 'cutoff')(256)
+      colors <- .get_palette_factory(pal = colors, rev = reverse, strategy = "cutoff")(256)
       gradient <- gradn(colors = colors, ...)
     } else { # assume custom palette
       gradient <- gradn(colors = colors, ...)
     }
-  } else if (inherits(colors, 'ScaleContinuous')) {
+  } else if (inherits(colors, "ScaleContinuous")) {
     gradient <- colors
   } else {
-    stop('set_default_color_continuous: unsupported \'color\' input')
+    stop("set_default_color_continuous: unsupported 'color' input")
   }
   gradient
 }
@@ -443,14 +444,12 @@ set_default_color_continuous_cell <- function(
     colors = NULL,
     instrs,
     midpoint = NULL,
-    style = 'divergent',
+    style = "divergent",
     ...,
-    data_default = NULL
-) {
-
+    data_default = NULL) {
   # read instructions
-  instr_pal <- readGiottoInstructions(instrs, 'cell_color_c_pal', NULL)
-  instr_rev <- readGiottoInstructions(instrs, 'cell_color_c_rev', NULL)
+  instr_pal <- readGiottoInstructions(instrs, "cell_color_c_pal", NULL)
+  instr_rev <- readGiottoInstructions(instrs, "cell_color_c_rev", NULL)
 
   set_default_color_continuous(
     colors = colors,
@@ -469,13 +468,11 @@ set_default_color_continuous_poly <- function(
     colors = NULL,
     instrs,
     midpoint = NULL,
-    style = 'divergent',
-    ...
-) {
-
+    style = "divergent",
+    ...) {
   # read instructions
-  instr_pal <- readGiottoInstructions(instrs, 'poly_color_c_pal', NULL)
-  instr_rev <- readGiottoInstructions(instrs, 'poly_color_c_rev', NULL)
+  instr_pal <- readGiottoInstructions(instrs, "poly_color_c_pal", NULL)
+  instr_rev <- readGiottoInstructions(instrs, "poly_color_c_rev", NULL)
 
   set_default_color_continuous(
     colors = colors,
@@ -490,17 +487,15 @@ set_default_color_continuous_poly <- function(
 
 #' @rdname set_default_color_continuous
 #' @export
-set_default_color_continuous_heatmap = function(
+set_default_color_continuous_heatmap <- function(
     colors = NULL,
     instrs,
     midpoint = NULL,
-    style = 'divergent',
-    ...
-) {
-
+    style = "divergent",
+    ...) {
   # read instructions
-  instr_pal = readGiottoInstructions(instrs, 'heatmap_color_pal', NULL)
-  instr_rev = readGiottoInstructions(instrs, 'heatmap_color_rev', NULL)
+  instr_pal <- readGiottoInstructions(instrs, "heatmap_color_pal", NULL)
+  instr_rev <- readGiottoInstructions(instrs, "heatmap_color_rev", NULL)
 
   set_default_color_continuous(
     colors = colors,
@@ -514,17 +509,15 @@ set_default_color_continuous_heatmap = function(
 
 #' @rdname set_default_color_continuous
 #' @export
-set_default_color_continuous_CCcom_heatmap = function(
+set_default_color_continuous_CCcom_heatmap <- function(
     colors = NULL,
     instrs,
     midpoint = NULL,
-    style = 'divergent',
-    ...
-) {
-
+    style = "divergent",
+    ...) {
   # read instructions
-  instr_pal = readGiottoInstructions(instrs, 'CCcom_heatmap_color_pal', NULL)
-  instr_rev = readGiottoInstructions(instrs, 'CCcom_heatmap_color_rev', NULL)
+  instr_pal <- readGiottoInstructions(instrs, "CCcom_heatmap_color_pal", NULL)
+  instr_rev <- readGiottoInstructions(instrs, "CCcom_heatmap_color_rev", NULL)
 
   set_default_color_continuous(
     colors = colors,
@@ -533,7 +526,7 @@ set_default_color_continuous_CCcom_heatmap = function(
     midpoint = midpoint,
     style = style,
     data_default = list(
-      pal = c('darkblue', 'blue', 'white', 'red', 'darkred')
+      pal = c("darkblue", "blue", "white", "red", "darkred")
     ),
     ...
   )
@@ -541,21 +534,19 @@ set_default_color_continuous_CCcom_heatmap = function(
 
 #' @rdname set_default_color_continuous
 #' @export
-set_default_color_continuous_CCcom_dotplot = function(
+set_default_color_continuous_CCcom_dotplot <- function(
     colors = NULL,
     instrs,
     midpoint = NULL,
-    style = 'divergent',
+    style = "divergent",
     ...,
-    type = c('fill', 'color'),
+    type = c("fill", "color"),
     data_default = list(
-      pal = c('darkblue', 'blue', 'white', 'red', 'darkred')
-    )
-) {
-
+      pal = c("darkblue", "blue", "white", "red", "darkred")
+    )) {
   # read instructions
-  instr_pal = readGiottoInstructions(instrs, 'CCcom_dotplot_color_pal', NULL)
-  instr_rev = readGiottoInstructions(instrs, 'CCcom_dotplot_color_rev', NULL)
+  instr_pal <- readGiottoInstructions(instrs, "CCcom_dotplot_color_pal", NULL)
+  instr_rev <- readGiottoInstructions(instrs, "CCcom_dotplot_color_rev", NULL)
 
   set_default_color_continuous(
     colors = colors,
@@ -590,15 +581,14 @@ set_default_color_continuous_CCcom_dotplot = function(
 #' @return data.table of Giotto color option information
 #' @export
 showColorInstructions <- function() {
-
   # DT vars
-  option = default = description = NULL
+  option <- default <- description <- NULL
 
-  out = giotto_color_instructions[, paste(
-    '\noption      : ', color_blue(option),
-    '\ndefault     : ', default,
-    '\ndescription : ', description,
-    '\n'
+  out <- giotto_color_instructions[, paste(
+    "\noption      : ", color_blue(option),
+    "\ndefault     : ", default,
+    "\ndescription : ", description,
+    "\n"
   )]
 
   cat(out)
@@ -607,68 +597,65 @@ showColorInstructions <- function() {
 
 
 # TODO update for additional CCcom and dotplots
-giotto_color_instructions = data.table::data.table(
+giotto_color_instructions <- data.table::data.table(
   option = c(
-    '\'cell_color_d_pal\'',
-    '\'poly_color_d_pal\'',
-    '\'feat_color_pal\'',
-    '\'heatmap_clus_color_pal\'',
-    '\'cell_color_d_rev\'',
-    '\'poly_color_d_rev\'',
-    '\'feat_color_rev\'',
-    '\'heatmap_clus_color_rev\'',
-    '\'cell_color_d_strategy\'',
-    '\'poly_color_d_strategy\'',
-    '\'feat_color_strategy\'',
-    '\'heatmap_clus_color_strategy\'',
-    '\'cell_color_c_pal\'',
-    '\'poly_color_c_pal\'',
-    '\'cell_color_c_rev\'',
-    '\'poly_color_c_rev\'',
-    '\'heatmap_color_pal\'',
-    '\'heatmap_color_rev\''
+    "'cell_color_d_pal'",
+    "'poly_color_d_pal'",
+    "'feat_color_pal'",
+    "'heatmap_clus_color_pal'",
+    "'cell_color_d_rev'",
+    "'poly_color_d_rev'",
+    "'feat_color_rev'",
+    "'heatmap_clus_color_rev'",
+    "'cell_color_d_strategy'",
+    "'poly_color_d_strategy'",
+    "'feat_color_strategy'",
+    "'heatmap_clus_color_strategy'",
+    "'cell_color_c_pal'",
+    "'poly_color_c_pal'",
+    "'cell_color_c_rev'",
+    "'poly_color_c_rev'",
+    "'heatmap_color_pal'",
+    "'heatmap_color_rev'"
   ),
   default = c(
-    'NULL (distinct colors)',
-    'NULL (distinct colors)',
-    'NULL (distinct colors)',
-    'NULL (distinct colors)',
-    'FALSE',
-    'FALSE',
-    'FALSE',
-    'FALSE',
-    '\'interpolate\'',
-    '\'interpolate\'',
-    '\'interpolate\'',
-    '\'interpolate\'',
-    'c(\'blue\', \'white\', \'red\')',
-    'c(\'blue\', \'white\', \'red\')',
-    'FALSE',
-    'FALSE',
-    'c(\'blue\', \'white\', \'red\')',
-    'FALSE'
+    "NULL (distinct colors)",
+    "NULL (distinct colors)",
+    "NULL (distinct colors)",
+    "NULL (distinct colors)",
+    "FALSE",
+    "FALSE",
+    "FALSE",
+    "FALSE",
+    "'interpolate'",
+    "'interpolate'",
+    "'interpolate'",
+    "'interpolate'",
+    "c('blue', 'white', 'red')",
+    "c('blue', 'white', 'red')",
+    "FALSE",
+    "FALSE",
+    "c('blue', 'white', 'red')",
+    "FALSE"
   ),
   description = c(
-    'Cell: color palette to use for discrete color values. Can be supplied as a the name of a palette accessible by `getColors()`, custom color vector, or an external function with a \'n\' colors requested param',
-    'Poly: color palette to use for discrete color values. Can be supplied as a the name of a palette accessible by `getColors()`, custom color vector, or an external function with a \'n\' colors requested param',
-    'Feat: color palette to use for discrete color values. Can be supplied as a the name of a palette accessible by `getColors()`, custom color vector, or an external function with a \'n\' colors requested param',
-    'Heatmap Clusters: color palette to use for discrete color values. Can be supplied as a the name of a palette accessible by `getColors()`, custom color vector, or an external function with a \'n\' colors requested param',
-    'Cell: whether discrete color values should be reversed',
-    'Poly: whether discrete color values should be reversed',
-    'Feat: whether discrete color values should be reversed',
-    'Heatmap Clusters: whether discrete color values should be reversed',
-    'Cell: \'interpolate\', \'recycle\', or \'cutoff\'. Policy to use when more colors are requested than exist within palette.',
-    'Poly: \'interpolate\', \'recycle\', or \'cutoff\'. Policy to use when more colors are requested than exist within palette.',
-    'Feat: \'interpolate\', \'recycle\', or \'cutoff\'. Policy to use when more colors are requested than exist within palette.',
-    'Heatmap Clusters: \'interpolate\', \'recycle\', or \'cutoff\'. Policy to use when more colors are requested than exist within palette.',
-    'Cell: color palette to use for continuous color values. Can be supplied as a the name of a palette accessible by `getColors()`, custom color vector, or an external function with a \'n\' colors requested param',
-    'Poly: color palette to use for continuous color values. Can be supplied as a the name of a palette accessible by `getColors()`, custom color vector, or an external function with a \'n\' colors requested param',
-    'Cell: whether continuous color values should be reversed',
-    'Poly: whether continuous color values should be reversed',
-    'Heatmap: color palette to use for continuous color values. Can be supplied as a the name of a palette accessible by `getColors()`, custom color vector, or an external function with a \'n\' colors requested param',
-    'Heatmap: whether continuous color values should be reversed'
+    "Cell: color palette to use for discrete color values. Can be supplied as a the name of a palette accessible by `getColors()`, custom color vector, or an external function with a 'n' colors requested param",
+    "Poly: color palette to use for discrete color values. Can be supplied as a the name of a palette accessible by `getColors()`, custom color vector, or an external function with a 'n' colors requested param",
+    "Feat: color palette to use for discrete color values. Can be supplied as a the name of a palette accessible by `getColors()`, custom color vector, or an external function with a 'n' colors requested param",
+    "Heatmap Clusters: color palette to use for discrete color values. Can be supplied as a the name of a palette accessible by `getColors()`, custom color vector, or an external function with a 'n' colors requested param",
+    "Cell: whether discrete color values should be reversed",
+    "Poly: whether discrete color values should be reversed",
+    "Feat: whether discrete color values should be reversed",
+    "Heatmap Clusters: whether discrete color values should be reversed",
+    "Cell: 'interpolate', 'recycle', or 'cutoff'. Policy to use when more colors are requested than exist within palette.",
+    "Poly: 'interpolate', 'recycle', or 'cutoff'. Policy to use when more colors are requested than exist within palette.",
+    "Feat: 'interpolate', 'recycle', or 'cutoff'. Policy to use when more colors are requested than exist within palette.",
+    "Heatmap Clusters: 'interpolate', 'recycle', or 'cutoff'. Policy to use when more colors are requested than exist within palette.",
+    "Cell: color palette to use for continuous color values. Can be supplied as a the name of a palette accessible by `getColors()`, custom color vector, or an external function with a 'n' colors requested param",
+    "Poly: color palette to use for continuous color values. Can be supplied as a the name of a palette accessible by `getColors()`, custom color vector, or an external function with a 'n' colors requested param",
+    "Cell: whether continuous color values should be reversed",
+    "Poly: whether continuous color values should be reversed",
+    "Heatmap: color palette to use for continuous color values. Can be supplied as a the name of a palette accessible by `getColors()`, custom color vector, or an external function with a 'n' colors requested param",
+    "Heatmap: whether continuous color values should be reversed"
   )
 )
-
-
-

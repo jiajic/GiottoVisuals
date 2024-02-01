@@ -1,5 +1,3 @@
-
-
 #' @name gg_simple_scatter
 #' @title gg_simple_scatter
 #' @param ggobject ggplot2 object
@@ -13,22 +11,19 @@
 #' @param return ggplot object
 #' @keywords internal
 #' @export
-gg_simple_scatter = function(ggobject = NULL, data, x, y, xlab = 'x', ylab = 'y', main = NULL, ...) {
+gg_simple_scatter <- function(ggobject = NULL, data, x, y, xlab = "x", ylab = "y", main = NULL, ...) {
   pl <- gg_input(ggobject)
 
-  aes_args_list = list(x = x, y = y, ...)
+  aes_args_list <- list(x = x, y = y, ...)
 
   pl <- pl +
     ggplot2::geom_point(data = data, aes_string2(x, y, ...)) +
     ggplot2::theme_classic() +
     ggplot2::labs(x = xlab, y = ylab)
 
-  if(!is.null(main)) {
+  if (!is.null(main)) {
     pl <- pl + ggplot2::ggtitle(label = main)
   }
 
   pl
 }
-
-
-

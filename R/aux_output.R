@@ -1,4 +1,3 @@
-
 # Giotto plot output handler #
 # -------------------------- #
 
@@ -23,16 +22,15 @@
 #' object is not returned
 #' @keywords internal
 #' @export
-plot_output_handler = function(gobject,
-                               plot_object,
-                               save_plot = NA,
-                               return_plot = NA,
-                               show_plot = NA,
-                               default_save_name,
-                               save_param,
-                               else_return = NULL) {
-
-  checkmate::assert_class(gobject, 'giotto')
+plot_output_handler <- function(gobject,
+                                plot_object,
+                                save_plot = NA,
+                                return_plot = NA,
+                                show_plot = NA,
+                                default_save_name,
+                                save_param,
+                                else_return = NULL) {
+  checkmate::assert_class(gobject, "giotto")
   checkmate::assert_character(default_save_name)
   checkmate::assert_list(save_param)
 
@@ -40,28 +38,33 @@ plot_output_handler = function(gobject,
   # IF setting is NA then the appropriate setting from gobject instructions will
   # be checked and used.
   # IF setting is NOT NA then the provided value will be used directly.
-  show_plot = ifelse(is.na(show_plot), readGiottoInstructions(gobject, param = 'show_plot'), show_plot)
-  save_plot = ifelse(is.na(save_plot), readGiottoInstructions(gobject, param = 'save_plot'), save_plot)
-  return_plot = ifelse(is.na(return_plot), readGiottoInstructions(gobject, param = 'return_plot'), return_plot)
+  show_plot <- ifelse(is.na(show_plot), readGiottoInstructions(gobject, param = "show_plot"), show_plot)
+  save_plot <- ifelse(is.na(save_plot), readGiottoInstructions(gobject, param = "save_plot"), save_plot)
+  return_plot <- ifelse(is.na(return_plot), readGiottoInstructions(gobject, param = "return_plot"), return_plot)
 
 
   ## print plot ##
-  if(show_plot) {
+  if (show_plot) {
     print(plot_object)
   }
 
   ## save plot ##
-  if(save_plot) {
-    do.call('all_plots_save_function',
-            c(list(gobject = gobject,
-                   plot_object = plot_object,
-                   default_save_name = default_save_name),
-              save_param)
+  if (save_plot) {
+    do.call(
+      "all_plots_save_function",
+      c(
+        list(
+          gobject = gobject,
+          plot_object = plot_object,
+          default_save_name = default_save_name
+        ),
+        save_param
+      )
     )
   }
 
   ## return plot ##
-  if(return_plot) {
+  if (return_plot) {
     return(invisible(plot_object))
   } else {
     return(invisible(else_return))
@@ -119,7 +122,3 @@ plot_output_handler = function(gobject,
 #'     return(else_return)
 #'   }
 #' }
-
-
-
-

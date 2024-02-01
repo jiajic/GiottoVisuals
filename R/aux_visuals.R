@@ -1,4 +1,3 @@
-
 #' @include aux_save.R
 NULL
 
@@ -19,83 +18,89 @@ NULL
 #' @return custom
 #' @details Calculates order for clusters.
 #' @keywords internal
-.decide_cluster_order = function(gobject,
-                                spat_unit = NULL,
-                                feat_type = NULL,
-                                expression_values = c('normalized', 'scaled', 'custom'),
-                                feats,
-                                cluster_column = NULL,
-                                cluster_order = c('size', 'correlation', 'custom'),
-                                cluster_custom_order = NULL,
-                                cor_method = 'pearson',
-                                hclust_method = 'ward.D') {
-
+.decide_cluster_order <- function(gobject,
+                                  spat_unit = NULL,
+                                  feat_type = NULL,
+                                  expression_values = c("normalized", "scaled", "custom"),
+                                  feats,
+                                  cluster_column = NULL,
+                                  cluster_order = c("size", "correlation", "custom"),
+                                  cluster_custom_order = NULL,
+                                  cor_method = "pearson",
+                                  hclust_method = "ward.D") {
   # Set feat_type and spat_unit
-  spat_unit = set_default_spat_unit(gobject = gobject,
-                                    spat_unit = spat_unit)
-  feat_type = set_default_feat_type(gobject = gobject,
-                                    spat_unit = spat_unit,
-                                    feat_type = feat_type)
+  spat_unit <- set_default_spat_unit(
+    gobject = gobject,
+    spat_unit = spat_unit
+  )
+  feat_type <- set_default_feat_type(
+    gobject = gobject,
+    spat_unit = spat_unit,
+    feat_type = feat_type
+  )
 
   # expression data
-  values = match.arg(expression_values, unique(c('normalized', 'scaled', 'custom', expression_values)))
-  expr_values = get_expression_values(gobject = gobject,
-                                      spat_unit = spat_unit,
-                                      feat_type = feat_type,
-                                      values = values,
-                                      output = 'matrix')
+  values <- match.arg(expression_values, unique(c("normalized", "scaled", "custom", expression_values)))
+  expr_values <- get_expression_values(
+    gobject = gobject,
+    spat_unit = spat_unit,
+    feat_type = feat_type,
+    values = values,
+    output = "matrix"
+  )
 
   # subset expression data
-  detected_feats = feats[feats %in% rownames(expr_values)]
-  subset_values = expr_values[rownames(expr_values) %in% detected_feats, ]
+  detected_feats <- feats[feats %in% rownames(expr_values)]
+  subset_values <- expr_values[rownames(expr_values) %in% detected_feats, ]
 
   # metadata
-  cell_metadata = pDataDT(gobject,
-                          spat_unit = spat_unit,
-                          feat_type = feat_type)
+  cell_metadata <- pDataDT(gobject,
+    spat_unit = spat_unit,
+    feat_type = feat_type
+  )
 
   ## check parameters
-  if(is.null(cluster_column)) .gstop('cluster column must be selected')
-  if(!cluster_column %in% colnames(cell_metadata)) {
-    .gstop('cluster column is not found in',
-           str_bracket(spat_unit), str_bracket(feat_type),
-           'metadata')
+  if (is.null(cluster_column)) .gstop("cluster column must be selected")
+  if (!cluster_column %in% colnames(cell_metadata)) {
+    .gstop(
+      "cluster column is not found in",
+      str_bracket(spat_unit), str_bracket(feat_type),
+      "metadata"
+    )
   }
 
   ## cluster order ##
-  cluster_order = match.arg(cluster_order, c('size', 'correlation', 'custom'))
+  cluster_order <- match.arg(cluster_order, c("size", "correlation", "custom"))
 
 
-  if(cluster_order == 'size') {
+  if (cluster_order == "size") {
     ## sorts clusters from big to small (# of cells per cluster)
-    clus_sort_sizes = sort(table(cell_metadata[[cluster_column]]))
-    clus_sort_names = names(clus_sort_sizes)
-
-
-  } else if(cluster_order == 'correlation') {
+    clus_sort_sizes <- sort(table(cell_metadata[[cluster_column]]))
+    clus_sort_names <- names(clus_sort_sizes)
+  } else if (cluster_order == "correlation") {
     ## sorts clusters based on their correlation
-    subset_matrix = create_cluster_matrix(gobject = gobject,
-                                          spat_unit = spat_unit,
-                                          feat_type = feat_type,
-                                          cluster_column = cluster_column,
-                                          feat_subset = detected_feats,
-                                          expression_values = values)
+    subset_matrix <- create_cluster_matrix(
+      gobject = gobject,
+      spat_unit = spat_unit,
+      feat_type = feat_type,
+      cluster_column = cluster_column,
+      feat_subset = detected_feats,
+      expression_values = values
+    )
 
-    cormatrix = cor_flex(x = subset_matrix, method = cor_method)
-    cordist = stats::as.dist(1 - cormatrix, diag = T, upper = T)
-    corclus = stats::hclust(d = cordist, method = hclust_method)
-    clus_names = rownames(cormatrix)
-    names(clus_names) = 1:length(clus_names)
-    clus_sort_names = clus_names[corclus$order]
-    clus_sort_names = gsub(pattern = 'cluster_', replacement = '', x = clus_sort_names)
-
-
-  } else if(cluster_order == 'custom') {
+    cormatrix <- cor_flex(x = subset_matrix, method = cor_method)
+    cordist <- stats::as.dist(1 - cormatrix, diag = T, upper = T)
+    corclus <- stats::hclust(d = cordist, method = hclust_method)
+    clus_names <- rownames(cormatrix)
+    names(clus_names) <- 1:length(clus_names)
+    clus_sort_names <- clus_names[corclus$order]
+    clus_sort_names <- gsub(pattern = "cluster_", replacement = "", x = clus_sort_names)
+  } else if (cluster_order == "custom") {
     ## sorts based on a given custom order
-    if(is.null(cluster_custom_order)) {
-      stop('\n custom order parameter is not given \n')
+    if (is.null(cluster_custom_order)) {
+      stop("\n custom order parameter is not given \n")
     }
-    clus_sort_names = cluster_custom_order
+    clus_sort_names <- cluster_custom_order
   }
   return(clus_sort_names)
 }
@@ -111,7 +116,7 @@ NULL
 #' @keywords internal
 #' @description makes sure aes_string can also be used with names that start with numeric values
 #' @keywords internal
-aes_string2 <- function(...){
+aes_string2 <- function(...) {
   args <- lapply(list(...), function(x) sprintf("`%s`", x))
   do.call(ggplot2::aes_string, args)
 }
@@ -124,11 +129,11 @@ aes_string2 <- function(...){
 #' first made.
 #' @param ggobject ggplot object or NULL
 #' @keywords internal
-gg_input = function(ggobject) {
-  if(is.null(ggobject)) {
+gg_input <- function(ggobject) {
+  if (is.null(ggobject)) {
     return(ggplot2::ggplot())
   } else {
-    checkmate::assert_class(ggobject, 'ggplot')
+    checkmate::assert_class(ggobject, "ggplot")
     return(ggobject)
   }
 }
@@ -141,30 +146,38 @@ gg_input = function(ggobject) {
 #' @param \dots geom_point parameters
 #' @keywords internal
 #' @description uses ggplot::geom_point, scattermore::geom_scattermore or scattermore::geom_scattermost
-giotto_point = function(plot_method = c('ggplot', 'scattermore', 'scattermost'),
-                        size = 1,
-                        scattermost_xy = NULL,
-                        scattermost_color = NULL,
-                        ...) {
+giotto_point <- function(plot_method = c("ggplot", "scattermore", "scattermost"),
+                         size = 1,
+                         scattermost_xy = NULL,
+                         scattermost_color = NULL,
+                         ...) {
+  plot_method <- match.arg(arg = plot_method, choices = c("ggplot", "scattermore", "scattermost"))
 
-  plot_method = match.arg(arg = plot_method, choices = c('ggplot', 'scattermore', 'scattermost'))
-
-  if(plot_method == 'ggplot') {
-    ggplot2::geom_point(size = size,
-                        ...)
-  } else if(plot_method == 'scattermore') {
-    package_check(pkg_name = "scattermore",
-                  repository = 'CRAN')
-    scattermore::geom_scattermore(pointsize = size,
-                                  ...)
-  } else if(plot_method == 'scattermost') {
-    package_check(pkg_name = "scattermore",
-                  repository = 'CRAN')
-    scattermore::geom_scattermost(xy = scattermost_xy,
-                                  color = scattermost_color,
-                                  pointsize = size)
+  if (plot_method == "ggplot") {
+    ggplot2::geom_point(
+      size = size,
+      ...
+    )
+  } else if (plot_method == "scattermore") {
+    package_check(
+      pkg_name = "scattermore",
+      repository = "CRAN"
+    )
+    scattermore::geom_scattermore(
+      pointsize = size,
+      ...
+    )
+  } else if (plot_method == "scattermost") {
+    package_check(
+      pkg_name = "scattermore",
+      repository = "CRAN"
+    )
+    scattermore::geom_scattermost(
+      xy = scattermost_xy,
+      color = scattermost_color,
+      pointsize = size
+    )
   }
-
 }
 
 
@@ -207,25 +220,26 @@ plotly_network <- function(network,
                            y = "sdimy_begin",
                            z = "sdimz_begin",
                            x_end = "sdimx_end",
-                           y_end="sdimy_end",
-                           z_end="sdimz_end"){
+                           y_end = "sdimy_end",
+                           z_end = "sdimz_end") {
+  edges <- data.table::data.table(
+    edge_id = 1:(3 * dim(network)[1]),
+    x = 0,
+    y = 0,
+    z = 0
+  )
 
-  edges = data.table::data.table(edge_id = 1:(3*dim(network)[1]),
-                                 x = 0,
-                                 y = 0,
-                                 z = 0)
+  edges[edges$edge_id %% 3 == 1]$x <- as.double(network[[x]])
+  edges[edges$edge_id %% 3 == 1]$y <- as.double(network[[y]])
+  edges[edges$edge_id %% 3 == 1]$z <- as.double(network[[z]])
 
-  edges[edges$edge_id%%3 == 1]$x = as.double(network[[x]])
-  edges[edges$edge_id%%3 == 1]$y = as.double(network[[y]])
-  edges[edges$edge_id%%3 == 1]$z = as.double(network[[z]])
+  edges[edges$edge_id %% 3 == 2]$x <- as.double(network[[x_end]])
+  edges[edges$edge_id %% 3 == 2]$y <- as.double(network[[y_end]])
+  edges[edges$edge_id %% 3 == 2]$z <- as.double(network[[z_end]])
 
-  edges[edges$edge_id%%3 == 2]$x = as.double(network[[x_end]])
-  edges[edges$edge_id%%3 == 2]$y = as.double(network[[y_end]])
-  edges[edges$edge_id%%3 == 2]$z = as.double(network[[z_end]])
-
-  edges[edges$edge_id%%3 == 0]$x = NA
-  edges[edges$edge_id%%3 == 0]$y = NA
-  edges[edges$edge_id%%3 == 0]$z = NA
+  edges[edges$edge_id %% 3 == 0]$x <- NA
+  edges[edges$edge_id %% 3 == 0]$y <- NA
+  edges[edges$edge_id %% 3 == 0]$z <- NA
 
   return(edges)
 }
@@ -247,11 +261,10 @@ plotly_grid <- function(spatial_grid,
                         x_start = "x_start",
                         y_start = "y_start",
                         x_end = "x_end",
-                        y_end = "y_end"){
-
+                        y_end = "y_end") {
   edge_num <- length(unique(spatial_grid[[x_start]])) + length(unique(spatial_grid[[y_start]])) + 2
-  x_line <- unique(as.numeric(unlist(spatial_grid[,c(x_start,x_end)])))
-  y_line <- unique(as.numeric(unlist(spatial_grid[,c(y_start,y_end)])))
+  x_line <- unique(as.numeric(unlist(spatial_grid[, c(x_start, x_end)])))
+  y_line <- unique(as.numeric(unlist(spatial_grid[, c(y_start, y_end)])))
 
   x_min <- min(spatial_grid[[x_start]])
   x_max <- max(spatial_grid[[x_end]])
@@ -259,17 +272,17 @@ plotly_grid <- function(spatial_grid,
   y_min <- min(spatial_grid[[y_start]])
   y_max <- max(spatial_grid[[y_end]])
 
-  edges <- data.table::data.table(edge_id = 1:edge_num,x = 0,y = 0,x_end = 0,y_end = 0)
+  edges <- data.table::data.table(edge_id = 1:edge_num, x = 0, y = 0, x_end = 0, y_end = 0)
 
-  edges[1:length(x_line),]$x <- x_line
-  edges[1:length(x_line),]$x_end <- x_line
-  edges[1:length(x_line),]$y <- y_min
-  edges[1:length(x_line),]$y_end <- y_max
+  edges[1:length(x_line), ]$x <- x_line
+  edges[1:length(x_line), ]$x_end <- x_line
+  edges[1:length(x_line), ]$y <- y_min
+  edges[1:length(x_line), ]$y_end <- y_max
 
-  edges[(length(x_line)+1):edge_num,]$x <- x_min
-  edges[(length(x_line)+1):edge_num,]$x_end <- x_max
-  edges[(length(x_line)+1):edge_num,]$y <- y_line
-  edges[(length(x_line)+1):edge_num,]$y_end <- y_line
+  edges[(length(x_line) + 1):edge_num, ]$x <- x_min
+  edges[(length(x_line) + 1):edge_num, ]$x_end <- x_max
+  edges[(length(x_line) + 1):edge_num, ]$y <- y_line
+  edges[(length(x_line) + 1):edge_num, ]$y_end <- y_line
 
   return(edges)
 }
@@ -290,36 +303,33 @@ plotly_axis_scale_3D <- function(cell_locations,
                                  sdimx = NULL,
                                  sdimy = NULL,
                                  sdimz = NULL,
-                                 mode = c("cube","real","custom"),
-                                 custom_ratio = NULL){
-  mode = match.arg(mode, c("cube","real","custom"))
-  if(mode == "real"){
-    x_ratio = max(cell_locations[[sdimx]]) - min(cell_locations[[sdimx]])
-    y_ratio = max(cell_locations[[sdimy]]) - min(cell_locations[[sdimy]])
-    z_ratio = max(cell_locations[[sdimz]]) - min(cell_locations[[sdimz]])
+                                 mode = c("cube", "real", "custom"),
+                                 custom_ratio = NULL) {
+  mode <- match.arg(mode, c("cube", "real", "custom"))
+  if (mode == "real") {
+    x_ratio <- max(cell_locations[[sdimx]]) - min(cell_locations[[sdimx]])
+    y_ratio <- max(cell_locations[[sdimy]]) - min(cell_locations[[sdimy]])
+    z_ratio <- max(cell_locations[[sdimz]]) - min(cell_locations[[sdimz]])
 
-    min_size = min(x_ratio,y_ratio,z_ratio)
-    x_ratio = round(x_ratio/min_size)
-    y_ratio = round(y_ratio/min_size)
-    z_ratio = round(z_ratio/min_size)
-  }
-  else if(mode == "cube"){
-    x_ratio = 1
-    y_ratio = 1
-    z_ratio = 1
-  }
-  else{
-    if(is.null(custom_ratio) | length(custom_ratio) < 3){
+    min_size <- min(x_ratio, y_ratio, z_ratio)
+    x_ratio <- round(x_ratio / min_size)
+    y_ratio <- round(y_ratio / min_size)
+    z_ratio <- round(z_ratio / min_size)
+  } else if (mode == "cube") {
+    x_ratio <- 1
+    y_ratio <- 1
+    z_ratio <- 1
+  } else {
+    if (is.null(custom_ratio) | length(custom_ratio) < 3) {
       stop("\n Please specify your costom axis scale, or choose axis_scale = \"real\"/\"cube\"\n")
-    }
-    else{
-      x_ratio = custom_ratio[1]
-      y_ratio = custom_ratio[2]
-      z_ratio = custom_ratio[3]
+    } else {
+      x_ratio <- custom_ratio[1]
+      y_ratio <- custom_ratio[2]
+      z_ratio <- custom_ratio[3]
     }
   }
-  ratio <- list(x_ratio,y_ratio,z_ratio)
-  return (ratio)
+  ratio <- list(x_ratio, y_ratio, z_ratio)
+  return(ratio)
 }
 
 
@@ -336,42 +346,27 @@ plotly_axis_scale_3D <- function(cell_locations,
 plotly_axis_scale_2D <- function(cell_locations,
                                  sdimx = NULL,
                                  sdimy = NULL,
-                                 mode = c("cube","real","custom"),
-                                 custom_ratio = NULL){
+                                 mode = c("cube", "real", "custom"),
+                                 custom_ratio = NULL) {
+  mode <- match.arg(mode, c("cube", "real", "custom"))
+  if (mode == "real") {
+    x_ratio <- max(cell_locations[[sdimx]]) - min(cell_locations[[sdimx]])
+    y_ratio <- max(cell_locations[[sdimy]]) - min(cell_locations[[sdimy]])
 
-  mode = match.arg(mode, c("cube","real","custom"))
-  if(mode == "real"){
-    x_ratio = max(cell_locations[[sdimx]]) - min(cell_locations[[sdimx]])
-    y_ratio = max(cell_locations[[sdimy]]) - min(cell_locations[[sdimy]])
-
-    min_size = min(x_ratio,y_ratio)
-    x_ratio = round(x_ratio/min_size)
-    y_ratio = round(y_ratio/min_size)
-  }
-  else if(mode == "cube"){
-    x_ratio = 1
-    y_ratio = 1
-  }
-  else{
-    if(is.null(custom_ratio) | length(custom_ratio) < 2){
+    min_size <- min(x_ratio, y_ratio)
+    x_ratio <- round(x_ratio / min_size)
+    y_ratio <- round(y_ratio / min_size)
+  } else if (mode == "cube") {
+    x_ratio <- 1
+    y_ratio <- 1
+  } else {
+    if (is.null(custom_ratio) | length(custom_ratio) < 2) {
       stop("\n Please specify your costom axis scale, or choose axis_scale = \"real\"/\"cube\"\n")
-    }
-    else{
-      x_ratio = custom_ratio[1]
-      y_ratio = custom_ratio[2]
+    } else {
+      x_ratio <- custom_ratio[1]
+      y_ratio <- custom_ratio[2]
     }
   }
-  ratio <- list(x_ratio,y_ratio)
-  return (ratio)
+  ratio <- list(x_ratio, y_ratio)
+  return(ratio)
 }
-
-
-
-
-
-
-
-
-
-
-

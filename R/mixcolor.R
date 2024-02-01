@@ -27,7 +27,7 @@
 #' # with black background
 #' a <- GiottoVisuals::simple_palette_factory(c("green", "black"))(255)
 #' b <- GiottoVisuals::simple_palette_factory(c("red", "black", "blue"))(255)
-#' x <- mixHSV(a,b, base_color = "black")
+#' x <- mixHSV(a, b, base_color = "black")
 #'
 #' op <- par(no.readonly = TRUE)
 #' par(bg = "black")
@@ -43,7 +43,7 @@
 #' # with white background
 #' a <- GiottoVisuals::simple_palette_factory(c("green", "white"))(255)
 #' b <- GiottoVisuals::simple_palette_factory(c("red", "white", "blue"))(255)
-#' x <- mixHSV(a,b, base_color = "white")
+#' x <- mixHSV(a, b, base_color = "white")
 #'
 #' plot(seq(255), y = rep(2, 255), col = a, pch = 15, ylim = c(0, 3), bg = "black")
 #' points(seq(255), y = rep(1.5, 255), col = b, pch = 15)
@@ -58,7 +58,6 @@ NULL
 # Values are returned as a list the starting angle and the angle between
 # hues 1 and 2.
 .calc_h_angle <- function(h1, h2) {
-
   hdiff <- abs(h1 - h2)
   angle <- c()
   h1_start <- c()
@@ -94,7 +93,6 @@ NULL
 # mod param which is a value between 0 and 1 that informs the weighting to
 # apply to h1 (0) vs h2 (1) when mixing.
 .interp_h <- function(h1, h2, mod = 0.5) {
-
   h_angle <- .calc_h_angle(h1, h2)
 
   a_start <- c()
@@ -140,8 +138,7 @@ hex2hsv <- function(x) {
 #' @rdname mixHSV
 #' @export
 mixHSV <- function(c1, c2, base_color = c("white", "black"), output = c("hex", "hsv")) {
-
-  base_color = match.arg(base_color, choices = c("white", "black"))
+  base_color <- match.arg(base_color, choices = c("white", "black"))
   output <- match.arg(output, c("hex", "hsv"))
 
   if (is.character(c1)) c1 <- hex2hsv(c1)
@@ -152,22 +149,20 @@ mixHSV <- function(c1, c2, base_color = c("white", "black"), output = c("hex", "
     .gstop("c1 and c2 are expected to be 3 x n hsv matrices")
   }
 
-  mod_vec <- switch(
-    base_color,
-    "white" = c2[2,] / (c1[2,] + c2[2,]),
-    "black" = c2[3,] / (c1[3,] + c2[3,]),
+  mod_vec <- switch(base_color,
+    "white" = c2[2, ] / (c1[2, ] + c2[2, ]),
+    "black" = c2[3, ] / (c1[3, ] + c2[3, ]),
   )
 
   # div by 0 happens for situations where color1 and color2 have a 0 value for
   # s or v. Simply assign 0.5 for these situations
   mod_vec[is.nan(mod_vec)] <- 0.5
 
-  i_h <- .interp_h(c1[1,], c2[1,], mod = mod_vec)
-  i_s <- .interp_s(c1[2,], c2[2,], mod = mod_vec, base_color = base_color)
-  i_v <- .interp_v(c1[3,], c2[3,], mod = mod_vec, base_color = base_color)
+  i_h <- .interp_h(c1[1, ], c2[1, ], mod = mod_vec)
+  i_s <- .interp_s(c1[2, ], c2[2, ], mod = mod_vec, base_color = base_color)
+  i_v <- .interp_v(c1[3, ], c2[3, ], mod = mod_vec, base_color = base_color)
 
-  switch(
-    output,
+  switch(output,
     "hex" = return(hsv(i_h, i_s, i_v)),
     "hsv" = return(rbind(i_h, i_s, i_v))
   )
