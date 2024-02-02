@@ -63,7 +63,7 @@ NULL
 #' # with black background
 #' a <- GiottoVisuals::simple_palette_factory(c("green", "black"))(255)
 #' b <- GiottoVisuals::simple_palette_factory(c("red", "black", "blue"))(255)
-#' x <- mixRGB(a,b, base_color = "black")
+#' x <- mixRGB(a,b)
 #'
 #' op <- par(no.readonly = TRUE)
 #' par(bg = "black")
