@@ -1,7 +1,8 @@
 
 # GiottoVisuls 0.1.5 (TBD)
 ## new
-- `mixHSV()` vectorized color mixing in HSV space for overlapping colors in plots
+- `mixRGB()` vectorized additive mixing in RGB space
+- `mixHSV()` vectorized color mixing in HSV space
 
 # GiottoVisuals 0.1.4 (2024/01/25)
 ## bug fixes

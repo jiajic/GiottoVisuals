@@ -48,8 +48,34 @@
 #' plot(seq(255), y = rep(2, 255), col = a, pch = 15, ylim = c(0, 3), bg = "black")
 #' points(seq(255), y = rep(1.5, 255), col = b, pch = 15)
 #' points(seq(255), y = rep(1, 255), col = x, pch = 15)
+#' @family colormixing functions
 NULL
 
+#' @name mixRGB
+#' @title Colormixing in RGB space
+#' @description
+#' Vectorized additive mixing of colors in RGB space.
+#' @param c1,c2 Colors 1 and 2. Accepts vector of hex color codes or an rgb matrix
+#' @param output either "hex" or "rgb". "hex" produces a vector of hex codes
+#' for color mixtures. "rgb" returns the rgb matrix.
+#' @family colormixing functions
+#' @examples
+#' # with black background
+#' a <- GiottoVisuals::simple_palette_factory(c("green", "black"))(255)
+#' b <- GiottoVisuals::simple_palette_factory(c("red", "black", "blue"))(255)
+#' x <- mixRGB(a,b)
+#'
+#' op <- par(no.readonly = TRUE)
+#' par(bg = "black")
+#'
+#' # plot input color vectors
+#' plot(seq(255), y = rep(2, 255), col = a, pch = 15, ylim = c(0, 3), bg = "black")
+#' points(seq(255), y = rep(1.5, 255), col = b, pch = 15)
+#' # plot mixture
+#' points(seq(255), y = rep(1, 255), col = x, pch = 15)
+#'
+#' par(op)
+NULL
 
 
 # in HSV, hue can be thought of as a circular set of values from 0 to 1.
@@ -134,7 +160,7 @@ hex2rgb <- function(x) {
 }
 
 hex2hsv <- function(x) {
-  rgb2hsv(hex2rgb(x))
+  grDevices::rgb2hsv(hex2rgb(x))
 }
 
 #' @rdname mixHSV
@@ -168,7 +194,35 @@ mixHSV <- function(c1, c2, base_color = c("white", "black"), output = c("hex", "
 
   switch(
     output,
-    "hex" = return(hsv(i_h, i_s, i_v)),
+    "hex" = return(grDevices::hsv(i_h, i_s, i_v)),
     "hsv" = return(rbind(i_h, i_s, i_v))
   )
 }
+
+
+
+#' @rdname mixRGB
+#' @export
+mixRGB <- function(c1, c2, output = c("hex", "rgb")) {
+
+  output <- match.arg(output, c("hex", "rgb"))
+
+  if (is.character(c1)) c1 <- hex2rgb(c1)
+  if (is.character(c2)) c2 <- hex2rgb(c2)
+
+  # matrix is expected
+  if (!is.matrix(c1) || !is.matrix(c2)) {
+    .gstop("c1 and c2 are expected to be 3 x n rgb matrices")
+  }
+
+  rgbm <- c1 + c2
+  rgbm_adj <- rgbm / max(rgbm)
+
+  grDevices::rgb(t(rgbm_adj))
+}
+
+
+
+
+
+
