@@ -7,7 +7,8 @@
 mixHSV(c1, c2, base_color = c("white", "black"), output = c("hex", "hsv"))
 }
 \arguments{
-\item{c1, c2}{Colors 1 and 2. Accepts vector of hex color codes or an hsv matrix}
+\item{c1, c2}{Colors 1 and 2. Accepts vector of hex color codes or an hsv
+matrix}
 
 \item{base_color}{either "white" (default) or "black". Which color to treat
 as the absence of signal in \code{c1} and \code{c2}}
@@ -15,8 +16,12 @@ as the absence of signal in \code{c1} and \code{c2}}
 \item{output}{either "hex" or "hsv". "hex" produces a vector of hex codes
 for color mixtures. "hsv" returns the hsv matrix.}
 }
+\value{
+a vector of hex codes or an hsv matrix
+}
 \description{
-Vectorized approximation of additive-type color mixing using the HSV colorspace.
+Vectorized approximation of additive-type color mixing using the HSV
+colorspace.
 Intended for helping in plotting more than one variable at the same time and
 showing how they overlap.\cr
 Since the mixing is performed using HSV, this function interpolates hue
@@ -35,13 +40,16 @@ to \code{c1} or \code{c2} values during mixing.
 # with black background
 a <- GiottoVisuals::simple_palette_factory(c("green", "black"))(255)
 b <- GiottoVisuals::simple_palette_factory(c("red", "black", "blue"))(255)
-x <- mixHSV(a,b, base_color = "black")
+x <- mixHSV(a, b, base_color = "black")
 
 op <- par(no.readonly = TRUE)
 par(bg = "black")
 
 # plot input color vectors
-plot(seq(255), y = rep(2, 255), col = a, pch = 15, ylim = c(0, 3), bg = "black")
+plot(seq(255),
+    y = rep(2, 255), col = a, pch = 15, ylim = c(0, 3),
+    bg = "black"
+)
 points(seq(255), y = rep(1.5, 255), col = b, pch = 15)
 # plot mixture
 points(seq(255), y = rep(1, 255), col = x, pch = 15)
@@ -51,9 +59,12 @@ par(op)
 # with white background
 a <- GiottoVisuals::simple_palette_factory(c("green", "white"))(255)
 b <- GiottoVisuals::simple_palette_factory(c("red", "white", "blue"))(255)
-x <- mixHSV(a,b, base_color = "white")
+x <- mixHSV(a, b, base_color = "white")
 
-plot(seq(255), y = rep(2, 255), col = a, pch = 15, ylim = c(0, 3), bg = "black")
+plot(seq(255),
+    y = rep(2, 255), col = a, pch = 15, ylim = c(0, 3),
+    bg = "black"
+)
 points(seq(255), y = rep(1.5, 255), col = b, pch = 15)
 points(seq(255), y = rep(1, 255), col = x, pch = 15)
 }

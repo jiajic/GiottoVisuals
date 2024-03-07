@@ -9,7 +9,7 @@ spatCellPlot2D(
   gobject,
   spat_unit = NULL,
   feat_type = NULL,
-  show_image = F,
+  show_image = FALSE,
   gimage = NULL,
   image_name = NULL,
   largeImage_name = NULL,
@@ -28,26 +28,26 @@ spatCellPlot2D(
   point_alpha = 1,
   point_border_col = "black",
   point_border_stroke = 0.1,
-  show_cluster_center = F,
-  show_center_label = F,
+  show_cluster_center = FALSE,
+  show_center_label = FALSE,
   center_point_size = 4,
   center_point_border_col = "black",
   center_point_border_stroke = 0.1,
   label_size = 4,
   label_fontface = "bold",
-  show_network = F,
+  show_network = FALSE,
   spatial_network_name = "Delaunay_network",
   network_color = NULL,
   network_alpha = 1,
-  show_grid = F,
+  show_grid = FALSE,
   spatial_grid_name = "spatial_grid",
   grid_color = NULL,
-  show_other_cells = T,
+  show_other_cells = TRUE,
   other_cell_color = "lightgrey",
   other_point_size = 1,
   other_cells_alpha = 0.1,
   coord_fix_ratio = 1,
-  show_legend = T,
+  show_legend = TRUE,
   legend_text = 8,
   legend_symbol_size = 1,
   background_color = "white",
@@ -82,13 +82,15 @@ spatCellPlot(...)
 
 \item{image_name}{name of a giotto image or multiple images with group_by}
 
-\item{largeImage_name}{name of a giottoLargeImage or multiple images with group_by}
+\item{largeImage_name}{name of a giottoLargeImage or multiple images
+with group_by}
 
 \item{sdimx}{x-axis dimension name (default = 'sdimx')}
 
 \item{sdimy}{y-axis dimension name (default = 'sdimy')}
 
-\item{spat_enr_names}{character. names of spatial enrichment results to include}
+\item{spat_enr_names}{character. names of spatial enrichment results
+to include}
 
 \item{cell_annotation_values}{numeric cell annotation columns}
 
@@ -102,7 +104,8 @@ or 'sequential' (scaled based on data range)}
 
 \item{gradient_limits}{numeric vector with lower and upper limits}
 
-\item{select_cell_groups}{select subset of cells/clusters based on cell_color parameter}
+\item{select_cell_groups}{select subset of cells/clusters based on
+cell_color parameter}
 
 \item{select_cells}{select subset of cells based on cell IDs}
 
@@ -186,9 +189,11 @@ or 'sequential' (scaled based on data range)}
 
 \item{save_plot}{logical. save the plot}
 
-\item{save_param}{list of saving parameters, see \code{\link{showSaveParameters}}}
+\item{save_param}{list of saving parameters,
+see \code{\link{showSaveParameters}}}
 
-\item{default_save_name}{default save name for saving, don't change, change save_name in save_param}
+\item{default_save_name}{default save name for saving, don't change,
+change save_name in save_param}
 
 \item{\dots}{spatCellPlot(...) passes to spatCellPlot2D()}
 }

@@ -8,7 +8,7 @@ spatFeatPlot2D_single(
   gobject,
   spat_unit = NULL,
   feat_type = NULL,
-  show_image = F,
+  show_image = FALSE,
   gimage = NULL,
   image_name = NULL,
   largeImage_name = NULL,
@@ -70,7 +70,8 @@ spatFeatPlot2D_single(
 
 \item{image_name}{name of a giotto image or multiple images with group_by}
 
-\item{largeImage_name}{name of a giottoLargeImage or multiple images with group_by}
+\item{largeImage_name}{name of a giottoLargeImage or multiple images
+with group_by}
 
 \item{spat_loc_name}{name of spatial locations}
 
@@ -156,9 +157,11 @@ or 'sequential' (scaled based on data range)}
 
 \item{save_plot}{logical. save the plot}
 
-\item{save_param}{list of saving parameters, see \code{\link{showSaveParameters}}}
+\item{save_param}{list of saving parameters,
+see \code{\link{showSaveParameters}}}
 
-\item{default_save_name}{default save name for saving, don't change, change save_name in save_param}
+\item{default_save_name}{default save name for saving, don't change,
+change save_name in save_param}
 }
 \value{
 ggplot

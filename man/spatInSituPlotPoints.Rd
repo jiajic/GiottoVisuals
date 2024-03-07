@@ -62,7 +62,8 @@ spatInSituPlotPoints(
 
 \item{image_name}{name of a giotto image or multiple images with group_by}
 
-\item{largeImage_name}{name of a giottoLargeImage or multiple images with group_by}
+\item{largeImage_name}{name of a giottoLargeImage or multiple images
+with group_by}
 
 \item{spat_unit}{spatial unit (e.g. "cell")}
 
@@ -80,7 +81,8 @@ spatInSituPlotPoints(
 
 \item{sdimy}{spatial dimension y}
 
-\item{spat_enr_names}{character. names of spatial enrichment results to include}
+\item{spat_enr_names}{character. names of spatial enrichment results
+to include}
 
 \item{point_size}{size of the points}
 
@@ -88,7 +90,8 @@ spatInSituPlotPoints(
 
 \item{expand_counts}{expand feature coordinate counts (see details)}
 
-\item{count_info_column}{column name with count information (if expand_counts = TRUE)}
+\item{count_info_column}{column name with count information
+(if expand_counts = TRUE)}
 
 \item{jitter}{maximum x,y jitter provided as c(x, y)}
 
@@ -100,15 +103,17 @@ spatInSituPlotPoints(
 
 \item{polygon_color}{color for polygon border}
 
-\item{polygon_bg_color}{color for polygon background (overruled by polygon_fill)}
+\item{polygon_bg_color}{color for polygon background
+(overruled by polygon_fill)}
 
-\item{polygon_fill}{character. what to color to fill polgyons by (e.g. metadata
-col or spatial enrichment col)}
+\item{polygon_fill}{character. what to color to fill polgyons by
+(e.g. metadata col or spatial enrichment col)}
 
-\item{polygon_fill_gradient}{polygon fill gradient colors given in order from low to high}
+\item{polygon_fill_gradient}{polygon fill gradient colors given in order
+from low to high}
 
-\item{polygon_fill_gradient_midpoint}{value to set as gradient midpoint (optional). If
-left as \code{NULL}, the median value detected will be chosen}
+\item{polygon_fill_gradient_midpoint}{value to set as gradient midpoint
+(optional). If left as \code{NULL}, the median value detected will be chosen}
 
 \item{polygon_fill_gradient_style}{either 'divergent' (midpoint is used in
 color scaling) or 'sequential' (scaled based on data range)}
@@ -135,7 +140,8 @@ color scaling) or 'sequential' (scaled based on data range)}
 
 \item{plot_method}{method to plot points}
 
-\item{plot_last}{which layer to show on top of plot, polygons (default) or points.}
+\item{plot_last}{which layer to show on top of plot,
+polygons (default) or points.}
 
 \item{show_plot}{logical. show plot}
 
@@ -143,9 +149,11 @@ color scaling) or 'sequential' (scaled based on data range)}
 
 \item{save_plot}{logical. save the plot}
 
-\item{save_param}{list of saving parameters, see \code{\link{showSaveParameters}}}
+\item{save_param}{list of saving parameters,
+see \code{\link{showSaveParameters}}}
 
-\item{default_save_name}{default save name for saving, don't change, change save_name in save_param}
+\item{default_save_name}{default save name for saving, don't change,
+change save_name in save_param}
 
 \item{verbose}{be verbose}
 }
@@ -153,31 +161,29 @@ color scaling) or 'sequential' (scaled based on data range)}
 ggplot
 }
 \description{
-Function to plot multiple features for multiple modalities at the spatial in situ level
+Function to plot multiple features for multiple modalities
+at the spatial in situ level
 }
 \examples{
-\dontrun{
-library(GiottoVisuals)
-g <- GiottoData::loadGiottoMini('vizgen')
+g <- GiottoData::loadGiottoMini("vizgen")
 
 spatInSituPlotPoints(
-  g,
-  polygon_feat_type = 'aggregate',
-  polygon_fill = 'nr_feats',
-  polygon_fill_as_factor = FALSE,
-  polygon_line_size = 0.1,
-  polygon_alpha = 1
+    g,
+    polygon_feat_type = "aggregate",
+    polygon_fill = "nr_feats",
+    polygon_fill_as_factor = FALSE,
+    polygon_line_size = 0.1,
+    polygon_alpha = 1
 )
 
 spatInSituPlotPoints(
-  g,
-  polygon_feat_type = 'aggregate',
-  spat_enr_names = 'cluster_metagene',
-  polygon_fill = '1',
-  polygon_fill_as_factor = FALSE,
-  polygon_alpha = 1
+    g,
+    polygon_feat_type = "aggregate",
+    spat_enr_names = "cluster_metagene",
+    polygon_fill = "1",
+    polygon_fill_as_factor = FALSE,
+    polygon_alpha = 1
 )
-}
 
 }
 \seealso{

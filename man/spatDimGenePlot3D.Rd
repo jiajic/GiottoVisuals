@@ -23,7 +23,7 @@ spatDimGenePlot3D(
   cluster_column = NULL,
   select_cell_groups = NULL,
   select_cells = NULL,
-  show_other_cells = T,
+  show_other_cells = TRUE,
   other_cell_color = "lightgrey",
   other_point_size = 1.5,
   show_NN_network = FALSE,
@@ -91,7 +91,8 @@ spatDimGenePlot3D(
 
 \item{cluster_column}{cluster column to select groups}
 
-\item{select_cell_groups}{select subset of cells/clusters based on cell_color parameter}
+\item{select_cell_groups}{select subset of cells/clusters based on
+cell_color parameter}
 
 \item{select_cells}{select subset of cells based on cell IDs}
 
@@ -157,15 +158,18 @@ spatDimGenePlot3D(
 
 \item{save_plot}{logical. save the plot}
 
-\item{save_param}{list of saving parameters, see \code{\link{showSaveParameters}}}
+\item{save_param}{list of saving parameters,
+see \code{\link{showSaveParameters}}}
 
-\item{default_save_name}{default save name for saving, don't change, change save_name in save_param}
+\item{default_save_name}{default save name for saving, don't change,
+change save_name in save_param}
 }
 \value{
 plotly
 }
 \description{
-Visualize cells according to spatial AND dimension reduction coordinates in ggplot mode
+Visualize cells according to spatial AND dimension
+reduction coordinates in ggplot mode
 }
 \details{
 Description of parameters.

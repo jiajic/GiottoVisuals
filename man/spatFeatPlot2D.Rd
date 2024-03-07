@@ -8,7 +8,7 @@ spatFeatPlot2D(
   gobject,
   feat_type = NULL,
   spat_unit = NULL,
-  show_image = F,
+  show_image = FALSE,
   gimage = NULL,
   image_name = NULL,
   largeImage_name = NULL,
@@ -24,11 +24,11 @@ spatFeatPlot2D(
   gradient_midpoint = NULL,
   gradient_style = c("divergent", "sequential"),
   gradient_limits = NULL,
-  show_network = F,
+  show_network = FALSE,
   network_color = NULL,
   spatial_network_name = "Delaunay_network",
   edge_alpha = NULL,
-  show_grid = F,
+  show_grid = FALSE,
   grid_color = NULL,
   spatial_grid_name = "spatial_grid",
   midpoint = 0,
@@ -39,7 +39,7 @@ spatFeatPlot2D(
   point_border_col = "black",
   point_border_stroke = 0.1,
   coord_fix_ratio = 1,
-  show_legend = T,
+  show_legend = TRUE,
   legend_text = 8,
   background_color = "white",
   vor_border_color = "white",
@@ -71,11 +71,13 @@ spatFeatPlot2D(
 
 \item{image_name}{name of a giotto image or multiple images with group_by}
 
-\item{largeImage_name}{name of a giottoLargeImage or multiple images with group_by}
+\item{largeImage_name}{name of a giottoLargeImage or multiple images
+with group_by}
 
 \item{spat_loc_name}{name of spatial locations}
 
-\item{group_by}{character. Create multiple plots based on cell annotation column}
+\item{group_by}{character. Create multiple plots based on cell
+annotation column}
 
 \item{group_by_subset}{character. subset the group_by factor column}
 
@@ -115,7 +117,8 @@ or 'sequential' (scaled based on data range)}
 
 \item{midpoint}{expression midpoint}
 
-\item{scale_alpha_with_expression}{scale expression with ggplot alpha parameter}
+\item{scale_alpha_with_expression}{scale expression with ggplot alpha
+parameter}
 
 \item{point_shape}{point with border or not (border or no_border)}
 
@@ -159,15 +162,18 @@ or 'sequential' (scaled based on data range)}
 
 \item{save_plot}{logical. save the plot}
 
-\item{save_param}{list of saving parameters, see \code{\link{showSaveParameters}}}
+\item{save_param}{list of saving parameters,
+see \code{\link{showSaveParameters}}}
 
-\item{default_save_name}{default save name for saving, don't change, change save_name in save_param}
+\item{default_save_name}{default save name for saving, don't change,
+change save_name in save_param}
 }
 \value{
 ggplot
 }
 \description{
-Visualize cells and feature expression according to spatial coordinates
+Visualize cells and feature expression according
+to spatial coordinates
 }
 \details{
 Description of parameters.

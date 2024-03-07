@@ -1,4 +1,3 @@
-
 # ------------------------------------------------------------------------- #
 # This script contains reusable dummy documentation / templates for
 # commonly used params.
@@ -7,11 +6,11 @@
 # ------------------------------------------------------------------------- #
 
 # No @title to prevent .Rd generation
-# No @noRd tags can be used on these dummy documentations, otherwise @inheritParams
-# cannot be used
+# No @noRd tags can be used on these dummy documentations, otherwise
+# @inheritParams cannot be used
 
-# Note that these dummy documentations WILL be flagged with warnings when building
-# the documentation, but this should be fine.
+# Note that these dummy documentations WILL be flagged with warnings when
+# building the documentation, but this should be fine.
 
 
 
@@ -41,8 +40,8 @@ NULL
 #' @name plot_cell_params
 #' @param cell_color character. what to color cells by (e.g. metadata col or
 #' spatial enrichment col)
-#' @param color_as_factor logical. convert color column to factor. discrete colors
-#' are used when this is TRUE. continuous colors when FALSE.
+#' @param color_as_factor logical. convert color column to factor.
+#' Discrete colors are used when this is TRUE. continuous colors when FALSE.
 #' @param cell_color_code character. discrete colors to use. palette to use or
 #' named vector of colors
 #' @param cell_color_gradient character. continuous colors to use. palette to
@@ -63,12 +62,14 @@ NULL
 #' @param use_overlap use polygon and feature coordinates overlap results
 #' @param polygon_feat_type feature type associated with polygon information
 #' @param polygon_color color for polygon border
-#' @param polygon_bg_color color for polygon background (overruled by polygon_fill)
-#' @param polygon_fill character. what to color to fill polgyons by (e.g. metadata
-#' col or spatial enrichment col)
-#' @param polygon_fill_gradient polygon fill gradient colors given in order from low to high
-#' @param polygon_fill_gradient_midpoint value to set as gradient midpoint (optional). If
-#'   left as \code{NULL}, the median value detected will be chosen
+#' @param polygon_bg_color color for polygon background
+#' (overruled by polygon_fill)
+#' @param polygon_fill character. what to color to fill polgyons by
+#' (e.g. metadata col or spatial enrichment col)
+#' @param polygon_fill_gradient polygon fill gradient colors given in order
+#' from low to high
+#' @param polygon_fill_gradient_midpoint value to set as gradient midpoint
+#' (optional). If left as \code{NULL}, the median value detected will be chosen
 #' @param polygon_fill_gradient_style either 'divergent' (midpoint is used in
 #' color scaling) or 'sequential' (scaled based on data range)
 #' @param polygon_fill_as_factor is fill color a factor
@@ -89,7 +90,8 @@ NULL
 #' @param dim_point_size size of points in dim. reduction space
 #' @param dim_point_alpha transparancy of point in dim. reduction space
 #' @param dim_point_border_col border color of points in dim. reduction space
-#' @param dim_point_border_stroke border stroke of points in dim. reduction space
+#' @param dim_point_border_stroke border stroke of points in dim.
+#' reduction space
 #' @keywords internal
 NULL
 
@@ -97,8 +99,10 @@ NULL
 #' @name plot_nn_net_params
 #' @param show_NN_network logical. Show underlying NN network
 #' @param nn_network_to_use character. type of NN network to use (kNN vs sNN)
-#' @param network_name character. name of NN network to use, if show_NN_network = TRUE
-#' @param nn_network_name character. name of NN network to use, if show_NN_network = TRUE
+#' @param network_name character. name of NN network to use,
+#' if show_NN_network = TRUE
+#' @param nn_network_name character. name of NN network to use,
+#' if show_NN_network = TRUE
 #' @param network_color color of NN network
 #' @param nn_network_alpha column to use for alpha of the edges
 #' @keywords internal
@@ -117,7 +121,8 @@ NULL
 
 #' Params documentation template: plot_spatenr_params
 #' @name plot_spatenr_params
-#' @param spat_enr_names character. names of spatial enrichment results to include
+#' @param spat_enr_names character. names of spatial enrichment results
+#' to include
 #' @keywords internal
 NULL
 
@@ -126,7 +131,8 @@ NULL
 #' @param show_image show a tissue background image
 #' @param gimage a giotto image
 #' @param image_name name of a giotto image or multiple images with group_by
-#' @param largeImage_name name of a giottoLargeImage or multiple images with group_by
+#' @param largeImage_name name of a giottoLargeImage or multiple images
+#' with group_by
 #' @keywords internal
 NULL
 
@@ -135,7 +141,8 @@ NULL
 #'
 #' @name plot_params
 #'
-#' @param group_by character. Create multiple plots based on cell annotation column
+#' @param group_by character. Create multiple plots based on cell
+#' annotation column
 #' @param group_by_subset character. subset the group_by factor column
 #'
 #' @param gradient_midpoint numeric. midpoint for color gradient
@@ -145,7 +152,8 @@ NULL
 #' @param gradient_color character. continuous colors to use. palette to
 #' use or vector of colors to use (minimum of 2).
 #'
-#' @param select_cell_groups select subset of cells/clusters based on cell_color parameter
+#' @param select_cell_groups select subset of cells/clusters based on
+#' cell_color parameter
 #' @param select_cells select subset of cells based on cell IDs
 #'
 #' @param show_other_cells display not selected cells
@@ -188,6 +196,7 @@ NULL
 #' @param cow_rel_h cowplot param: relative heights of rows (e.g. c(1,2))
 #' @param cow_rel_w cowplot param: relative widths of columns (e.g. c(1,2))
 #' @param cow_align cowplot param: how to align
+#' @import cowplot
 #' @keywords internal
 NULL
 
@@ -196,8 +205,10 @@ NULL
 #' @param show_plot logical. show plot
 #' @param return_plot logical. return ggplot object
 #' @param save_plot logical. save the plot
-#' @param save_param list of saving parameters, see \code{\link{showSaveParameters}}
-#' @param default_save_name default save name for saving, don't change, change save_name in save_param
+#' @param save_param list of saving parameters,
+#' see \code{\link{showSaveParameters}}
+#' @param default_save_name default save name for saving, don't change,
+#' change save_name in save_param
 #' @keywords internal
 NULL
 
@@ -207,5 +218,3 @@ NULL
 #' @title hidden_aliases
 #' @name hidden_aliases
 NULL
-
-

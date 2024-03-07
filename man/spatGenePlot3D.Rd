@@ -20,7 +20,7 @@ spatGenePlot3D(
   cluster_column = NULL,
   select_cell_groups = NULL,
   select_cells = NULL,
-  show_other_cells = T,
+  show_other_cells = TRUE,
   other_cell_color = "lightgrey",
   other_point_size = 1,
   genes_high_color = NULL,
@@ -109,9 +109,11 @@ spatGenePlot3D(
 
 \item{save_plot}{logical. save the plot}
 
-\item{save_param}{list of saving parameters, see \code{\link{showSaveParameters}}}
+\item{save_param}{list of saving parameters,
+see \code{\link{showSaveParameters}}}
 
-\item{default_save_name}{default save name for saving, don't change, change save_name in save_param}
+\item{default_save_name}{default save name for saving, don't change,
+change save_name in save_param}
 }
 \value{
 ggplot
