@@ -8,7 +8,7 @@ spatFeatPlot2D(
   gobject,
   feat_type = NULL,
   spat_unit = NULL,
-  show_image = F,
+  show_image = FALSE,
   gimage = NULL,
   image_name = NULL,
   largeImage_name = NULL,
@@ -24,11 +24,11 @@ spatFeatPlot2D(
   gradient_midpoint = NULL,
   gradient_style = c("divergent", "sequential"),
   gradient_limits = NULL,
-  show_network = F,
+  show_network = FALSE,
   network_color = NULL,
-  spatial_network_name = "Delaunay_network",
   edge_alpha = NULL,
-  show_grid = F,
+  spatial_network_name = "Delaunay_network",
+  show_grid = FALSE,
   grid_color = NULL,
   spatial_grid_name = "spatial_grid",
   midpoint = 0,
@@ -39,7 +39,7 @@ spatFeatPlot2D(
   point_border_col = "black",
   point_border_stroke = 0.1,
   coord_fix_ratio = 1,
-  show_legend = T,
+  show_legend = TRUE,
   legend_text = 8,
   background_color = "white",
   vor_border_color = "white",
@@ -103,9 +103,9 @@ or 'sequential' (scaled based on data range)}
 
 \item{network_color}{color of spatial network}
 
-\item{spatial_network_name}{name of spatial network to use}
+\item{edge_alpha}{alpha of spatial network}
 
-\item{edge_alpha}{alpha of edge}
+\item{spatial_network_name}{name of spatial network to use}
 
 \item{show_grid}{show spatial grid}
 
