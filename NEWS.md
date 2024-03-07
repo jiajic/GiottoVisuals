@@ -1,4 +1,10 @@
 
+
+# GiottoVisuals 0.1.5 (2024/03/07)
+
+## bug fixes
+- fix `spatPlot2D()` largeImage plotting when using `group_by`
+
 # GiottoVisuals 0.1.4 (2024/01/25)
 ## bug fixes
 - fix plotting color gradient when using param `point_shape = "no_border"`

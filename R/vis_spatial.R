@@ -49,7 +49,7 @@
     gobject,
     feat_type = NULL,
     spat_unit = NULL,
-    show_image = F,
+    show_image = FALSE,
     gimage = NULL,
     image_name = NULL,
     largeImage_name = NULL,
@@ -58,7 +58,7 @@
     sdimy = 'sdimy',
     spat_enr_names = NULL,
     cell_color = NULL,
-    color_as_factor = T,
+    color_as_factor = TRUE,
     cell_color_code = NULL,
     cell_color_gradient = NULL,
     gradient_midpoint = NULL,
@@ -71,27 +71,27 @@
     point_alpha = 1,
     point_border_col = 'black',
     point_border_stroke = 0.1,
-    show_cluster_center = F,
-    show_center_label = F,
+    show_cluster_center = FALSE,
+    show_center_label = FALSE,
     center_point_size = 4,
     center_point_border_col = 'black',
     center_point_border_stroke = 0.1,
     label_size = 4,
     label_fontface = 'bold',
-    show_network = F,
+    show_network = FALSE,
     spatial_network_name = 'Delaunay_network',
     network_color = NULL,
     network_alpha = 1,
-    show_grid = F,
+    show_grid = FALSE,
     spatial_grid_name = 'spatial_grid',
     grid_color = NULL,
-    show_other_cells = T,
+    show_other_cells = TRUE,
     other_cell_color = 'lightgrey',
     other_point_size = 1,
     other_cells_alpha = 0.1,
     coord_fix_ratio = 1,
     title = NULL,
-    show_legend = T,
+    show_legend = TRUE,
     legend_text = 8,
     legend_symbol_size = 1,
     background_color = 'white',
@@ -108,14 +108,16 @@
     default_save_name = 'spatPlot2D_single'
 ) {
 
-  assert_giotto(gobject)
-
-  if(verbose == TRUE) {
-    cat('\n verbose == TRUE \n')
-  }
-
   # Check params
-  if(!is.null(image_name) && !is.null(largeImage_name)) stop('Only one type of image can be used at a time')
+  checkmate::assert_class(gobject, "giotto")
+
+  point_shape = match.arg(
+    point_shape,
+    choices = c('border', 'no_border', 'voronoi')
+  )
+  if(!is.null(image_name) && !is.null(largeImage_name)) {
+    stop('Only one type of image can be used at a time')
+  }
 
   # Set feat_type and spat_unit
   spat_unit = set_default_spat_unit(gobject = gobject,
@@ -146,19 +148,23 @@
     } else if(!is.null(largeImage_name)) {
       # If there is input to largeImage_name arg
       if(length(largeImage_name) == 1) {
-        gimage = plot_auto_largeImage_resample(gobject = gobject,
-                                               largeImage_name = largeImage_name,
-                                               spat_unit = spat_unit,
-                                               spat_loc_name = spat_loc_name,
-                                               include_image_in_border = TRUE)
+        gimage = plot_auto_largeImage_resample(
+          gobject = gobject,
+          largeImage_name = largeImage_name,
+          spat_unit = spat_unit,
+          spat_loc_name = spat_loc_name,
+          include_image_in_border = TRUE
+        )
       } else {
         gimage = list()
-        for(gim in 1:length(largeImage_name)) {
-          gimage[[gim]] = plot_auto_largeImage_resample(gobject = gobject,
-                                                        largeImage_name = largeImage_name[[gim]],
-                                                        spat_unit = spat_unit,
-                                                        spat_loc_name = spat_loc_name,
-                                                        include_image_in_border = TRUE)
+        for(gim in seq_along(largeImage_name)) {
+          gimage[[gim]] = plot_auto_largeImage_resample(
+            gobject = gobject,
+            largeImage_name = largeImage_name[[gim]],
+            spat_unit = spat_unit,
+            spat_loc_name = spat_loc_name,
+            include_image_in_border = TRUE
+          )
         }
       }
 
@@ -166,41 +172,46 @@
       # Default to first image available in images if no input given to image_name or largeImage_name args
       image_name = names(gobject@images)[1]
       gimage = gobject@images[[image_name]]
-      if(is.null(gimage)) warning('image_name: ', image_name, ' does not exist \n')
+      if(is.null(gimage)) {
+        warning(sprintf("image_name: \'%s\' does not exist", image_name))
+      }
     }
   }
 
 
-  ## point shape ##
-  point_shape = match.arg(point_shape, choices = c('border', 'no_border', 'voronoi'))
-
   ## get spatial cell locations
-  cell_locations = get_spatial_locations(gobject = gobject,
-                                         spat_unit = spat_unit,
-                                         spat_loc_name = spat_loc_name,
-                                         output = 'data.table',
-                                         copy_obj = TRUE,
-                                         verbose = verbose)
+  cell_locations = get_spatial_locations(
+    gobject = gobject,
+    spat_unit = spat_unit,
+    spat_loc_name = spat_loc_name,
+    output = 'data.table',
+    copy_obj = TRUE,
+    verbose = verbose
+  )
   if(is.null(cell_locations)) return(NULL)
 
 
   ## extract spatial network
   if(show_network == TRUE) {
-    spatial_network = get_spatialNetwork(gobject,
-                                         spat_unit = spat_unit,
-                                         name = spatial_network_name,
-                                         output = 'networkDT')
+    spatial_network = get_spatialNetwork(
+      gobject,
+      spat_unit = spat_unit,
+      name = spatial_network_name,
+      output = 'networkDT'
+    )
   } else {
     spatial_network = NULL
   }
 
   ## extract spatial grid
   if(show_grid == TRUE) {
-    spatial_grid = get_spatialGrid(gobject = gobject,
-                                   spat_unit = spat_unit,
-                                   feat_type = feat_type,
-                                   name = spatial_grid_name,
-                                   return_grid_Obj = FALSE)
+    spatial_grid = get_spatialGrid(
+      gobject = gobject,
+      spat_unit = spat_unit,
+      feat_type = feat_type,
+      name = spatial_grid_name,
+      return_grid_Obj = FALSE
+    )
   } else {
     spatial_grid = NULL
   }
@@ -221,12 +232,14 @@
   }
 
   cell_metadata = try(
-    expr = combineMetadata(gobject = gobject,
-                           spat_unit = spat_unit,
-                           feat_type = feat_type,
-                           spat_loc_name = spat_loc_name,
-                           spat_enr_names = spat_enr_names,
-                           verbose = verbose),
+    expr = combineMetadata(
+      gobject = gobject,
+      spat_unit = spat_unit,
+      feat_type = feat_type,
+      spat_loc_name = spat_loc_name,
+      spat_enr_names = spat_enr_names,
+      verbose = verbose
+    ),
     silent = TRUE
   )
 
@@ -278,7 +291,7 @@
   ### create 2D plot with ggplot ###
   #cat('create 2D plot with ggplot \n')
 
-  if(verbose == TRUE) {
+  if (isTRUE(verbose)) {
     cat('Data table with selected information (e.g. cells): \n')
     print(cell_locations_metadata_selected[1:5,])
 
@@ -287,12 +300,11 @@
   }
 
 
-
-  pl = ggplot2::ggplot()
-  pl = pl + ggplot2::theme_bw()
+  pl <- ggplot2::ggplot()
+  pl <- pl + ggplot2::theme_bw()
 
   ## plot image ##
-  if(show_image == TRUE & !is.null(gimage)) {
+  if (isTRUE(show_image) && !is.null(gimage)) {
     pl = plot_spat_image_layer_ggplot(
       gg_obj = pl,
       gobject = gobject,
@@ -305,141 +317,121 @@
     )
   }
 
+
   ## plot spatial network
-  if(!is.null(spatial_network) & show_network == TRUE) {
-    if(is.null(network_color)) network_color = 'red'
-    pl <- pl + ggplot2::geom_segment(data = spatial_network, aes(x = sdimx_begin,
-                                                                 y = sdimy_begin,
-                                                                 xend = sdimx_end,
-                                                                 yend = sdimy_end),
-                                     color = network_color, size = 0.5, alpha = network_alpha)
+  if (!is.null(spatial_network) && isTRUE(show_network)) {
+    if (is.null(network_color)) network_color = 'red'
+    pl <- pl + ggplot2::geom_segment(
+      data = spatial_network,
+      aes(
+        x = sdimx_begin,
+        y = sdimy_begin,
+        xend = sdimx_end,
+        yend = sdimy_end
+      ),
+      color = network_color,
+      size = 0.5,
+      alpha = network_alpha
+    )
   }
 
 
   ## plot spatial grid
-  if(!is.null(spatial_grid) & show_grid == TRUE) {
-    if(is.null(grid_color)) grid_color = 'black'
-    pl <- pl + ggplot2::geom_rect(data = spatial_grid, aes(xmin = x_start,
-                                                           xmax = x_end,
-                                                           ymin = y_start,
-                                                           ymax = y_end),
-                                  color = grid_color, fill = NA)
+  if (!is.null(spatial_grid) && isTRUE(show_grid)) {
+    if (is.null(grid_color)) grid_color = 'black'
+    pl <- pl + ggplot2::geom_rect(
+      data = spatial_grid,
+      aes(
+        xmin = x_start,
+        xmax = x_end,
+        ymin = y_start,
+        ymax = y_end
+      ),
+      color = grid_color,
+      fill = NA)
   }
+
 
   ## plot point layer
-  if(point_shape == 'border') {
-    pl = plot_spat_point_layer_ggplot(
-      ggobject = pl,
-      instrs = instructions(gobject),
-      sdimx = sdimx,
-      sdimy = sdimy,
-      cell_locations_metadata_selected = cell_locations_metadata_selected,
-      cell_locations_metadata_other = cell_locations_metadata_other,
-      cell_color = cell_color,
-      color_as_factor = color_as_factor,
-      cell_color_code = cell_color_code,
-      cell_color_gradient = cell_color_gradient,
-      gradient_midpoint = gradient_midpoint,
-      gradient_style = gradient_style,
-      gradient_limits = gradient_limits,
-      select_cell_groups = select_cell_groups,
-      select_cells = select_cells,
-      point_size = point_size,
-      point_alpha = point_alpha,
-      point_border_stroke = point_border_stroke,
-      point_border_col = point_border_col,
-      show_cluster_center = show_cluster_center,
-      show_center_label = show_center_label,
-      center_point_size = center_point_size,
-      center_point_border_col = center_point_border_col,
-      center_point_border_stroke = center_point_border_stroke,
-      label_size = label_size,
-      label_fontface = label_fontface,
-      show_other_cells = show_other_cells,
-      other_cell_color = other_cell_color,
-      other_point_size = other_point_size,
-      show_legend = show_legend
-    )
-  } else if(point_shape == 'no_border') {
-    pl = plot_spat_point_layer_ggplot_noFILL(
-      ggobject = pl,
-      instrs = instructions(gobject),
-      sdimx = sdimx,
-      sdimy = sdimy,
-      cell_locations_metadata_selected = cell_locations_metadata_selected,
-      cell_locations_metadata_other = cell_locations_metadata_other,
-      cell_color = cell_color,
-      color_as_factor = color_as_factor,
-      cell_color_code = cell_color_code,
-      cell_color_gradient = cell_color_gradient,
-      gradient_midpoint = gradient_midpoint,
-      gradient_style = gradient_style,
-      gradient_limits = gradient_limits,
-      select_cell_groups = select_cell_groups,
-      select_cells = select_cells,
-      point_size = point_size,
-      point_alpha = point_alpha,
-      show_cluster_center = show_cluster_center,
-      show_center_label = show_center_label,
-      center_point_size = center_point_size,
-      label_size = label_size,
-      label_fontface = label_fontface,
-      show_other_cells = show_other_cells,
-      other_cell_color = other_cell_color,
-      other_point_size = other_point_size,
-      show_legend = show_legend
-    )
+  point_general_params <- list(
+    ggobject = pl,
+    instrs = instructions(gobject),
+    sdimx = sdimx,
+    sdimy = sdimy,
+    cell_locations_metadata_selected = cell_locations_metadata_selected,
+    cell_locations_metadata_other = cell_locations_metadata_other,
+    cell_color = cell_color,
+    color_as_factor = color_as_factor,
+    cell_color_code = cell_color_code,
+    cell_color_gradient = cell_color_gradient,
+    gradient_midpoint = gradient_midpoint,
+    gradient_style = gradient_style,
+    gradient_limits = gradient_limits,
+    select_cell_groups = select_cell_groups,
+    select_cells = select_cells,
+    point_size = point_size,
+    point_alpha = point_alpha,
+    show_cluster_center = show_cluster_center,
+    show_center_label = show_center_label,
+    center_point_size = center_point_size,
+    label_size = label_size,
+    label_fontface = label_fontface,
+    show_other_cells = show_other_cells,
+    other_cell_color = other_cell_color,
+    other_point_size = other_point_size,
+    show_legend = show_legend
+  )
 
-  } else if(point_shape == 'voronoi') {
+  point_border_specific_params <- list(
+    point_border_stroke = point_border_stroke, # specific
+    point_border_col = point_border_col, # specific
+    center_point_border_col = center_point_border_col, # specific
+    center_point_border_stroke = center_point_border_stroke # specific
+  )
 
-    pl = plot_spat_voronoi_layer_ggplot(
-      ggobject = pl,
-      instrs = instructions(gobject),
-      sdimx = sdimx,
-      sdimy = sdimy,
-      cell_locations_metadata_selected = cell_locations_metadata_selected,
-      cell_locations_metadata_other = cell_locations_metadata_other,
-      cell_color = cell_color,
-      color_as_factor = color_as_factor,
-      cell_color_code = cell_color_code,
-      cell_color_gradient = cell_color_gradient,
-      gradient_midpoint = gradient_midpoint,
-      gradient_style = gradient_style,
-      gradient_limits = gradient_limits,
-      select_cell_groups = select_cell_groups,
-      select_cells = select_cells,
-      point_size = point_size,
-      point_alpha = point_alpha,
-      show_cluster_center = show_cluster_center,
-      show_center_label = show_center_label,
-      center_point_size = center_point_size,
-      label_size = label_size,
-      label_fontface = label_fontface,
-      show_other_cells = show_other_cells,
-      other_cell_color = other_cell_color,
-      other_point_size = other_point_size,
-      background_color = background_color,
-      vor_border_color = vor_border_color,
-      vor_max_radius = vor_max_radius,
-      vor_alpha = vor_alpha,
-      show_legend = show_legend
+  point_voronoi_specific_params <- list(
+    background_color = background_color, # specific
+    vor_border_color = vor_border_color, # specific
+    vor_max_radius = vor_max_radius, # specific
+    vor_alpha = vor_alpha # specific
+  )
+
+  pl <- switch(point_shape,
+    "border" = do.call(
+      plot_spat_point_layer_ggplot,
+      args = c(
+        point_general_params,
+        point_border_specific_params
+      )
+    ),
+    "no_border" = do.call(
+      plot_spat_point_layer_ggplot_noFILL,
+      args = point_general_params
+    ),
+    "voronoi" = do.call(
+      plot_spat_voronoi_layer_ggplot,
+      args = c(
+        point_general_params,
+        point_voronoi_specific_params
+      )
     )
-
-  }
+  )
 
 
 
   ## adjust theme settings
-  pl <- pl + ggplot2::theme(plot.title = element_text(hjust = 0.5),
-                            legend.title = element_blank(),
-                            legend.text = element_text(size = legend_text),
-                            axis.title = element_text(size = axis_title),
-                            axis.text = element_text(size = axis_text),
-                            panel.grid = element_blank(),
-                            panel.background = element_rect(fill = background_color))
+  pl <- pl + ggplot2::theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.title = element_blank(),
+    legend.text = element_text(size = legend_text),
+    axis.title = element_text(size = axis_title),
+    axis.text = element_text(size = axis_text),
+    panel.grid = element_blank(),
+    panel.background = element_rect(fill = background_color)
+  )
 
   ## change symbol size of legend
-  if(color_as_factor == TRUE) {
+  if(isTRUE(color_as_factor)) {
     if(point_shape %in% c('border', 'voronoi')) {
       pl = pl + guides(fill = guide_legend(override.aes = list(size = legend_symbol_size)))
     } else if(point_shape == 'no_border') {
@@ -529,7 +521,7 @@ spatPlot2D = function(
     gobject,
     spat_unit = NULL,
     feat_type = NULL,
-    show_image = F,
+    show_image = FALSE,
     gimage = NULL,
     image_name = NULL,
     largeImage_name = NULL,
@@ -540,7 +532,7 @@ spatPlot2D = function(
     sdimy = 'sdimy',
     spat_enr_names = NULL,
     cell_color = NULL,
-    color_as_factor = T,
+    color_as_factor = TRUE,
     cell_color_code = NULL,
     cell_color_gradient = NULL,
     gradient_midpoint = NULL,
@@ -553,27 +545,27 @@ spatPlot2D = function(
     point_alpha = 1,
     point_border_col = 'black',
     point_border_stroke = 0.1,
-    show_cluster_center = F,
-    show_center_label = F,
+    show_cluster_center = FALSE,
+    show_center_label = FALSE,
     center_point_size = 4,
     center_point_border_col = 'black',
     center_point_border_stroke = 0.1,
     label_size = 4,
     label_fontface = 'bold',
-    show_network = F,
+    show_network = FALSE,
     spatial_network_name = 'Delaunay_network',
     network_color = NULL,
     network_alpha = 1,
     show_grid = F,
     spatial_grid_name = 'spatial_grid',
     grid_color = NULL,
-    show_other_cells = T,
+    show_other_cells = TRUE,
     other_cell_color = 'lightgrey',
     other_point_size = 1,
     other_cells_alpha = 0.1,
     coord_fix_ratio = 1,
     title = NULL,
-    show_legend = T,
+    show_legend = TRUE,
     legend_text = 10,
     legend_symbol_size = 2,
     background_color = 'white',
@@ -593,75 +585,56 @@ spatPlot2D = function(
     default_save_name = 'spatPlot2D'
 ) {
 
-  assert_giotto(gobject)
+  checkmate::assert_class(gobject, "giotto")
+
+  # create args list needed for each call to .spatPlot2D_single()
+  # 1. - grab all params available
+  # 2. - subset to those needed
+  spp_params <- get_args_list()
+  spp_params <- spp_params[c(
+    # [gobject params]
+    "gobject", "spat_unit", "feat_type",
+    # [image params]
+    "show_image", "gimage", "image_name", "largeImage_name",
+    # [spatlocs params]
+    "spat_loc_name", "sdimx", "sdimy",
+    # [access spatial enrichments]
+    "spat_enr_names",
+    # [point aes]
+    "cell_color", "color_as_factor", "cell_color_code", "cell_color_gradient",
+    "gradient_midpoint", "gradient_style", "gradient_limits",
+    "point_shape", "point_size", "point_alpha", "point_border_col",
+    "point_border_stroke",
+    # [select cell params]
+    "select_cell_groups", "select_cells",
+    # [voronoi-point params]
+    "vor_border_color", "vor_max_radius", "vor_alpha",
+    # [others aes]
+    "show_other_cells", "other_cell_color", "other_point_size",
+    "other_cells_alpha",
+    # [cluster aes]
+    "show_cluster_center", "show_center_label", "center_point_size",
+    "center_point_border_col", "center_point_border_stroke",
+    # [label aes]
+    "label_size", "label_fontface",
+    # [network aes]
+    "show_network", "spatial_network_name", "network_color", "network_alpha",
+    # [grid aes]
+    "show_grid", "spatial_grid_name", "grid_color",
+    # [figure params]
+    "coord_fix_ratio", "show_legend", "legend_text", "legend_symbol_size",
+    "background_color", "axis_text", "axis_title", "title",
+    # [return params]
+    "show_plot", "return_plot", "save_plot", "save_param", "default_save_name"
+  )]
+
 
   ## check group_by
-  if(is.null(group_by)) {
+  if(is.null(group_by)) { # ----------------------------------------------- #
 
-    .spatPlot2D_single(
-      gobject = gobject,
-      spat_unit = spat_unit,
-      feat_type = feat_type,
-      show_image = show_image,
-      gimage = gimage,
-      image_name = image_name,
-      largeImage_name = largeImage_name,
-      spat_loc_name = spat_loc_name,
-      sdimx = sdimx,
-      sdimy = sdimy,
-      spat_enr_names = spat_enr_names,
-      cell_color = cell_color,
-      color_as_factor = color_as_factor,
-      cell_color_code = cell_color_code,
-      cell_color_gradient = cell_color_gradient,
-      gradient_midpoint = gradient_midpoint,
-      gradient_style = gradient_style,
-      gradient_limits = gradient_limits,
-      select_cell_groups = select_cell_groups,
-      select_cells = select_cells,
-      point_shape = point_shape,
-      point_size = point_size,
-      point_alpha = point_alpha,
-      point_border_col = point_border_col,
-      point_border_stroke = point_border_stroke,
-      show_cluster_center = show_cluster_center,
-      show_center_label = show_center_label,
-      center_point_size = center_point_size,
-      center_point_border_col = center_point_border_col,
-      center_point_border_stroke = center_point_border_stroke,
-      label_size = label_size,
-      label_fontface = label_fontface,
-      show_network = show_network,
-      spatial_network_name = spatial_network_name,
-      network_color = network_color,
-      network_alpha = network_alpha,
-      show_grid = show_grid,
-      spatial_grid_name = spatial_grid_name,
-      grid_color = grid_color,
-      show_other_cells = show_other_cells,
-      other_cell_color = other_cell_color,
-      other_point_size = other_point_size,
-      other_cells_alpha = other_cells_alpha,
-      coord_fix_ratio = coord_fix_ratio,
-      show_legend = show_legend,
-      legend_text = legend_text,
-      legend_symbol_size = legend_symbol_size,
-      background_color = background_color,
-      vor_border_color = vor_border_color,
-      vor_max_radius = vor_max_radius,
-      vor_alpha = vor_alpha,
-      axis_text = axis_text,
-      axis_title = axis_title,
-      title = title,
-      show_plot = show_plot,
-      return_plot = return_plot,
-      save_plot = save_plot,
-      save_param =  save_param,
-      default_save_name = default_save_name
-    )
+    do.call(.spatPlot2D_single, args = spp_params)
 
-
-  } else {
+  } else { # -------------------------------------------------------------- #
 
     # Set feat_type and spat_unit
     spat_unit = set_default_spat_unit(gobject = gobject,
@@ -671,11 +644,13 @@ spatPlot2D = function(
                                       feat_type = feat_type)
 
     ## metadata
-    comb_metadata = combineMetadata(gobject = gobject,
-                                    spat_loc_name = spat_loc_name,
-                                    feat_type = feat_type,
-                                    spat_unit = spat_unit,
-                                    spat_enr_names = spat_enr_names)
+    comb_metadata = combineMetadata(
+      gobject = gobject,
+      spat_loc_name = spat_loc_name,
+      feat_type = feat_type,
+      spat_unit = spat_unit,
+      spat_enr_names = spat_enr_names
+    )
     possible_meta_groups = colnames(comb_metadata)
 
     ## check if group_by is found
@@ -700,10 +675,10 @@ spatPlot2D = function(
 
         if(cell_color %in% colnames(comb_metadata)) {
 
-          if(color_as_factor == TRUE) {
+          if(isTRUE(color_as_factor)) {
             number_colors = length(unique(comb_metadata[[cell_color]]))
             cell_color_code = set_default_color_discrete_cell(instrs = instructions(gobject))(n = number_colors)
-            names(cell_color_code) = unique(comb_metadata[[cell_color]])
+            names(cell_color_code) <- unique(comb_metadata[[cell_color]])
             cell_color_code = cell_color_code
           }
         }
@@ -711,94 +686,48 @@ spatPlot2D = function(
     }
 
 
-    # print, return and save parameters
-    show_plot = ifelse(is.na(show_plot), readGiottoInstructions(gobject, param = 'show_plot'), show_plot)
-    save_plot = ifelse(is.na(save_plot), readGiottoInstructions(gobject, param = 'save_plot'), save_plot)
-    return_plot = ifelse(is.na(return_plot), readGiottoInstructions(gobject, param = 'return_plot'), return_plot)
 
     ## plotting ##
     savelist <- list()
 
+    # group_by images
+    img_type <- ifelse(is.null(image_name), "image", "largeImage")
 
-    for(group_id in 1:length(unique_groups)) {
+    # group_by static settings
+    spp_params$show_plot <- FALSE
+    spp_params$return_plot <- TRUE
+    spp_params$save_plot <- FALSE
+    spp_params$save_param <- list()
+    spp_params$default_save_name <- "spatPlot2D"
+
+
+    for(group_id in seq_along(unique_groups)) {
 
       group = unique_groups[group_id]
 
       subset_cell_IDs = comb_metadata[get(group_by) == group][['cell_ID']]
-      temp_gobject = subsetGiotto(gobject = gobject,
-                                  spat_unit = spat_unit,
-                                  feat_type = feat_type,
-                                  cell_ids = subset_cell_IDs,
-                                  verbose = FALSE)
-
-
-      if(length(unique_groups) == length(image_name)) {
-        spec_image_name = image_name[group_id]
-      } else {
-        spec_image_name = image_name
-      }
-
-      pl = .spatPlot2D_single(
-        gobject = temp_gobject,
+      spp_params$gobject <- subsetGiotto(
+        gobject = gobject,
         spat_unit = spat_unit,
         feat_type = feat_type,
-        show_image = show_image,
-        gimage = gimage,
-        image_name = spec_image_name,
-        spat_loc_name = spat_loc_name,
-        sdimx = sdimx,
-        sdimy = sdimy,
-        spat_enr_names = spat_enr_names,
-        cell_color = cell_color,
-        cell_color_code = cell_color_code,
-        color_as_factor = color_as_factor,
-        cell_color_gradient = cell_color_gradient,
-        gradient_midpoint = gradient_midpoint,
-        gradient_style = gradient_style,
-        gradient_limits = gradient_limits,
-        select_cell_groups = select_cell_groups,
-        select_cells = select_cells,
-        point_shape = point_shape,
-        point_size = point_size,
-        point_alpha = point_alpha,
-        point_border_col = point_border_col,
-        point_border_stroke = point_border_stroke,
-        show_cluster_center = show_cluster_center,
-        show_center_label = show_center_label,
-        center_point_size = center_point_size,
-        center_point_border_col = center_point_border_col,
-        center_point_border_stroke = center_point_border_stroke,
-        label_size = label_size,
-        label_fontface = label_fontface,
-        show_network = show_network,
-        spatial_network_name = spatial_network_name,
-        network_color = network_color,
-        network_alpha = network_alpha,
-        show_grid = show_grid,
-        spatial_grid_name = spatial_grid_name,
-        grid_color = grid_color,
-        show_other_cells = show_other_cells,
-        other_cell_color = other_cell_color,
-        other_point_size = other_point_size,
-        other_cells_alpha = other_cells_alpha,
-        coord_fix_ratio = coord_fix_ratio,
-        title = group,
-        show_legend = show_legend,
-        legend_text = legend_text,
-        legend_symbol_size = legend_symbol_size,
-        background_color = background_color,
-        vor_border_color = vor_border_color,
-        vor_max_radius = vor_max_radius,
-        vor_alpha = vor_alpha,
-        axis_text = axis_text,
-        axis_title = axis_title,
-        show_plot = FALSE,
-        return_plot = TRUE,
-        save_plot = FALSE,
-        save_param =  list(),
-        default_save_name = 'spatPlot2D'
+        cell_ids = subset_cell_IDs,
+        verbose = FALSE
       )
 
+      # use a different image per group if there are the same number of names
+      # provided as there are groups
+      # Otherwise, use the same image (or NULL) for all groups (default)
+      switch(img_type,
+        "image" = if (length(unique_groups) == length(image_name)) {
+          spp_params$image_name <- image_name[group_id]
+        },
+        "largeImage" = if (length(unique_groups) == length(largeImage_name)) {
+          spp_params$largeImage_name <- largeImage_name[group_id]
+        }
+      )
+
+
+      pl <- do.call(.spatPlot2D_single, args = spp_params)
 
       savelist[[group_id]] <- pl
 
@@ -814,23 +743,18 @@ spatPlot2D = function(
       align = cow_align
     )
 
+    return(plot_output_handler(
+      gobject = gobject,
+      plot_object = combo_plot,
+      save_plot = save_plot,
+      return_plot = return_plot,
+      show_plot = show_plot,
+      default_save_name = default_save_name,
+      save_param = save_param,
+      else_return = NULL
+    ))
 
-    ## print plot
-    if(show_plot == TRUE) {
-      print(combo_plot)
-    }
-
-    ## save plot
-    if(save_plot == TRUE) {
-      do.call('all_plots_save_function', c(list(gobject = gobject, plot_object = combo_plot, default_save_name = default_save_name), save_param))
-    }
-
-    ## return plot
-    if(return_plot == TRUE) {
-      return(combo_plot)
-    }
-
-  }
+  } # --------------------------------------------------------------------- #
 
 }
 
@@ -1130,7 +1054,7 @@ spatDeconvPlot = function(gobject,
                               default_save_name = 'dimPlot2D_single'
 ){
 
-  assert_giotto(gobject)
+  checkmate::assert_class(gobject, "giotto")
 
   # Set feat_type and spat_unit
   spat_unit = set_default_spat_unit(gobject = gobject,
@@ -1487,7 +1411,7 @@ dimPlot2D = function(gobject,
                      default_save_name = 'dimPlot2D') {
 
   # arg_list <- c(as.list(environment())) # get all args as list
-  assert_giotto(gobject)
+  checkmate::assert_class(gobject, "giotto")
 
   ## check group_by
   if(is.null(group_by)) {
@@ -1715,7 +1639,7 @@ plotUMAP_2D = function(gobject,
                        default_save_name = 'UMAP_2D',
                        ...) {
 
-  assert_giotto(gobject)
+  checkmate::assert_class(gobject, "giotto")
 
   dimPlot2D(gobject = gobject,
             dim_reduction_to_use = 'umap',
@@ -1741,7 +1665,7 @@ plotUMAP = function(gobject,
                     default_save_name = 'UMAP',
                     ...) {
 
-  assert_giotto(gobject)
+  checkmate::assert_class(gobject, "giotto")
 
   dimPlot2D(gobject = gobject,
             dim_reduction_to_use = 'umap',
@@ -1771,7 +1695,7 @@ plotTSNE_2D = function(gobject,
                        default_save_name = 'tSNE_2D',
                        ...) {
 
-  assert_giotto(gobject)
+  checkmate::assert_class(gobject, "giotto")
 
   dimPlot2D(gobject = gobject,
             dim_reduction_to_use = 'tsne',
@@ -1797,7 +1721,7 @@ plotTSNE = function(gobject,
                     default_save_name = 'tSNE',
                     ...) {
 
-  assert_giotto(gobject)
+  checkmate::assert_class(gobject, "giotto")
 
   dimPlot2D(gobject = gobject,
             dim_reduction_to_use = 'tsne',
@@ -1825,7 +1749,7 @@ plotPCA_2D = function(gobject,
                       default_save_name = 'PCA_2D',
                       ...) {
 
-  assert_giotto(gobject)
+  checkmate::assert_class(gobject, "giotto")
 
   dimPlot2D(gobject = gobject,
             dim_reduction_to_use = 'pca',
@@ -1853,7 +1777,7 @@ plotPCA = function(gobject,
                    default_save_name = 'PCA',
                    ...) {
 
-  assert_giotto(gobject)
+  checkmate::assert_class(gobject, "giotto")
 
   dimPlot2D(gobject = gobject,
             dim_reduction_to_use = 'pca',
