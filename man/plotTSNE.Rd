@@ -85,13 +85,13 @@ Description of parameters, see \code{\link{dimPlot2D}}. For 3D plots see \code{\
 \seealso{
 Other reduced dimension visualizations: 
 \code{\link{dimPlot2D}()},
+\code{\link{plotPCA}()},
 \code{\link{plotPCA_2D}()},
 \code{\link{plotPCA_3D}()},
-\code{\link{plotPCA}()},
 \code{\link{plotTSNE_2D}()},
 \code{\link{plotTSNE_3D}()},
+\code{\link{plotUMAP}()},
 \code{\link{plotUMAP_2D}()},
-\code{\link{plotUMAP_3D}()},
-\code{\link{plotUMAP}()}
+\code{\link{plotUMAP_3D}()}
 }
 \concept{reduced dimension visualizations}
