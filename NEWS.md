@@ -1,9 +1,10 @@
 
 
-# GiottoVisuals 0.1.5 (2024/03/07)
+# GiottoVisuals 0.1.6 (2024/03/07)
 
 ## bug fixes
-- fix `spatPlot2D()` largeImage plotting when using `group_by`
+- fix `spatPlot2D()` and `spatFeatPlot2D()` largeImage plotting when using `group_by`
+- fix `edge_alpha` param in `spatFeatPlot2D()`
 
 ## new
 - `mixRGB()` vectorized additive mixing in RGB space
