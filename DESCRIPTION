@@ -1,6 +1,6 @@
 Package: GiottoVisuals
 Title: Visuals for the Giotto spatial biology analysis ecosystem
-Version: 0.1.4
+Version: 0.1.5
 Authors@R: c(
 	person("Ruben", "Dries", email = "rubendries@gmail.com",
 		 role = c("aut", "cre")),
@@ -22,7 +22,7 @@ Encoding: UTF-8
 URL: https://drieslab.github.io/Giotto/, https://github.com/drieslab/Giotto, https://drieslab.github.io/GiottoVisuals/
 BugReports: https://github.com/drieslab/Giotto/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Depends:
     base (>= 3.5.0),
     utils (>= 3.5.0),
@@ -87,6 +87,7 @@ Collate:
     'gg_info_layers.R'
     'globals.R'
     'gstop.R'
+    'mixcolor.R'
     'plot_dendrogram.R'
     'plot_heatmap.R'
     'plot_sankey.R'

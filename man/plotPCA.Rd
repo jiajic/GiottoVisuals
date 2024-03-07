@@ -87,11 +87,11 @@ Other reduced dimension visualizations:
 \code{\link{dimPlot2D}()},
 \code{\link{plotPCA_2D}()},
 \code{\link{plotPCA_3D}()},
+\code{\link{plotTSNE}()},
 \code{\link{plotTSNE_2D}()},
 \code{\link{plotTSNE_3D}()},
-\code{\link{plotTSNE}()},
+\code{\link{plotUMAP}()},
 \code{\link{plotUMAP_2D}()},
-\code{\link{plotUMAP_3D}()},
-\code{\link{plotUMAP}()}
+\code{\link{plotUMAP_3D}()}
 }
 \concept{reduced dimension visualizations}

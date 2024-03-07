@@ -21,7 +21,7 @@
 
 \S4method{sankeyRelate}{giottoSankeyPlan,missing,ANY}(x) <- value
 
-\S4method{sankeyRelate}{giottoSankeyPlan,missing,`NULL`}(x) <- value
+\S4method{sankeyRelate}{giottoSankeyPlan,missing,NULL}(x) <- value
 }
 \arguments{
 \item{x}{giottoSankeyPlan object}
