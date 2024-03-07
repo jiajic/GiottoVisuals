@@ -20,7 +20,7 @@ spatGenePlot3D(
   cluster_column = NULL,
   select_cell_groups = NULL,
   select_cells = NULL,
-  show_other_cells = TRUE,
+  show_other_cells = T,
   other_cell_color = "lightgrey",
   other_point_size = 1,
   genes_high_color = NULL,

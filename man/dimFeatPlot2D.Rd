@@ -15,7 +15,7 @@ dimFeatPlot2D(
   dim_reduction_name = NULL,
   dim1_to_use = 1,
   dim2_to_use = 2,
-  show_NN_network = FALSE,
+  show_NN_network = F,
   nn_network_to_use = "sNN",
   network_name = "sNN.pca",
   network_color = "lightgray",
@@ -30,7 +30,7 @@ dimFeatPlot2D(
   gradient_limits = NULL,
   point_border_col = "black",
   point_border_stroke = 0.1,
-  show_legend = TRUE,
+  show_legend = T,
   legend_text = 10,
   background_color = "white",
   axis_text = 8,
@@ -78,8 +78,7 @@ if show_NN_network = TRUE}
 
 \item{edge_alpha}{column to use for alpha of the edges}
 
-\item{scale_alpha_with_expression}{scale expression with ggplot
-alpha parameter}
+\item{scale_alpha_with_expression}{scale expression with ggplot alpha parameter}
 
 \item{point_shape}{point with border or not (border or no_border)}
 
@@ -135,8 +134,7 @@ change save_name in save_param}
 ggplot
 }
 \description{
-Visualize gene expression according to dimension
-reduction coordinates
+Visualize gene expression according to dimension reduction coordinates
 }
 \details{
 Description of parameters.

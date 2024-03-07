@@ -15,14 +15,14 @@ dimGenePlot3D(
   dim1_to_use = 1,
   dim2_to_use = 2,
   dim3_to_use = 3,
-  show_NN_network = FALSE,
+  show_NN_network = F,
   nn_network_to_use = "sNN",
   network_name = "sNN.pca",
   network_color = "lightgray",
   cluster_column = NULL,
   select_cell_groups = NULL,
   select_cells = NULL,
-  show_other_cells = TRUE,
+  show_other_cells = T,
   other_cell_color = "lightgrey",
   other_point_size = 1,
   edge_alpha = NULL,
@@ -30,7 +30,7 @@ dimGenePlot3D(
   genes_high_color = NULL,
   genes_mid_color = "white",
   genes_low_color = "blue",
-  show_legend = TRUE,
+  show_legend = T,
   show_plot = NA,
   return_plot = NA,
   save_plot = NA,
@@ -69,8 +69,7 @@ dimGenePlot3D(
 
 \item{cluster_column}{cluster column to select groups}
 
-\item{select_cell_groups}{select subset of cells/clusters based on
-cell_color parameter}
+\item{select_cell_groups}{select subset of cells/clusters based on cell_color parameter}
 
 \item{select_cells}{select subset of cells based on cell IDs}
 
@@ -108,8 +107,7 @@ change save_name in save_param}
 ggplot
 }
 \description{
-Visualize cells and gene expression according to
-dimension reduction coordinates
+Visualize cells and gene expression according to dimension reduction coordinates
 }
 \details{
 Description of parameters.

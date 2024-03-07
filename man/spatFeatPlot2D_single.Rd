@@ -25,8 +25,8 @@ spatFeatPlot2D_single(
   gradient_limits = NULL,
   show_network = FALSE,
   network_color = NULL,
+  edge_alpha = 0.5,
   spatial_network_name = "Delaunay_network",
-  edge_alpha = NULL,
   show_grid = FALSE,
   grid_color = NULL,
   spatial_grid_name = "spatial_grid",
@@ -101,9 +101,9 @@ or 'sequential' (scaled based on data range)}
 
 \item{network_color}{color of spatial network}
 
-\item{spatial_network_name}{name of spatial network to use}
+\item{edge_alpha}{alpha of spatial network}
 
-\item{edge_alpha}{alpha of edge}
+\item{spatial_network_name}{name of spatial network to use}
 
 \item{show_grid}{show spatial grid}
 

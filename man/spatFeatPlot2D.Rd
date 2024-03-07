@@ -26,8 +26,8 @@ spatFeatPlot2D(
   gradient_limits = NULL,
   show_network = FALSE,
   network_color = NULL,
-  spatial_network_name = "Delaunay_network",
   edge_alpha = NULL,
+  spatial_network_name = "Delaunay_network",
   show_grid = FALSE,
   grid_color = NULL,
   spatial_grid_name = "spatial_grid",
@@ -105,9 +105,9 @@ or 'sequential' (scaled based on data range)}
 
 \item{network_color}{color of spatial network}
 
-\item{spatial_network_name}{name of spatial network to use}
+\item{edge_alpha}{alpha of spatial network}
 
-\item{edge_alpha}{alpha of edge}
+\item{spatial_network_name}{name of spatial network to use}
 
 \item{show_grid}{show spatial grid}
 
@@ -117,8 +117,7 @@ or 'sequential' (scaled based on data range)}
 
 \item{midpoint}{expression midpoint}
 
-\item{scale_alpha_with_expression}{scale expression with ggplot alpha
-parameter}
+\item{scale_alpha_with_expression}{scale expression with ggplot alpha parameter}
 
 \item{point_shape}{point with border or not (border or no_border)}
 
@@ -172,8 +171,7 @@ change save_name in save_param}
 ggplot
 }
 \description{
-Visualize cells and feature expression according
-to spatial coordinates
+Visualize cells and feature expression according to spatial coordinates
 }
 \details{
 Description of parameters.

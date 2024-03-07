@@ -15,10 +15,10 @@
   point_size = 3,
   cell_color = NULL,
   cell_color_code = NULL,
-  color_as_factor = TRUE,
+  color_as_factor = T,
   select_cell_groups = NULL,
   select_cells = NULL,
-  show_other_cells = TRUE,
+  show_other_cells = T,
   other_cell_color = "lightgrey",
   other_point_size = 0.5,
   show_network = FALSE,
@@ -30,12 +30,12 @@
   spatial_grid_name = "spatial_grid",
   grid_color = NULL,
   grid_alpha = 1,
-  show_legend = TRUE,
+  show_legend = T,
   axis_scale = c("cube", "real", "custom"),
   custom_ratio = NULL,
   x_ticks = NULL,
   y_ticks = NULL,
-  show_plot = FALSE
+  show_plot = F
 )
 }
 \value{

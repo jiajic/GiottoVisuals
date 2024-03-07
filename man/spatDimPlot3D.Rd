@@ -24,24 +24,24 @@ spatDimPlot3D(
   network_name = "sNN.pca",
   nn_network_color = "lightgray",
   nn_network_alpha = 0.5,
-  show_cluster_center = FALSE,
-  show_center_label = TRUE,
+  show_cluster_center = F,
+  show_center_label = T,
   center_point_size = 4,
   label_size = 16,
   select_cell_groups = NULL,
   select_cells = NULL,
-  show_other_cells = TRUE,
+  show_other_cells = T,
   other_cell_color = "lightgrey",
   other_point_size = 1.5,
   cell_color = NULL,
-  color_as_factor = TRUE,
+  color_as_factor = T,
   cell_color_code = NULL,
   dim_point_size = 3,
-  show_spatial_network = FALSE,
+  show_spatial_network = F,
   spatial_network_name = "Delaunay_network",
   spatial_network_color = "lightgray",
   spatial_network_alpha = 0.5,
-  show_spatial_grid = FALSE,
+  show_spatial_grid = F,
   spatial_grid_name = "spatial_grid",
   spatial_grid_color = NULL,
   spatial_grid_alpha = 0.5,
@@ -173,8 +173,7 @@ change save_name in save_param}
 plotly
 }
 \description{
-Visualize cells according to spatial AND dimension
-reduction coordinates in plotly mode
+Visualize cells according to spatial AND dimension reduction coordinates in plotly mode
 }
 \details{
 Description of parameters.

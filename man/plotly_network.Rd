@@ -35,7 +35,3 @@ edges in network as data.table
 \description{
 provide network segment to draw in 3D plot_ly()
 }
-\examples{
-plotly_network(my_network)
-
-}

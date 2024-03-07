@@ -9,7 +9,7 @@ spatDimPlot2D(
   gobject,
   spat_unit = NULL,
   feat_type = NULL,
-  show_image = FALSE,
+  show_image = F,
   gimage = NULL,
   image_name = NULL,
   largeImage_name = NULL,
@@ -23,7 +23,7 @@ spatDimPlot2D(
   sdimy = "sdimy",
   spat_enr_names = NULL,
   cell_color = NULL,
-  color_as_factor = TRUE,
+  color_as_factor = T,
   cell_color_code = NULL,
   cell_color_gradient = NULL,
   gradient_midpoint = NULL,
@@ -41,38 +41,38 @@ spatDimPlot2D(
   spat_point_alpha = 1,
   spat_point_border_col = "black",
   spat_point_border_stroke = 0.1,
-  dim_show_cluster_center = FALSE,
-  dim_show_center_label = TRUE,
+  dim_show_cluster_center = F,
+  dim_show_center_label = T,
   dim_center_point_size = 4,
   dim_center_point_border_col = "black",
   dim_center_point_border_stroke = 0.1,
   dim_label_size = 4,
   dim_label_fontface = "bold",
-  spat_show_cluster_center = FALSE,
-  spat_show_center_label = FALSE,
+  spat_show_cluster_center = F,
+  spat_show_center_label = F,
   spat_center_point_size = 4,
   spat_center_point_border_col = "blue",
   spat_center_point_border_stroke = 0.1,
   spat_label_size = 4,
   spat_label_fontface = "bold",
-  show_NN_network = FALSE,
+  show_NN_network = F,
   nn_network_to_use = "sNN",
   network_name = "sNN.pca",
   nn_network_alpha = 0.05,
-  show_spatial_network = FALSE,
+  show_spatial_network = F,
   spat_network_name = "Delaunay_network",
   spat_network_color = "blue",
   spat_network_alpha = 0.5,
-  show_spatial_grid = FALSE,
+  show_spatial_grid = F,
   spat_grid_name = "spatial_grid",
   spat_grid_color = "blue",
-  show_other_cells = TRUE,
+  show_other_cells = T,
   other_cell_color = "lightgrey",
   dim_other_point_size = 1,
   spat_other_point_size = 1,
   spat_other_cells_alpha = 0.5,
-  dim_show_legend = FALSE,
-  spat_show_legend = FALSE,
+  dim_show_legend = F,
+  spat_show_legend = F,
   legend_text = 10,
   legend_symbol_size = 2,
   dim_background_color = "white",
@@ -193,8 +193,7 @@ reduction space}
 
 \item{spat_center_point_border_col}{border color of spatial center points}
 
-\item{spat_center_point_border_stroke}{border strike size of spatial
-center points}
+\item{spat_center_point_border_stroke}{border strike size of spatial center points}
 
 \item{spat_label_size}{size of the center label}
 
@@ -241,8 +240,7 @@ if show_NN_network = TRUE}
 
 \item{legend_symbol_size}{size of legend symbols}
 
-\item{dim_background_color}{background color of points in dim.
-reduction space}
+\item{dim_background_color}{background color of points in dim. reduction space}
 
 \item{spat_background_color}{background color of spatial points}
 
@@ -274,8 +272,7 @@ change save_name in save_param}
 ggplot
 }
 \description{
-Visualize cells according to spatial AND dimension
-reduction coordinates 2D
+Visualize cells according to spatial AND dimension reduction coordinates 2D
 }
 \details{
 Description of parameters.

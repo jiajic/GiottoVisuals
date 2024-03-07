@@ -15,7 +15,7 @@ dimCellPlot2D(
   dim2_to_use = 2,
   spat_enr_names = NULL,
   cell_annotation_values = NULL,
-  show_NN_network = FALSE,
+  show_NN_network = F,
   nn_network_to_use = "sNN",
   network_name = "sNN.pca",
   cell_color_code = NULL,

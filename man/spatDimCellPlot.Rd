@@ -29,10 +29,8 @@ spatDimCellPlot(...)
     \item{\code{spat_show_cluster_center}}{show the center of each cluster}
     \item{\code{spat_show_center_label}}{provide a label for each cluster}
     \item{\code{spat_center_point_size}}{size of the spatial center points}
-    \item{\code{spat_center_point_border_col}}{border color of the spatial
-center points}
-    \item{\code{spat_center_point_border_stroke}}{stroke size of the spatial
-center points}
+    \item{\code{spat_center_point_border_col}}{border color of the spatial center points}
+    \item{\code{spat_center_point_border_stroke}}{stroke size of the spatial center points}
     \item{\code{spat_label_size}}{size of the center label}
     \item{\code{spat_label_fontface}}{font of the center label}
     \item{\code{dim_edge_alpha}}{column to use for alpha of the edges}
@@ -47,8 +45,7 @@ center points}
     \item{\code{spat_other_point_size}}{size of not selected spat cells}
     \item{\code{spat_other_cells_alpha}}{alpha of not selected spat cells}
     \item{\code{coord_fix_ratio}}{ratio for coordinates}
-    \item{\code{dim_background_color}}{background color of points in dim. reduction
-space}
+    \item{\code{dim_background_color}}{background color of points in dim. reduction space}
     \item{\code{spat_background_color}}{background color of spatial points}
     \item{\code{vor_border_color}}{border colorr for voronoi plot}
     \item{\code{vor_max_radius}}{maximum radius for voronoi 'cells'}
@@ -110,8 +107,7 @@ cell_color parameter}
 ggplot
 }
 \description{
-Visualize numerical features of cells according to spatial
-AND dimension reduction coordinates in 2D
+Visualize numerical features of cells according to spatial AND dimension reduction coordinates in 2D
 }
 \details{
 Description of parameters.

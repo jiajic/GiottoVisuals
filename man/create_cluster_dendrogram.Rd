@@ -59,7 +59,11 @@ for the 'col' params then they will be assumed as 1. clus_col, 2. var_col,
 3. val_col
 }
 \examples{
-create_cluster_dendrogram(data = my_data, clus_col = "leiden_clus",
-var_col = "feat_ID", val_col = "raw_values")
+my_data <- data.table::data.table(leiden_clus = sample(c("A","B","C"), 
+size = 10, replace = TRUE), feat_ID = sample(c("geneA","geneB"),
+size = 10, replace = TRUE), expression = rnorm(10))
+
+create_cluster_dendrogram(my_data, var_col = "leiden_clus", 
+clus_col = "feat_ID", val_col = "expression")
 
 }

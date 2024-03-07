@@ -45,7 +45,7 @@ spatPlot2D(
   spatial_network_name = "Delaunay_network",
   network_color = NULL,
   network_alpha = 1,
-  show_grid = FALSE,
+  show_grid = F,
   spatial_grid_name = "spatial_grid",
   grid_color = NULL,
   show_other_cells = TRUE,
@@ -89,20 +89,20 @@ spatPlot3D(
   cell_color_code = NULL,
   select_cell_groups = NULL,
   select_cells = NULL,
-  show_other_cells = TRUE,
+  show_other_cells = T,
   other_cell_color = "lightgrey",
   other_point_size = 0.5,
   other_cell_alpha = 0.5,
-  show_network = FALSE,
+  show_network = F,
   spatial_network_name = "Delaunay_network",
   network_color = NULL,
   network_alpha = 1,
-  show_grid = FALSE,
+  show_grid = F,
   spatial_grid_name = "spatial_grid",
   grid_color = NULL,
   grid_alpha = 1,
   title = "",
-  show_legend = TRUE,
+  show_legend = T,
   axis_scale = c("cube", "real", "custom"),
   custom_ratio = NULL,
   x_ticks = NULL,
@@ -164,8 +164,7 @@ or 'sequential' (scaled based on data range)}
 
 \item{gradient_limits}{vector with lower and upper limits}
 
-\item{select_cell_groups}{select subset of cells/clusters based on
-cell_color parameter}
+\item{select_cell_groups}{select subset of cells/clusters based on cell_color parameter}
 
 \item{select_cells}{select subset of cells based on cell IDs}
 
