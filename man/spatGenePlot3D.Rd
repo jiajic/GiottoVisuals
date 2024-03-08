@@ -8,7 +8,7 @@ spatGenePlot3D(
   gobject,
   spat_unit = NULL,
   feat_type = NULL,
-  spat_loc_name = NULL,
+  spat_loc_name = "raw",
   expression_values = c("normalized", "scaled", "custom"),
   genes = deprecated(),
   feats,
@@ -20,7 +20,7 @@ spatGenePlot3D(
   cluster_column = NULL,
   select_cell_groups = NULL,
   select_cells = NULL,
-  show_other_cells = T,
+  show_other_cells = FALSE,
   other_cell_color = "lightgrey",
   other_point_size = 1,
   genes_high_color = NULL,
@@ -69,7 +69,8 @@ spatGenePlot3D(
 
 \item{cluster_column}{cluster column to select groups}
 
-\item{select_cell_groups}{select subset of cells/clusters based on cell_color parameter}
+\item{select_cell_groups}{select subset of cells/clusters based on
+cell_color parameter}
 
 \item{select_cells}{select subset of cells based on cell IDs}
 
@@ -116,12 +117,18 @@ see \code{\link{showSaveParameters}}}
 change save_name in save_param}
 }
 \value{
-ggplot
+plotly
 }
 \description{
-Visualize cells and gene expression according to spatial coordinates
+Visualize cells and gene expression according to spatial
+coordinates
 }
 \details{
 Description of parameters.
+}
+\examples{
+g <- GiottoData::loadGiottoMini("starmap")
+spatGenePlot3D(g, feats = "Slc17a7")
+
 }
 \concept{spatial gene expression visualizations}

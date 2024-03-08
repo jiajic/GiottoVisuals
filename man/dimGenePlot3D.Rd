@@ -15,14 +15,14 @@ dimGenePlot3D(
   dim1_to_use = 1,
   dim2_to_use = 2,
   dim3_to_use = 3,
-  show_NN_network = F,
+  show_NN_network = FALSE,
   nn_network_to_use = "sNN",
   network_name = "sNN.pca",
   network_color = "lightgray",
   cluster_column = NULL,
   select_cell_groups = NULL,
   select_cells = NULL,
-  show_other_cells = T,
+  show_other_cells = TRUE,
   other_cell_color = "lightgrey",
   other_point_size = 1,
   edge_alpha = NULL,
@@ -30,7 +30,7 @@ dimGenePlot3D(
   genes_high_color = NULL,
   genes_mid_color = "white",
   genes_low_color = "blue",
-  show_legend = T,
+  show_legend = TRUE,
   show_plot = NA,
   return_plot = NA,
   save_plot = NA,
@@ -69,7 +69,8 @@ dimGenePlot3D(
 
 \item{cluster_column}{cluster column to select groups}
 
-\item{select_cell_groups}{select subset of cells/clusters based on cell_color parameter}
+\item{select_cell_groups}{select subset of cells/clusters based on
+cell_color parameter}
 
 \item{select_cells}{select subset of cells based on cell IDs}
 
@@ -104,12 +105,19 @@ see \code{\link{showSaveParameters}}}
 change save_name in save_param}
 }
 \value{
-ggplot
+plotly
 }
 \description{
-Visualize cells and gene expression according to dimension reduction coordinates
+Visualize cells and gene expression according to
+dimension reduction coordinates
 }
 \details{
 Description of parameters.
+}
+\examples{
+g <- GiottoData::loadGiottoMini("starmap")
+g <- runUMAP(g, n_components = 3)
+dimGenePlot3D(g, genes = "Slc17a7")
+
 }
 \concept{dimension reduction gene expression visualizations}

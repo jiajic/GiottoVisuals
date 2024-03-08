@@ -113,7 +113,8 @@ or 'sequential' (scaled based on data range)}
 
 \item{midpoint}{expression midpoint}
 
-\item{scale_alpha_with_expression}{scale expression with ggplot alpha parameter}
+\item{scale_alpha_with_expression}{scale expression with
+ggplot alpha parameter}
 
 \item{point_shape}{shape of points (border, no_border or voronoi)}
 
@@ -167,10 +168,16 @@ change save_name in save_param}
 ggplot
 }
 \description{
-Visualize cells and feature expression according to spatial coordinates
+Visualize cells and feature expression according to
+spatial coordinates
 }
 \details{
 Description of parameters.
+}
+\examples{
+g <- GiottoData::loadGiottoMini("visium")
+spatFeatPlot2D_single(g, feats = c("Gna12", "Ccnd2", "Btbd17"))
+
 }
 \seealso{
 \code{\link{spatGenePlot3D}}

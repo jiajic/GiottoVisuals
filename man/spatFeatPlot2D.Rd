@@ -171,10 +171,16 @@ change save_name in save_param}
 ggplot
 }
 \description{
-Visualize cells and feature expression according to spatial coordinates
+Visualize cells and feature expression according to
+spatial coordinates
 }
 \details{
 Description of parameters.
+}
+\examples{
+g <- GiottoData::loadGiottoMini("visium")
+spatFeatPlot2D(g)
+
 }
 \seealso{
 \code{\link{spatGenePlot3D}}

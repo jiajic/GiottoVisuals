@@ -26,6 +26,7 @@
 #' @param spat_unit spatial unit (e.g. "cell")
 #' @param feat_type feature type (e.g. "rna", "dna", "protein")
 #' @keywords internal
+#' @returns internal giotto object slot
 NULL
 
 
@@ -46,6 +47,7 @@ NULL
 #' named vector of colors
 #' @param cell_color_gradient character. continuous colors to use. palette to
 #' use or vector of colors to use (minimum of 2).
+#' @returns ggplot
 #' @keywords internal
 NULL
 
@@ -54,6 +56,7 @@ NULL
 #' @param feats_color_code code to color the provided features
 #' @param feat_shape_code code to shape the provided feature types
 #' @keywords internal
+#' @returns ggplot
 NULL
 
 #' Params documentation template: plot_poly_params
@@ -77,6 +80,7 @@ NULL
 #' @param polygon_alpha alpha of polygon
 #' @param polygon_line_size line width of the polygon's outline
 #' @keywords internal
+#' @returns ggplot
 NULL
 
 #' Params documentation template: plot_dimred_params
@@ -93,6 +97,7 @@ NULL
 #' @param dim_point_border_stroke border stroke of points in dim.
 #' reduction space
 #' @keywords internal
+#' @returns ggplot
 NULL
 
 #' Params documentation template: plot_nn_net_params
@@ -106,6 +111,7 @@ NULL
 #' @param network_color color of NN network
 #' @param nn_network_alpha column to use for alpha of the edges
 #' @keywords internal
+#' @returns ggplot
 NULL
 
 #' Params documentation template: plot_spatnet_params
@@ -117,6 +123,7 @@ NULL
 #' @param spatial_network_color color of spatial network
 #' @param spat_network_alpha alpha of spatial network
 #' @keywords internal
+#' @returns ggplot
 NULL
 
 #' Params documentation template: plot_spatenr_params
@@ -124,6 +131,7 @@ NULL
 #' @param spat_enr_names character. names of spatial enrichment results
 #' to include
 #' @keywords internal
+#' @returns ggplot
 NULL
 
 #' Params documentation template: plot_image_params
@@ -134,6 +142,7 @@ NULL
 #' @param largeImage_name name of a giottoLargeImage or multiple images
 #' with group_by
 #' @keywords internal
+#' @returns ggplot
 NULL
 
 
@@ -187,6 +196,7 @@ NULL
 #' @param axis_text size of axis text
 #' @param axis_title size of axis title
 #' @keywords internal
+#' @returns ggplot
 NULL
 
 
@@ -197,6 +207,7 @@ NULL
 #' @param cow_rel_w cowplot param: relative widths of columns (e.g. c(1,2))
 #' @param cow_align cowplot param: how to align
 #' @import cowplot
+#' @returns cowplot
 #' @keywords internal
 NULL
 
@@ -210,6 +221,7 @@ NULL
 #' @param default_save_name default save name for saving, don't change,
 #' change save_name in save_param
 #' @keywords internal
+#' @returns ggplot
 NULL
 
 
@@ -217,4 +229,5 @@ NULL
 # Documentation dummy for methods that are defined elsewhere
 #' @title hidden_aliases
 #' @name hidden_aliases
+#' @returns external methods
 NULL

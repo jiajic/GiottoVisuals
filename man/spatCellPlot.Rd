@@ -9,7 +9,7 @@ spatCellPlot2D(
   gobject,
   spat_unit = NULL,
   feat_type = NULL,
-  show_image = F,
+  show_image = FALSE,
   gimage = NULL,
   image_name = NULL,
   largeImage_name = NULL,
@@ -28,26 +28,26 @@ spatCellPlot2D(
   point_alpha = 1,
   point_border_col = "black",
   point_border_stroke = 0.1,
-  show_cluster_center = F,
-  show_center_label = F,
+  show_cluster_center = FALSE,
+  show_center_label = FALSE,
   center_point_size = 4,
   center_point_border_col = "black",
   center_point_border_stroke = 0.1,
   label_size = 4,
   label_fontface = "bold",
-  show_network = F,
+  show_network = FALSE,
   spatial_network_name = "Delaunay_network",
   network_color = NULL,
   network_alpha = 1,
-  show_grid = F,
+  show_grid = FALSE,
   spatial_grid_name = "spatial_grid",
   grid_color = NULL,
-  show_other_cells = T,
+  show_other_cells = TRUE,
   other_cell_color = "lightgrey",
   other_point_size = 1,
   other_cells_alpha = 0.1,
   coord_fix_ratio = 1,
-  show_legend = T,
+  show_legend = TRUE,
   legend_text = 8,
   legend_symbol_size = 1,
   background_color = "white",
@@ -199,11 +199,21 @@ change save_name in save_param}
 }
 \value{
 ggplot
+
+ggplot
 }
 \description{
 Visualize cells according to spatial coordinates
 }
 \details{
 Description of parameters.
+}
+\examples{
+g <- GiottoData::loadGiottoMini("visium")
+spatCellPlot2D(g, cell_annotation_values = "leiden_clus")
+
+g <- GiottoData::loadGiottoMini("visium")
+spatCellPlot(g, cell_annotation_values = "leiden_clus")
+
 }
 \concept{spatial cell annotation visualizations}

@@ -90,7 +90,13 @@ ggplot
 Short wrapper for PCA visualization
 }
 \details{
-Description of parameters, see \code{\link{dimPlot2D}}. For 3D plots see \code{\link{plotPCA_3D}}
+Description of parameters, see \code{\link{dimPlot2D}}.
+For 3D plots see \code{\link{plotPCA_3D}}
+}
+\examples{
+g <- GiottoData::loadGiottoMini("visium")
+plotPCA_2D(g)
+
 }
 \seealso{
 Other reduced dimension visualizations: 

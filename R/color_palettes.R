@@ -18,7 +18,6 @@
 #' @param strategy one of 'interpolate', 'recycle', or 'cutoff', what
 #' strategy to use when more colors are requested than exist for the palette
 #' @returns vector of color ids
-#' @import checkmate
 #' @examples
 #' f <- system.file("ex/elev.tif", package = "terra")
 #' r <- terra::rast(f)

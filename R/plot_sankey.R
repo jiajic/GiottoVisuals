@@ -19,6 +19,7 @@
 #' @slot data_type whether the metadata is cell or feat
 #' @slot relations data.table of from and to comparisons between sets. The sets
 #' are referred to as zero indexed integers.
+#' @returns giottoSankeyPlan
 #' @export giottoSankeyPlan
 #' @exportClass giottoSankeyPlan
 giottoSankeyPlan <- setClass(
@@ -81,10 +82,11 @@ setGeneric(
 #' Set a relation to be compared across two sets of metadata annotations in the
 #' Giotto object.
 #' @param x giottoSankeyPlan object
-#' @param add logical. whether relation to add through `value` shoudld be
+#' @param add logical. whether relation to add through `value` should be
 #' appended or replace all existing relations
 #' @param \dots additional params to pass
 #' @param value numerical vector (zero indexed) of sets to compare
+#' @returns giottoSankeyPlan
 NULL
 
 
@@ -418,6 +420,8 @@ sankeySetAddresses <- function(x) {
 #' @param gsp giottoSankeyPlan object
 #' @param rel_idx index of relation pair in `gsp`
 #' @param node_idx_start starting index to assign new nodes
+#' @returns list with 1. node names and 2. data.table with cols source, target,
+#' and value
 #' @keywords internal
 .sankey_relation_pair <- function(g, gsp, rel_idx, node_idx_start = 0) {
     rel <- gsp@relations[rel_idx]
@@ -521,6 +525,7 @@ sankeySetAddresses <- function(x) {
 #' @param unfocused_color whether to color nodes that are not focused on.
 #' @inheritDotParams networkD3::sankeyNetwork -Links -Nodes -Source -Target
 #' -Value -NodeID
+#' @returns sankey plot
 #' @examples
 #' x <- data.frame(
 #'     col1 = c("a", "a", "b"),
@@ -630,7 +635,6 @@ setMethod(
 
 
 #' @rdname sankeyPlot
-#' @import checkmate
 #' @export
 setMethod(
     "sankeyPlot",
@@ -813,6 +817,7 @@ setMethod(
 #' @title Create networkd3 sankey
 #' @description Wrapper for networkd3's sankeyNetwork function. Adds some
 #' additional params for controlling the plot.
+#' @returns networkd3 sankey
 #' @keywords internal
 .sankey_networkd3 <- function(Links,
     Nodes,

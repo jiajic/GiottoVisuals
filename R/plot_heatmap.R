@@ -1094,9 +1094,9 @@ plotMetaDataCellsHeatmap <- function(
 #' @param feat_cor_method method for features correlation, default to "pearson"
 #' @param feat_hclust_method method for hierarchical clustering of features,
 #' default to "complete"
-#' @import reshape2 scales
 #' @return list
 #' @details Creates input data.tables for plotHeatmap function.
+#' @import reshape2 scales
 #' @keywords internal
 .create_heatmap_dt <- function(gobject,
     spat_unit = NULL,

@@ -85,7 +85,13 @@ ggplot
 Short wrapper for tSNE visualization
 }
 \details{
-Description of parameters, see \code{\link{dimPlot2D}}. For 3D plots see \code{\link{plotTSNE_3D}}
+Description of parameters, see \code{\link{dimPlot2D}}.
+For 3D plots see \code{\link{plotTSNE_3D}}
+}
+\examples{
+g <- GiottoData::loadGiottoMini("visium")
+plotTSNE(g)
+
 }
 \seealso{
 Other reduced dimension visualizations: 

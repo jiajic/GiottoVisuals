@@ -13,6 +13,9 @@
 \item{largeImage_name}{name of a giottoLargeImage or multiple images
 with group_by}
 }
+\value{
+ggplot
+}
 \description{
 Params documentation template: plot_image_params
 }

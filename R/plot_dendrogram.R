@@ -114,7 +114,6 @@ showClusterDendrogram <- function(
 #' @param h_color color of horizontal lines
 #' @param rotate rotate dendrogram 90 degrees
 #' @inheritDotParams ggdendro::ggdendrogram
-#' @import checkmate
 #' @returns ggdendrogram
 #' @examples
 #' my_data <- data.table::data.table(leiden_clus = sample(c("A","B","C"), 

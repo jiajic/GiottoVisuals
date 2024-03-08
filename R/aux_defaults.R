@@ -336,7 +336,6 @@ NULL
 #' that needs defaults setting (plots or types of features).
 #' @param instr_pal,instr_rev used by upstream function to pass specific
 #' `giottoInstructions` params
-#' @import checkmate
 #' @export
 set_default_color_continuous <- function(
     colors = NULL, # used for function inputs

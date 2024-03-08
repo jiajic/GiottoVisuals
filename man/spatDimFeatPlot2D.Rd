@@ -8,7 +8,7 @@ spatDimFeatPlot2D(
   gobject,
   spat_unit = NULL,
   feat_type = NULL,
-  show_image = F,
+  show_image = FALSE,
   gimage = NULL,
   image_name = NULL,
   largeImage_name = NULL,
@@ -25,8 +25,8 @@ spatDimFeatPlot2D(
   dim_point_alpha = 1,
   dim_point_border_col = "black",
   dim_point_border_stroke = 0.1,
-  show_NN_network = F,
-  show_spatial_network = F,
+  show_NN_network = FALSE,
+  show_spatial_network = FALSE,
   dim_network_color = "gray",
   nn_network_to_use = "sNN",
   network_name = "sNN.pca",
@@ -36,7 +36,7 @@ spatDimFeatPlot2D(
   sdimy = "sdimy",
   spatial_network_name = "Delaunay_network",
   spatial_network_color = NULL,
-  show_spatial_grid = F,
+  show_spatial_grid = FALSE,
   grid_color = NULL,
   spatial_grid_name = "spatial_grid",
   spat_point_shape = c("border", "no_border", "voronoi"),
@@ -122,9 +122,11 @@ reduction space}
 
 \item{network_name}{name of NN network to use, if show_NN_network = TRUE}
 
-\item{dim_edge_alpha}{dim reduction plot: column to use for alpha of the edges}
+\item{dim_edge_alpha}{dim reduction plot: column to use for alpha of the
+edges}
 
-\item{scale_alpha_with_expression}{scale expression with ggplot alpha parameter}
+\item{scale_alpha_with_expression}{scale expression with ggplot alpha
+parameter}
 
 \item{sdimx}{spatial x-axis dimension name (default = 'sdimx')}
 
@@ -140,7 +142,8 @@ reduction space}
 
 \item{spatial_grid_name}{name of spatial grid to use}
 
-\item{spat_point_shape}{spatial points with border or not (border or no_border)}
+\item{spat_point_shape}{spatial points with border or
+not (border or no_border)}
 
 \item{spat_point_size}{spatial plot: point size}
 
@@ -204,9 +207,15 @@ change save_name in save_param}
 ggplot
 }
 \description{
-Visualize cells according to spatial AND dimension reduction coordinates in ggplot mode
+Visualize cells according to spatial AND dimension reduction
+coordinates in ggplot mode
 }
 \details{
 Description of parameters.
+}
+\examples{
+g <- GiottoData::loadGiottoMini("visium")
+spatDimFeatPlot2D(g, feats = c("Gna12", "Ccnd2", "Btbd17"))
+
 }
 \concept{spatial and dimension reduction feature expression visualizations}

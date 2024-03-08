@@ -9,7 +9,7 @@ spatDimPlot2D(
   gobject,
   spat_unit = NULL,
   feat_type = NULL,
-  show_image = F,
+  show_image = FALSE,
   gimage = NULL,
   image_name = NULL,
   largeImage_name = NULL,
@@ -23,7 +23,7 @@ spatDimPlot2D(
   sdimy = "sdimy",
   spat_enr_names = NULL,
   cell_color = NULL,
-  color_as_factor = T,
+  color_as_factor = TRUE,
   cell_color_code = NULL,
   cell_color_gradient = NULL,
   gradient_midpoint = NULL,
@@ -41,38 +41,38 @@ spatDimPlot2D(
   spat_point_alpha = 1,
   spat_point_border_col = "black",
   spat_point_border_stroke = 0.1,
-  dim_show_cluster_center = F,
-  dim_show_center_label = T,
+  dim_show_cluster_center = FALSE,
+  dim_show_center_label = TRUE,
   dim_center_point_size = 4,
   dim_center_point_border_col = "black",
   dim_center_point_border_stroke = 0.1,
   dim_label_size = 4,
   dim_label_fontface = "bold",
-  spat_show_cluster_center = F,
-  spat_show_center_label = F,
+  spat_show_cluster_center = FALSE,
+  spat_show_center_label = FALSE,
   spat_center_point_size = 4,
   spat_center_point_border_col = "blue",
   spat_center_point_border_stroke = 0.1,
   spat_label_size = 4,
   spat_label_fontface = "bold",
-  show_NN_network = F,
+  show_NN_network = FALSE,
   nn_network_to_use = "sNN",
   network_name = "sNN.pca",
   nn_network_alpha = 0.05,
-  show_spatial_network = F,
+  show_spatial_network = FALSE,
   spat_network_name = "Delaunay_network",
   spat_network_color = "blue",
   spat_network_alpha = 0.5,
-  show_spatial_grid = F,
+  show_spatial_grid = FALSE,
   spat_grid_name = "spatial_grid",
   spat_grid_color = "blue",
-  show_other_cells = T,
+  show_other_cells = TRUE,
   other_cell_color = "lightgrey",
   dim_other_point_size = 1,
   spat_other_point_size = 1,
   spat_other_cells_alpha = 0.5,
-  dim_show_legend = F,
-  spat_show_legend = F,
+  dim_show_legend = FALSE,
+  spat_show_legend = FALSE,
   legend_text = 10,
   legend_symbol_size = 2,
   dim_background_color = "white",
@@ -270,12 +270,23 @@ change save_name in save_param}
 }
 \value{
 ggplot
+
+ggplot
 }
 \description{
-Visualize cells according to spatial AND dimension reduction coordinates 2D
+Visualize cells according to spatial AND dimension reduction
+coordinates 2D
 }
 \details{
 Description of parameters.
+}
+\examples{
+g <- GiottoData::loadGiottoMini("visium")
+spatDimPlot2D(g)
+
+g <- GiottoData::loadGiottoMini("visium")
+spatDimPlot(g)
+
 }
 \seealso{
 \code{\link{spatDimPlot3D}}

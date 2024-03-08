@@ -66,6 +66,12 @@ Visualize cells according to dimension reduction coordinates
 \details{
 Description of parameters.
 }
+\examples{
+g <- GiottoData::loadGiottoMini("starmap")
+g <- runtSNE(g, dims = 3)
+plotTSNE_3D(g)
+
+}
 \seealso{
 Other reduced dimension visualizations: 
 \code{\link{dimPlot2D}()},

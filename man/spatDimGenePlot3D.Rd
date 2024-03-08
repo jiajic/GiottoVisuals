@@ -23,7 +23,7 @@ spatDimGenePlot3D(
   cluster_column = NULL,
   select_cell_groups = NULL,
   select_cells = NULL,
-  show_other_cells = T,
+  show_other_cells = TRUE,
   other_cell_color = "lightgrey",
   other_point_size = 1.5,
   show_NN_network = FALSE,
@@ -91,7 +91,8 @@ spatDimGenePlot3D(
 
 \item{cluster_column}{cluster column to select groups}
 
-\item{select_cell_groups}{select subset of cells/clusters based on cell_color parameter}
+\item{select_cell_groups}{select subset of cells/clusters based on
+cell_color parameter}
 
 \item{select_cells}{select subset of cells based on cell IDs}
 
@@ -167,9 +168,15 @@ change save_name in save_param}
 plotly
 }
 \description{
-Visualize cells according to spatial AND dimension reduction coordinates in ggplot mode
+Visualize cells according to spatial AND dimension
+reduction coordinates in ggplot mode
 }
 \details{
 Description of parameters.
+}
+\examples{
+g <- GiottoData::loadGiottoMini("starmap")
+spatDimGenePlot3D(g, genes = "Slc17a7")
+
 }
 \concept{spatial and dimension reduction gene expression visualizations}

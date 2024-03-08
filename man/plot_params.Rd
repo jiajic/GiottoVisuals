@@ -74,6 +74,9 @@ cell_color parameter}
 
 \item{axis_title}{size of axis title}
 }
+\value{
+ggplot
+}
 \description{
 Params documentation template: plot_params
 }

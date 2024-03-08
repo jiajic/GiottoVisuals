@@ -18,6 +18,9 @@ if show_NN_network = TRUE}
 
 \item{nn_network_alpha}{column to use for alpha of the edges}
 }
+\value{
+ggplot
+}
 \description{
 Params documentation template: plot_nn_net_params
 }

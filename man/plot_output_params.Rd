@@ -16,6 +16,9 @@ see \code{\link{showSaveParameters}}}
 \item{default_save_name}{default save name for saving, don't change,
 change save_name in save_param}
 }
+\value{
+ggplot
+}
 \description{
 Params documentation template: plot_output_params
 }

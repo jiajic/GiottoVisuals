@@ -84,6 +84,11 @@ ggplot
 \description{
 Short wrapper for UMAP visualization
 }
+\examples{
+g <- GiottoData::loadGiottoMini("visium")
+plotUMAP(g)
+
+}
 \seealso{
 Other reduced dimension visualizations: 
 \code{\link{dimPlot2D}()},

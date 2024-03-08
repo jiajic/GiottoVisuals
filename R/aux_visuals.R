@@ -150,7 +150,6 @@ aes_string2 <- function(...) {
 #' first made.
 #' @param ggobject ggplot object or NULL
 #' @keywords internal
-#' @import checkmate
 #' @returns A ggplot object
 #' @examples
 #' g <- GiottoData::loadGiottoMini("vizgen")

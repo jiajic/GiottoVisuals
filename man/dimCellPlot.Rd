@@ -15,7 +15,7 @@ dimCellPlot2D(
   dim2_to_use = 2,
   spat_enr_names = NULL,
   cell_annotation_values = NULL,
-  show_NN_network = F,
+  show_NN_network = FALSE,
   nn_network_to_use = "sNN",
   network_name = "sNN.pca",
   cell_color_code = NULL,
@@ -173,11 +173,21 @@ change save_name in save_param}
 }
 \value{
 ggplot
+
+ggplot
 }
 \description{
 Visualize cells according to dimension reduction coordinates
 }
 \details{
 Description of parameters. For 3D plots see \code{\link{dimPlot3D}}
+}
+\examples{
+g <- GiottoData::loadGiottoMini("visium")
+dimCellPlot2D(g, cell_annotation_values = "leiden_clus")
+
+g <- GiottoData::loadGiottoMini("visium")
+dimCellPlot(g, cell_annotation_values = "leiden_clus")
+
 }
 \concept{dimension reduction cell annotation visualizations}

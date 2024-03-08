@@ -89,6 +89,9 @@ right border of the plot.}
 
 \item{idx}{table subset index for 1 to 1 comparisons}
 }
+\value{
+sankey plot
+}
 \description{
 Create a sankey plot. Pulls from information metadata if giotto object is
 provided. Simple 1 to 1 sankeys can be generated from a single spatial unit
