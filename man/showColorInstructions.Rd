@@ -10,6 +10,12 @@ showColorInstructions()
 data.table of Giotto color option information
 }
 \description{
-Show the color instructions that are settable in Giotto. A data.table
-of the information is invisibly returned
+Show the color instructions that are settable in Giotto.
+A data.table of the information is invisibly returned
+}
+\examples{
+g <- GiottoData::loadGiottoMini("vizgen")
+
+showColorInstructions(g)
+
 }

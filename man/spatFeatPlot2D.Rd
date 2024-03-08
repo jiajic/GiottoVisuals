@@ -71,11 +71,13 @@ spatFeatPlot2D(
 
 \item{image_name}{name of a giotto image or multiple images with group_by}
 
-\item{largeImage_name}{name of a giottoLargeImage or multiple images with group_by}
+\item{largeImage_name}{name of a giottoLargeImage or multiple images
+with group_by}
 
 \item{spat_loc_name}{name of spatial locations}
 
-\item{group_by}{character. Create multiple plots based on cell annotation column}
+\item{group_by}{character. Create multiple plots based on cell
+annotation column}
 
 \item{group_by_subset}{character. subset the group_by factor column}
 
@@ -159,18 +161,26 @@ or 'sequential' (scaled based on data range)}
 
 \item{save_plot}{logical. save the plot}
 
-\item{save_param}{list of saving parameters, see \code{\link{showSaveParameters}}}
+\item{save_param}{list of saving parameters,
+see \code{\link{showSaveParameters}}}
 
-\item{default_save_name}{default save name for saving, don't change, change save_name in save_param}
+\item{default_save_name}{default save name for saving, don't change,
+change save_name in save_param}
 }
 \value{
 ggplot
 }
 \description{
-Visualize cells and feature expression according to spatial coordinates
+Visualize cells and feature expression according to
+spatial coordinates
 }
 \details{
 Description of parameters.
+}
+\examples{
+g <- GiottoData::loadGiottoMini("visium")
+spatFeatPlot2D(g)
+
 }
 \seealso{
 \code{\link{spatGenePlot3D}}

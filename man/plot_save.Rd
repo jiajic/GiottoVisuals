@@ -111,19 +111,32 @@ default_save_name}
 
 \item{\dots}{additional parameters to pass downstream save functions}
 }
+\value{
+a plot file
+}
 \description{
 Functions to automatically save plots to directory of interest
 }
 \section{Functions}{
 \itemize{
-\item \code{.ggplot_save_function()}: (internal) ggplot saving. ... passes to cowplot::save_plot
+\item \code{.ggplot_save_function()}: (internal) ggplot saving. ...
+passes to cowplot::save_plot
 
-\item \code{.general_save_function()}: (internal) base and general saving. ... passes to grDevices png, tiff, pdf, svg
+\item \code{.general_save_function()}: (internal) base and general saving.
+... passes to grDevices png, tiff, pdf, svg
 
 }}
+\examples{
+g <- GiottoData::loadGiottoMini("vizgen")
+g_spatplot <- spatPlot2D(g, return_plot = TRUE)
+all_plots_save_function(gobject = g, g_spatplot)
+
+}
 \seealso{
 \code{\link{showSaveParameters}} \code{\link[cowplot]{save_plot}}
-\code{\link[grDevices]{png}} \code{\link[grDevices]{tiff}} \code{\link[grDevices]{pdf}}
+\code{\link[grDevices]{png}}
+\code{\link[grDevices]{tiff}}
+\code{\link[grDevices]{pdf}}
 \code{\link[grDevices]{svg}}
 }
 \keyword{internal}

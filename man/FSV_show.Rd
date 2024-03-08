@@ -14,9 +14,9 @@ FSV_show(
 )
 }
 \arguments{
-\item{results}{results caculated by spatial_DE}
+\item{results}{results calculated by spatial_DE}
 
-\item{ms_results}{ms_results caculated by spatial_DE}
+\item{ms_results}{ms_results calculated by spatial_DE}
 
 \item{size}{indicate different levels of qval}
 
@@ -30,9 +30,15 @@ FSV_show(
 ggplot object
 }
 \description{
-Visualize spatial varible genes caculated by spatial_DE
+Visualize spatial variable genes calculated by spatial_DE
 }
 \details{
 Description of parameters.
+}
+\examples{
+g <- GiottoData::loadGiottoMini("visium")
+my_results <- Giotto::spatialDE(g)
+FSV_show(my_results)
+
 }
 \keyword{internal}

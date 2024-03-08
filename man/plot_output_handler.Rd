@@ -37,8 +37,18 @@ plotting function. Users should not interact with this parameter)}
 \item{else_return}{optional. What should be returned instead if the plot
 object is not returned}
 }
+\value{
+plot object
+}
 \description{
-Simple wrapper for handling Giotto's framework for plotting outputs and saving
-Plotting functions should return using this handler.
+Simple wrapper for handling Giotto's framework for plotting outputs and
+saving Plotting functions should return using this handler.
+}
+\examples{
+g <- GiottoData::loadGiottoMini("vizgen")
+g_spatplot <- spatPlot2D(g, return_plot = TRUE)
+
+plot_output_handler(g, plot_object = g_spatplot, save_plot = TRUE,
+default_save_name = "giotto_plot", save_param = list(units = 'png'))
 }
 \keyword{internal}
