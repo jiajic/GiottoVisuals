@@ -52,7 +52,6 @@ Suggests:
     ggraph,
     ggsci,
     GiottoData,
-    Giotto,
     htmlwidgets,
     Matrix,
     networkD3,
