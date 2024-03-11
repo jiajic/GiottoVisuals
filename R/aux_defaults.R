@@ -74,9 +74,10 @@ set_default_cow_n_col <- function(cow_n_col = NULL,
 #' @param colors accepts color inputs
 #' @param instrs `giottoInstructions` object (output of `instructions(gobject)`)
 #' @param \dots additional params to pass
-#' @returns vector of color ids
+#' @returns a palette function
 #' @examples
-#' set_default_color_discrete(colors = "#eb4034")
+#' set_default_color_discrete(colors = "#eb4034",
+#' instr_rev = NULL, instr_strategy = NULL)
 NULL
 
 
@@ -297,16 +298,16 @@ set_default_color_discrete_heatmap_clus <- function(colors = NULL,
 #' nr_feat_polys()
 #'
 #' # set instructions level: magma
-#' instructions(g, "poly_color_c_pal") <- "magma"
+#' GiottoClass::instructions(g, "poly_color_c_pal") <- "magma"
 #' nr_feat_polys()
 #'
-#' instructions(g, "poly_color_c_rev") <- TRUE
+#' GiottoClass::instructions(g, "poly_color_c_rev") <- TRUE
 #' nr_feat_polys()
 #' nr_feat_polys(polygon_fill_gradient_style = "s")
 #'
 #'
 #' # set function level: miami
-#' instructions(g, "poly_color_c_rev") <- FALSE
+#' GiottoClass::instructions(g, "poly_color_c_rev") <- FALSE
 #' nr_feat_polys(polygon_fill_gradient = "miami")
 #'
 #' # set function level: color vector (2 to n colors)
@@ -643,9 +644,7 @@ set_default_color_continuous_CCcom_dotplot <- function(
 #' A data.table of the information is invisibly returned
 #' @returns data.table of Giotto color option information
 #' @examples
-#' g <- GiottoData::loadGiottoMini("vizgen")
-#' 
-#' showColorInstructions(g)
+#' showColorInstructions()
 #' 
 #' @export
 showColorInstructions <- function() {

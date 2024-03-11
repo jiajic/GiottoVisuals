@@ -37,9 +37,9 @@ violinPlot <- function(
         strip_text = 7,
         axis_text_x_size = 10,
         axis_text_y_size = 6,
-        show_plot = NA,
-        return_plot = NA,
-        save_plot = NA,
+        show_plot = NULL,
+        return_plot = NULL,
+        save_plot = NULL,
         save_param = list(),
         default_save_name = "violinPlot") {
     # Set feat_type and spat_unit
@@ -184,15 +184,15 @@ violinPlot <- function(
 
 
     # print, return and save parameters
-    show_plot <- ifelse(is.na(show_plot),
+    show_plot <- ifelse(is.null(show_plot),
         readGiottoInstructions(gobject, param = "show_plot"),
         show_plot
     )
-    save_plot <- ifelse(is.na(save_plot),
+    save_plot <- ifelse(is.null(save_plot),
         readGiottoInstructions(gobject, param = "save_plot"),
         save_plot
     )
-    return_plot <- ifelse(is.na(return_plot),
+    return_plot <- ifelse(is.null(return_plot),
         readGiottoInstructions(gobject, param = "return_plot"),
         return_plot
     )

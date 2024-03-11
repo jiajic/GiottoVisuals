@@ -31,9 +31,9 @@ dimGenePlot3D(
   genes_mid_color = "white",
   genes_low_color = "blue",
   show_legend = TRUE,
-  show_plot = NA,
-  return_plot = NA,
-  save_plot = NA,
+  show_plot = NULL,
+  return_plot = NULL,
+  save_plot = NULL,
   save_param = list(),
   default_save_name = "dimGenePlot3D"
 )
@@ -116,7 +116,6 @@ Description of parameters.
 }
 \examples{
 g <- GiottoData::loadGiottoMini("starmap")
-g <- runUMAP(g, n_components = 3)
 dimGenePlot3D(g, genes = "Slc17a7")
 
 }

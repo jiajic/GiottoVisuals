@@ -68,7 +68,6 @@ Description of parameters.
 }
 \examples{
 g <- GiottoData::loadGiottoMini("starmap")
-g <- runtSNE(g, dims = 3)
 plotTSNE_3D(g)
 
 }

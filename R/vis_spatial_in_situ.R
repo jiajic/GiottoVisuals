@@ -97,9 +97,9 @@ spatInSituPlotPoints <- function(gobject,
     show_legend = TRUE,
     plot_method = c("ggplot", "scattermore", "scattermost"),
     plot_last = c("polygons", "points"),
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "spatInSituPlotPoints",
     verbose = TRUE) {
@@ -594,9 +594,9 @@ spatInSituPlotHex <- function(
         cow_rel_h = 1,
         cow_rel_w = 1,
         cow_align = "h",
-        show_plot = NA,
-        return_plot = NA,
-        save_plot = NA,
+        show_plot = NULL,
+        return_plot = NULL,
+        save_plot = NULL,
         save_param = list(),
         default_save_name = "spatInSituPlotHex") {
     # deprecate
@@ -616,17 +616,17 @@ spatInSituPlotHex <- function(
     }
 
     # print, return and save parameters
-    show_plot <- ifelse(is.na(show_plot),
+    show_plot <- ifelse(is.null(show_plot),
         readGiottoInstructions(gobject,
             param = "show_plot"
         ), show_plot
     )
-    save_plot <- ifelse(is.na(save_plot),
+    save_plot <- ifelse(is.null(save_plot),
         readGiottoInstructions(gobject,
             param = "save_plot"
         ), save_plot
     )
-    return_plot <- ifelse(is.na(return_plot),
+    return_plot <- ifelse(is.null(return_plot),
         readGiottoInstructions(gobject,
             param = "return_plot"
         ),
@@ -879,9 +879,9 @@ spatInSituPlotDensity <- function(
         cow_rel_h = 1,
         cow_rel_w = 1,
         cow_align = "h",
-        show_plot = NA,
-        return_plot = NA,
-        save_plot = NA,
+        show_plot = NULL,
+        return_plot = NULL,
+        save_plot = NULL,
         save_param = list(),
         default_save_name = "spatInSituPlotDensity") {
     # deprecate
@@ -901,15 +901,15 @@ spatInSituPlotDensity <- function(
     }
 
     # print, return and save parameters
-    show_plot <- ifelse(is.na(show_plot),
+    show_plot <- ifelse(is.null(show_plot),
         readGiottoInstructions(gobject, param = "show_plot"),
         show_plot
     )
-    save_plot <- ifelse(is.na(save_plot),
+    save_plot <- ifelse(is.null(save_plot),
         readGiottoInstructions(gobject, param = "save_plot"),
         save_plot
     )
-    return_plot <- ifelse(is.na(return_plot),
+    return_plot <- ifelse(is.null(return_plot),
         readGiottoInstructions(gobject, param = "return_plot"),
         return_plot
     )
@@ -1013,7 +1013,7 @@ spatInSituPlotDensity <- function(
 #' @returns data.table
 #' @examples
 #' g <- GiottoData::loadGiottoMini("vizgen")
-#' x <- getFeatureInfo(g)
+#' x <- GiottoClass::getFeatureInfo(g)
 #' x <- data.table::as.data.table(x)
 #' 
 #' @keywords internal

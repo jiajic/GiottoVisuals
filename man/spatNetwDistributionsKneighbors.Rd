@@ -9,9 +9,9 @@ spatNetwDistributionsKneighbors(
   spat_unit = NULL,
   spatial_network_name = "spatial_network",
   hist_bins = 30,
-  show_plot = NA,
-  return_plot = NA,
-  save_plot = NA,
+  show_plot = NULL,
+  return_plot = NULL,
+  save_plot = NULL,
   save_param = list(),
   default_save_name = "spatNetwDistributionsKneighbors"
 )

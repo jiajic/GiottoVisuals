@@ -143,7 +143,7 @@ sankeyRelate(plan) <- c(0, 1)
 sankeyPlot(g, plan)
 
 # with single set of metadata
-activeSpatUnit(g) <- "aggregate"
+GiottoClass::activeSpatUnit(g) <- "aggregate"
 sankeyPlot(g, c("louvain_clus", "leiden_clus"))
 }
 \keyword{plotting}

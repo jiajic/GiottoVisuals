@@ -567,7 +567,7 @@ sankeySetAddresses <- function(x) {
 #' sankeyPlot(g, plan)
 #'
 #' # with single set of metadata
-#' activeSpatUnit(g) <- "aggregate"
+#' GiottoClass::activeSpatUnit(g) <- "aggregate"
 #' sankeyPlot(g, c("louvain_clus", "leiden_clus"))
 #' @keywords plotting sankey
 NULL

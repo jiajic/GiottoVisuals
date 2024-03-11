@@ -18,9 +18,9 @@ violinPlot(
   strip_text = 7,
   axis_text_x_size = 10,
   axis_text_y_size = 6,
-  show_plot = NA,
-  return_plot = NA,
-  save_plot = NA,
+  show_plot = NULL,
+  return_plot = NULL,
+  save_plot = NULL,
   save_param = list(),
   default_save_name = "violinPlot"
 )

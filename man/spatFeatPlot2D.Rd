@@ -51,9 +51,9 @@ spatFeatPlot2D(
   cow_rel_h = 1,
   cow_rel_w = 1,
   cow_align = "h",
-  show_plot = NA,
-  return_plot = NA,
-  save_plot = NA,
+  show_plot = NULL,
+  return_plot = NULL,
+  save_plot = NULL,
   save_param = list(),
   default_save_name = "spatFeatPlot2D"
 )
@@ -179,7 +179,7 @@ Description of parameters.
 }
 \examples{
 g <- GiottoData::loadGiottoMini("visium")
-spatFeatPlot2D(g)
+spatFeatPlot2D(g, feats = "Gna12")
 
 }
 \seealso{

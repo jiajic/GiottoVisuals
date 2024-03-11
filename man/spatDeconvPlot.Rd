@@ -26,9 +26,9 @@ spatDeconvPlot(
   axis_text = 8,
   axis_title = 8,
   coord_fix_ratio = 1,
-  show_plot = NA,
-  return_plot = NA,
-  save_plot = NA,
+  show_plot = NULL,
+  return_plot = NULL,
+  save_plot = NULL,
   save_param = list(),
   default_save_name = "spatDeconvPlot"
 )

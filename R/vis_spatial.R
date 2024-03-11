@@ -97,9 +97,9 @@
         vor_alpha = 1,
         axis_text = 8,
         axis_title = 8,
-        show_plot = NA,
-        return_plot = NA,
-        save_plot = NA,
+        show_plot = NULL,
+        return_plot = NULL,
+        save_plot = NULL,
         verbose = FALSE,
         save_param = list(),
         default_save_name = "spatPlot2D_single") {
@@ -600,9 +600,9 @@ spatPlot2D <- function(
         cow_rel_h = 1,
         cow_rel_w = 1,
         cow_align = "h",
-        show_plot = NA,
-        return_plot = NA,
-        save_plot = NA,
+        show_plot = NULL,
+        return_plot = NULL,
+        save_plot = NULL,
         save_param = list(),
         default_save_name = "spatPlot2D") {
     checkmate::assert_class(gobject, "giotto")
@@ -877,9 +877,9 @@ spatDeconvPlot <- function(gobject,
     axis_text = 8,
     axis_title = 8,
     coord_fix_ratio = 1,
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "spatDeconvPlot") {
     # check for installed packages
@@ -1032,13 +1032,13 @@ spatDeconvPlot <- function(gobject,
 
 
     # print, return and save parameters
-    show_plot <- ifelse(is.na(show_plot), 
+    show_plot <- ifelse(is.null(show_plot), 
                         readGiottoInstructions(gobject, param = "show_plot"), 
                         show_plot)
-    save_plot <- ifelse(is.na(save_plot), 
+    save_plot <- ifelse(is.null(save_plot), 
                         readGiottoInstructions(gobject, param = "save_plot"), 
                         save_plot)
-    return_plot <- ifelse(is.na(return_plot), 
+    return_plot <- ifelse(is.null(return_plot), 
                         readGiottoInstructions(gobject, param = "return_plot"), 
                         return_plot)
 
@@ -1118,9 +1118,9 @@ spatDeconvPlot <- function(gobject,
     background_color = "white",
     axis_text = 8,
     axis_title = 8,
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "dimPlot2D_single") {
     checkmate::assert_class(gobject, "giotto")
@@ -1500,9 +1500,9 @@ dimPlot2D <- function(gobject,
     cow_rel_h = 1,
     cow_rel_w = 1,
     cow_align = "h",
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "dimPlot2D") {
     # arg_list <- c(as.list(environment())) # get all args as list
@@ -2072,9 +2072,9 @@ spatDimPlot2D <- function(gobject,
     vor_alpha = 1,
     axis_text = 8,
     axis_title = 8,
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "spatDimPlot2D") {
     # Set feat_type and spat_unit
@@ -2364,22 +2364,22 @@ spatFeatPlot2D_single <- function(
         cow_rel_h = 1,
         cow_rel_w = 1,
         cow_align = "h",
-        show_plot = NA,
-        return_plot = NA,
-        save_plot = NA,
+        show_plot = NULL,
+        return_plot = NULL,
+        save_plot = NULL,
         save_param = list(),
         default_save_name = "spatFeatPlot2D_single") {
     # data.table variables
     cell_ID <- NULL
 
     # print, return and save parameters
-    show_plot <- ifelse(is.na(show_plot), 
+    show_plot <- ifelse(is.null(show_plot), 
                         readGiottoInstructions(gobject, param = "show_plot"), 
                         show_plot)
-    save_plot <- ifelse(is.na(save_plot), 
+    save_plot <- ifelse(is.null(save_plot), 
                         readGiottoInstructions(gobject, param = "save_plot"), 
                         save_plot)
-    return_plot <- ifelse(is.na(return_plot), 
+    return_plot <- ifelse(is.null(return_plot), 
                         readGiottoInstructions(gobject, param = "return_plot"), 
                         return_plot)
 
@@ -2909,7 +2909,7 @@ spatFeatPlot2D_single <- function(
 #' @returns ggplot
 #' @examples
 #' g <- GiottoData::loadGiottoMini("visium")
-#' spatFeatPlot2D(g)
+#' spatFeatPlot2D(g, feats = "Gna12")
 #' 
 #' @export
 #' @seealso \code{\link{spatGenePlot3D}}
@@ -2959,9 +2959,9 @@ spatFeatPlot2D <- function(gobject,
     cow_rel_h = 1,
     cow_rel_w = 1,
     cow_align = "h",
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "spatFeatPlot2D") {
     # create args list needed for each call to spatFeatPlot2D_single()
@@ -3187,19 +3187,19 @@ dimFeatPlot2D <- function(gobject,
     cow_rel_h = 1,
     cow_rel_w = 1,
     cow_align = "h",
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "dimFeatPlot2D") {
     # print, return and save parameters
-    show_plot <- ifelse(is.na(show_plot), 
+    show_plot <- ifelse(is.null(show_plot), 
                         readGiottoInstructions(gobject, param = "show_plot"), 
                         show_plot)
-    save_plot <- ifelse(is.na(save_plot), 
+    save_plot <- ifelse(is.null(save_plot), 
                         readGiottoInstructions(gobject, param = "save_plot"), 
                         save_plot)
-    return_plot <- ifelse(is.na(return_plot), 
+    return_plot <- ifelse(is.null(return_plot), 
                         readGiottoInstructions(gobject, param = "return_plot"), 
                         return_plot)
 
@@ -3657,9 +3657,9 @@ spatDimFeatPlot2D <- function(gobject,
     vor_alpha = 1,
     axis_text = 8,
     axis_title = 8,
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "spatDimFeatPlot2D") {
     plot_alignment <- match.arg(plot_alignment, 
@@ -3880,9 +3880,9 @@ spatCellPlot2D <- function(gobject,
     cow_rel_h = 1,
     cow_rel_w = 1,
     cow_align = "h",
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "spatCellPlot2D") {
     # Set feat_type and spat_unit
@@ -4089,9 +4089,9 @@ dimCellPlot2D <- function(gobject,
     cow_rel_h = 1,
     cow_rel_w = 1,
     cow_align = "h",
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "dimCellPlot2D") {
     # Set feat_type and spat_unit
@@ -4365,9 +4365,9 @@ spatDimCellPlot2D <- function(gobject,
     cow_rel_h = 1,
     cow_rel_w = 1,
     cow_align = "h",
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "spatDimCellPlot2D") {
     plot_alignment <- match.arg(plot_alignment, 
@@ -5200,9 +5200,9 @@ dimPlot3D <- function(gobject,
     label_size = 4,
     edge_alpha = NULL,
     point_size = 3,
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "dim3D") {
     if (is.null(dim3_to_use)) {
@@ -5268,13 +5268,13 @@ dimPlot3D <- function(gobject,
     }
 
 
-    show_plot <- ifelse(is.na(show_plot), 
+    show_plot <- ifelse(is.null(show_plot), 
                         readGiottoInstructions(gobject, param = "show_plot"), 
                         show_plot)
-    save_plot <- ifelse(is.na(save_plot), 
+    save_plot <- ifelse(is.null(save_plot), 
                         readGiottoInstructions(gobject, param = "save_plot"), 
                         save_plot)
-    return_plot <- ifelse(is.na(return_plot), 
+    return_plot <- ifelse(is.null(return_plot), 
                         readGiottoInstructions(gobject, param = "return_plot"), 
                         return_plot)
 
@@ -5310,7 +5310,6 @@ dimPlot3D <- function(gobject,
 #' @returns plotly
 #' @examples
 #' g <- GiottoData::loadGiottoMini("starmap")
-#' g <- runUMAP(g, n_components = 3)
 #' plotUMAP_3D(g)
 #' 
 #' @export
@@ -5341,7 +5340,6 @@ plotUMAP_3D <- function(gobject,
 #' @returns plotly
 #' @examples
 #' g <- GiottoData::loadGiottoMini("starmap")
-#' g <- runtSNE(g, dims = 3)
 #' plotTSNE_3D(g)
 #' 
 #' @export
@@ -5991,9 +5989,9 @@ spatPlot3D <- function(gobject,
     x_ticks = NULL,
     y_ticks = NULL,
     z_ticks = NULL,
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "spat3D") {
     if (is.null(sdimz)) {
@@ -6062,13 +6060,13 @@ spatPlot3D <- function(gobject,
         )
     }
 
-    show_plot <- ifelse(is.na(show_plot), 
+    show_plot <- ifelse(is.null(show_plot), 
                         readGiottoInstructions(gobject, param = "show_plot"), 
                         show_plot)
-    save_plot <- ifelse(is.na(save_plot), 
+    save_plot <- ifelse(is.null(save_plot), 
                         readGiottoInstructions(gobject, param = "save_plot"), 
                         save_plot)
-    return_plot <- ifelse(is.na(return_plot), 
+    return_plot <- ifelse(is.null(return_plot), 
                         readGiottoInstructions(gobject, param = "return_plot"), 
                         return_plot)
 
@@ -6208,9 +6206,9 @@ spatDimPlot3D <- function(gobject,
     y_ticks = NULL,
     z_ticks = NULL,
     legend_text_size = 12,
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "spatDimPlot3D") {
     # Set feat_type and spat_unit
@@ -7012,13 +7010,13 @@ spatDimPlot3D <- function(gobject,
         }
     }
 
-    show_plot <- ifelse(is.na(show_plot), 
+    show_plot <- ifelse(is.null(show_plot), 
                         readGiottoInstructions(gobject, param = "show_plot"), 
                         show_plot)
-    save_plot <- ifelse(is.na(save_plot), 
+    save_plot <- ifelse(is.null(save_plot), 
                         readGiottoInstructions(gobject, param = "save_plot"), 
                         save_plot)
-    return_plot <- ifelse(is.na(return_plot), 
+    return_plot <- ifelse(is.null(return_plot), 
                         readGiottoInstructions(gobject, param = "return_plot"), 
                         return_plot)
 
@@ -7123,9 +7121,9 @@ spatGenePlot3D <- function(gobject,
     x_ticks = NULL,
     y_ticks = NULL,
     z_ticks = NULL,
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "spatGenePlot3D") {
     # deprecate
@@ -7495,13 +7493,13 @@ spatGenePlot3D <- function(gobject,
     }
 
 
-    show_plot <- ifelse(is.na(show_plot), 
+    show_plot <- ifelse(is.null(show_plot), 
                         readGiottoInstructions(gobject, param = "show_plot"), 
                         show_plot)
-    save_plot <- ifelse(is.na(save_plot), 
+    save_plot <- ifelse(is.null(save_plot), 
                         readGiottoInstructions(gobject, param = "save_plot"), 
                         save_plot)
-    return_plot <- ifelse(is.na(return_plot), 
+    return_plot <- ifelse(is.null(return_plot), 
                         readGiottoInstructions(gobject, param = "return_plot"), 
                         return_plot)
     ## print plot
@@ -7564,7 +7562,6 @@ spatGenePlot3D <- function(gobject,
 #' @returns plotly
 #' @examples
 #' g <- GiottoData::loadGiottoMini("starmap")
-#' g <- runUMAP(g, n_components = 3)
 #' dimGenePlot3D(g, genes = "Slc17a7")
 #' 
 #' @export
@@ -7594,9 +7591,9 @@ dimGenePlot3D <- function(gobject,
     genes_mid_color = "white",
     genes_low_color = "blue",
     show_legend = TRUE,
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "dimGenePlot3D") {
     # Set feat_type and spat_unit
@@ -7898,13 +7895,13 @@ dimGenePlot3D <- function(gobject,
         ))
     }
 
-    show_plot <- ifelse(is.na(show_plot), 
+    show_plot <- ifelse(is.null(show_plot), 
                         readGiottoInstructions(gobject, param = "show_plot"), 
                         show_plot)
-    save_plot <- ifelse(is.na(save_plot), 
+    save_plot <- ifelse(is.null(save_plot), 
                         readGiottoInstructions(gobject, param = "save_plot"), 
                         save_plot)
-    return_plot <- ifelse(is.na(return_plot), 
+    return_plot <- ifelse(is.null(return_plot), 
                         readGiottoInstructions(gobject, param = "return_plot"), 
                         return_plot)
     ## print plot
@@ -8039,9 +8036,9 @@ spatDimGenePlot3D <- function(gobject,
     x_ticks = NULL,
     y_ticks = NULL,
     z_ticks = NULL,
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "spatDimGenePlot3D") {
     # Set feat_type and spat_unit
@@ -8628,13 +8625,13 @@ spatDimGenePlot3D <- function(gobject,
         }
     }
 
-    show_plot <- ifelse(is.na(show_plot), 
+    show_plot <- ifelse(is.null(show_plot), 
                         readGiottoInstructions(gobject, param = "show_plot"), 
                         show_plot)
-    save_plot <- ifelse(is.na(save_plot), 
+    save_plot <- ifelse(is.null(save_plot), 
                         readGiottoInstructions(gobject, param = "save_plot"), 
                         save_plot)
-    return_plot <- ifelse(is.na(return_plot), 
+    return_plot <- ifelse(is.null(return_plot), 
                         readGiottoInstructions(gobject, param = "return_plot"), 
                         return_plot)
 

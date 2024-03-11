@@ -17,9 +17,4 @@ modular handling of ggplot inputs for functions that may either
 append additional information to a ggplot object or be where the ggobject is
 first made.
 }
-\examples{
-g <- GiottoData::loadGiottoMini("vizgen")
-g_spatplot <- spatPlot2D(g, return_plot = TRUE)
-gg_input(g_spatplot)
-}
 \keyword{internal}

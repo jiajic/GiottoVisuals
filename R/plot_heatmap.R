@@ -29,9 +29,9 @@ showClusterHeatmap <- function(
         cluster_column,
         cor = c("pearson", "spearman"),
         distance = "ward.D",
-        show_plot = NA,
-        return_plot = NA,
-        save_plot = NA,
+        show_plot = NULL,
+        return_plot = NULL,
+        save_plot = NULL,
         save_param = list(),
         default_save_name = "showClusterHeatmap",
         ...) {
@@ -177,9 +177,9 @@ plotHeatmap <- function(
         feat_label_selection = NULL,
         axis_text_y_size = NULL,
         legend_nrows = 1,
-        show_plot = NA,
-        return_plot = NA,
-        save_plot = NA,
+        show_plot = NULL,
+        return_plot = NULL,
+        save_plot = NULL,
         save_param = list(),
         default_save_name = "plotHeatmap") {
     # deprecate
@@ -473,9 +473,9 @@ plotMetaDataHeatmap <- function(gobject,
     strip_text_size = 8,
     title = NULL,
     plot_title = deprecated(),
-    show_plot = NA,
-    return_plot = NA,
-    save_plot = NA,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
     save_param = list(),
     default_save_name = "plotMetaDataHeatmap") {
     # deprecate
@@ -646,20 +646,16 @@ plotMetaDataHeatmap <- function(gobject,
 
 
         # print, return and save parameters
-        show_plot <- ifelse(is.na(show_plot),
-            readGiottoInstructions(gobject,
-                param = "show_plot"
-            ), show_plot
+        show_plot <- ifelse(is.null(show_plot),
+            readGiottoInstructions(gobject, param = "show_plot"), 
+            show_plot
         )
-        save_plot <- ifelse(is.na(save_plot),
-            readGiottoInstructions(gobject,
-                param = "save_plot"
-            ), save_plot
+        save_plot <- ifelse(is.null(save_plot),
+            readGiottoInstructions(gobject, param = "save_plot"), 
+            save_plot
         )
-        return_plot <- ifelse(is.na(return_plot),
-            readGiottoInstructions(gobject,
-                param = "return_plot"
-            ),
+        return_plot <- ifelse(is.null(return_plot),
+            readGiottoInstructions(gobject, param = "return_plot"),
             return_plot
         )
 
@@ -859,9 +855,9 @@ plotMetaDataCellsHeatmap <- function(
         x_text_angle = 45,
         y_text_size = 8,
         strip_text_size = 8,
-        show_plot = NA,
-        return_plot = NA,
-        save_plot = NA,
+        show_plot = NULL,
+        return_plot = NULL,
+        save_plot = NULL,
         save_param = list(),
         default_save_name = "plotMetaDataCellsHeatmap") {
     # deprecate

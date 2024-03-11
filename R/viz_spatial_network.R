@@ -18,9 +18,9 @@ spatNetwDistributionsDistance <- function(
         hist_bins = 30,
         test_distance_limit = NULL,
         ncol = 1,
-        show_plot = NA,
-        return_plot = NA,
-        save_plot = NA,
+        show_plot = NULL,
+        return_plot = NULL,
+        save_plot = NULL,
         save_param = list(),
         default_save_name = "spatNetwDistributionsDistance") {
     # Set feat_type and spat_unit
@@ -130,9 +130,9 @@ spatNetwDistributionsKneighbors <- function(
         spat_unit = NULL,
         spatial_network_name = "spatial_network",
         hist_bins = 30,
-        show_plot = NA,
-        return_plot = NA,
-        save_plot = NA,
+        show_plot = NULL,
+        return_plot = NULL,
+        save_plot = NULL,
         save_param = list(),
         default_save_name = "spatNetwDistributionsKneighbors") {
     # Set feat_type and spat_unit
@@ -219,9 +219,9 @@ spatNetwDistributions <- function(
         hist_bins = 30,
         test_distance_limit = NULL,
         ncol = 1,
-        show_plot = NA,
-        return_plot = NA,
-        save_plot = NA,
+        show_plot = NULL,
+        return_plot = NULL,
+        save_plot = NULL,
         save_param = list(),
         default_save_name = "spatNetwDistributions") {
     # Set feat_type and spat_unit
@@ -316,9 +316,9 @@ plotStatDelaunayNetwork <- function(
         Y = TRUE, # RTriange
         j = TRUE, # RTriange
         S = 0, # RTriange
-        show_plot = NA,
-        return_plot = NA,
-        save_plot = NA,
+        show_plot = NULL,
+        return_plot = NULL,
+        save_plot = NULL,
         save_param = list(),
         default_save_name = "plotStatDelaunayNetwork",
         ...) {

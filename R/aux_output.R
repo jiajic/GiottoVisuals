@@ -26,35 +26,33 @@
 #' g <- GiottoData::loadGiottoMini("vizgen")
 #' g_spatplot <- spatPlot2D(g, return_plot = TRUE)
 #' 
-#' plot_output_handler(g, plot_object = g_spatplot, save_plot = TRUE,
-#' default_save_name = "giotto_plot", save_param = list(units = 'png'))
+#' plot_output_handler(g, plot_object = g_spatplot, save_plot = FALSE)
+#' 
 #' @export
 plot_output_handler <- function(
         gobject,
         plot_object,
-        save_plot = NA,
-        return_plot = NA,
-        show_plot = NA,
-        default_save_name,
-        save_param,
+        save_plot = NULL,
+        return_plot = NULL,
+        show_plot = NULL,
+        default_save_name = NULL,
+        save_param = list(),
         else_return = NULL) {
     checkmate::assert_class(gobject, "giotto")
-    checkmate::assert_character(default_save_name)
-    checkmate::assert_list(save_param)
 
     ## output settings detection ##
-    # IF setting is NA then the appropriate setting from gobject instructions
+    # IF setting is NULL then the appropriate setting from gobject instructions
     # will be checked and used.
-    # IF setting is NOT NA then the provided value will be used directly.
-    show_plot <- ifelse(is.na(show_plot),
+    # IF setting is NOT NULL then the provided value will be used directly.
+    show_plot <- ifelse(is.null(show_plot),
         readGiottoInstructions(gobject, param = "show_plot"),
         show_plot
     )
-    save_plot <- ifelse(is.na(save_plot),
+    save_plot <- ifelse(is.null(save_plot),
         readGiottoInstructions(gobject, param = "save_plot"),
         save_plot
     )
-    return_plot <- ifelse(is.na(return_plot),
+    return_plot <- ifelse(is.null(return_plot),
         readGiottoInstructions(gobject, param = "return_plot"),
         return_plot
     )
@@ -67,6 +65,9 @@ plot_output_handler <- function(
 
     ## save plot ##
     if (save_plot) {
+        checkmate::assert_character(default_save_name)
+        checkmate::assert_list(save_param)
+        
         do.call(
             "all_plots_save_function",
             c(

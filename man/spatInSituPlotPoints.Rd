@@ -45,9 +45,9 @@ spatInSituPlotPoints(
   show_legend = TRUE,
   plot_method = c("ggplot", "scattermore", "scattermost"),
   plot_last = c("polygons", "points"),
-  show_plot = NA,
-  return_plot = NA,
-  save_plot = NA,
+  show_plot = NULL,
+  return_plot = NULL,
+  save_plot = NULL,
   save_param = list(),
   default_save_name = "spatInSituPlotPoints",
   verbose = TRUE

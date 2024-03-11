@@ -62,9 +62,9 @@ spatDimFeatPlot2D(
   vor_alpha = 1,
   axis_text = 8,
   axis_title = 8,
-  show_plot = NA,
-  return_plot = NA,
-  save_plot = NA,
+  show_plot = NULL,
+  return_plot = NULL,
+  save_plot = NULL,
   save_param = list(),
   default_save_name = "spatDimFeatPlot2D"
 )

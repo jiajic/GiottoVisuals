@@ -35,7 +35,7 @@ pass specific \code{giottoInstructions} params}
 \item{instrs}{\code{giottoInstructions} object (output of \code{instructions(gobject)})}
 }
 \value{
-vector of color ids
+a palette function
 
 vector of color ids
 }
@@ -83,5 +83,6 @@ defaults setting.
 
 }}
 \examples{
-set_default_color_discrete(colors = "#eb4034")
+set_default_color_discrete(colors = "#eb4034",
+instr_rev = NULL, instr_strategy = NULL)
 }

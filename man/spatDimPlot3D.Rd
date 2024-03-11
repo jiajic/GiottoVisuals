@@ -52,9 +52,9 @@ spatDimPlot3D(
   y_ticks = NULL,
   z_ticks = NULL,
   legend_text_size = 12,
-  show_plot = NA,
-  return_plot = NA,
-  save_plot = NA,
+  show_plot = NULL,
+  return_plot = NULL,
+  save_plot = NULL,
   save_param = list(),
   default_save_name = "spatDimPlot3D"
 )
