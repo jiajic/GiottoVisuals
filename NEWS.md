@@ -1,4 +1,9 @@
+# GiottoVisuals 0.1.7 (2024/03/11)
 
+## Changes
+- Change default values show_plot = NA, return_plot = NA, save_plot = NA -> show_plot = NULL, return_plot = NULL, save_plot = NULL.
+- Add examples to exported functions
+- Update License
 
 # GiottoVisuals 0.1.6 (2024/03/07)
 

@@ -28,9 +28,9 @@ plotMetaDataCellsHeatmap(
   x_text_angle = 45,
   y_text_size = 8,
   strip_text_size = 8,
-  show_plot = NA,
-  return_plot = NA,
-  save_plot = NA,
+  show_plot = NULL,
+  return_plot = NULL,
+  save_plot = NULL,
   save_param = list(),
   default_save_name = "plotMetaDataCellsHeatmap"
 )

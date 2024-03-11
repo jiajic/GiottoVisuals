@@ -10,10 +10,6 @@
 #' @details Description of parameters.
 #' @keywords internal
 #' @returns ggplot object
-#' @examples
-#' g <- GiottoData::loadGiottoMini("visium")
-#' my_results <- Giotto::spatialDE(g)
-#' FSV_show(my_results)
 #' 
 #' @export
 FSV_show <- function(

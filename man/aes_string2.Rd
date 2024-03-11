@@ -16,8 +16,4 @@ Aesthetics elements
 makes sure aes_string can also be used with names that
 start with numeric values
 }
-\examples{
-aes_string2()
-
-}
 \keyword{internal}

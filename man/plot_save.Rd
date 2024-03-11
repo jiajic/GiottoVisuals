@@ -127,9 +127,10 @@ passes to cowplot::save_plot
 
 }}
 \examples{
-g <- GiottoData::loadGiottoMini("vizgen")
-g_spatplot <- spatPlot2D(g, return_plot = TRUE)
-all_plots_save_function(gobject = g, g_spatplot)
+g <- GiottoClass::createGiottoInstructions(save_plot = TRUE)
+df <- data.frame(x = rnorm(5), y = rnorm(5))
+g_plot <- ggplot2::ggplot(df, ggplot2::aes(x,y)) + ggplot2::geom_point()
+all_plots_save_function(g, g_plot)
 
 }
 \seealso{

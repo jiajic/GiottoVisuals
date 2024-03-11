@@ -31,7 +31,7 @@ jitter to coordinates
 }
 \examples{
 g <- GiottoData::loadGiottoMini("vizgen")
-x <- getFeatureInfo(g)
+x <- GiottoClass::getFeatureInfo(g)
 x <- data.table::as.data.table(x)
 
 }

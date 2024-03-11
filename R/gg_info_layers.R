@@ -2099,9 +2099,10 @@ plot_point_layer_ggplot_noFILL <- function(
 #' g <- GiottoData::loadGiottoMini("visium")
 #' 
 #' my_giottoimage <- GiottoClass::createGiottoImage(g, 
-#' mg_object = system.file("image.png", package = "GiottoVisuals"))
+#' mg_object = system.file("image.png", package = "GiottoVisuals"),
+#' name = 'image')
 #' 
-#' my_spatplot <- spatPlot2D(g)
+#' my_spatplot <- spatPlot2D(g, return_plot = TRUE)
 #' 
 #' addGiottoImageToSpatPlot(spatpl = my_spatplot, gimage = my_giottoimage)
 #' 

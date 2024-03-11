@@ -35,10 +35,4 @@ Visualize spatial variable genes calculated by spatial_DE
 \details{
 Description of parameters.
 }
-\examples{
-g <- GiottoData::loadGiottoMini("visium")
-my_results <- Giotto::spatialDE(g)
-FSV_show(my_results)
-
-}
 \keyword{internal}

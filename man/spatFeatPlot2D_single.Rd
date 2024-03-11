@@ -50,9 +50,9 @@ spatFeatPlot2D_single(
   cow_rel_h = 1,
   cow_rel_w = 1,
   cow_align = "h",
-  show_plot = NA,
-  return_plot = NA,
-  save_plot = NA,
+  show_plot = NULL,
+  return_plot = NULL,
+  save_plot = NULL,
   save_param = list(),
   default_save_name = "spatFeatPlot2D_single"
 )

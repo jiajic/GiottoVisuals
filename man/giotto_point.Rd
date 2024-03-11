@@ -22,8 +22,4 @@ ggplot2::geom_point layer
 uses ggplot::geom_point, scattermore::geom_scattermore
 or scattermore::geom_scattermost
 }
-\examples{
-giotto_point()
-
-}
 \keyword{internal}

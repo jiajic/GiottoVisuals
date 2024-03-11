@@ -143,16 +143,16 @@ options("giotto.color_c_pal" = "v")
 nr_feat_polys()
 
 # set instructions level: magma
-instructions(g, "poly_color_c_pal") <- "magma"
+GiottoClass::instructions(g, "poly_color_c_pal") <- "magma"
 nr_feat_polys()
 
-instructions(g, "poly_color_c_rev") <- TRUE
+GiottoClass::instructions(g, "poly_color_c_rev") <- TRUE
 nr_feat_polys()
 nr_feat_polys(polygon_fill_gradient_style = "s")
 
 
 # set function level: miami
-instructions(g, "poly_color_c_rev") <- FALSE
+GiottoClass::instructions(g, "poly_color_c_rev") <- FALSE
 nr_feat_polys(polygon_fill_gradient = "miami")
 
 # set function level: color vector (2 to n colors)

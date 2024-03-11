@@ -33,9 +33,9 @@ showClusterDendrogram <- function(
         h = NULL,
         h_color = "red",
         rotate = FALSE,
-        show_plot = NA,
-        return_plot = NA,
-        save_plot = NA,
+        show_plot = NULL,
+        return_plot = NULL,
+        save_plot = NULL,
         save_param = list(),
         default_save_name = "showClusterDendrogram",
         ...) {
@@ -116,12 +116,18 @@ showClusterDendrogram <- function(
 #' @inheritDotParams ggdendro::ggdendrogram
 #' @returns ggdendrogram
 #' @examples
-#' my_data <- data.table::data.table(leiden_clus = sample(c("A","B","C"), 
-#' size = 10, replace = TRUE), feat_ID = sample(c("geneA","geneB"),
-#' size = 10, replace = TRUE), expression = rnorm(10))
+#' g <- GiottoData::loadGiottoMini("visium")
 #' 
-#' create_cluster_dendrogram(my_data, var_col = "leiden_clus", 
-#' clus_col = "feat_ID", val_col = "expression")
+#' g_expression <- head(GiottoClass::getExpression(g, output = "matrix"))
+#' g_expression_df <- as.data.frame(as.matrix(g_expression))
+#' g_expression_df$feat_ID <- rownames(g_expression)
+#' 
+#' g_expression_melt <- reshape2::melt(g_expression_df, id.vars = "feat_ID", 
+#' measure.vars = colnames(g_expression), variable.name = "cell_ID", 
+#' value.name = "raw_expression")
+#' 
+#' create_cluster_dendrogram(data.table::as.data.table(g_expression_melt), 
+#' var_col = "cell_ID", clus_col = "feat_ID", "raw_expression")
 #' 
 #' @export
 create_cluster_dendrogram <- function(data,

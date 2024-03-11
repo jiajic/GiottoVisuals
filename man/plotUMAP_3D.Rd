@@ -68,7 +68,6 @@ Description of parameters.
 }
 \examples{
 g <- GiottoData::loadGiottoMini("starmap")
-g <- runUMAP(g, n_components = 3)
 plotUMAP_3D(g)
 
 }

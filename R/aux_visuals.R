@@ -134,8 +134,6 @@ NULL
 #' start with numeric values
 #' @keywords internal
 #' @returns Aesthetics elements
-#' @examples
-#' aes_string2()
 #' 
 aes_string2 <- function(...) {
     args <- lapply(list(...), function(x) sprintf("`%s`", x))
@@ -151,10 +149,6 @@ aes_string2 <- function(...) {
 #' @param ggobject ggplot object or NULL
 #' @keywords internal
 #' @returns A ggplot object
-#' @examples
-#' g <- GiottoData::loadGiottoMini("vizgen")
-#' g_spatplot <- spatPlot2D(g, return_plot = TRUE)
-#' gg_input(g_spatplot)
 gg_input <- function(ggobject) {
     if (is.null(ggobject)) {
         return(ggplot2::ggplot())
@@ -175,8 +169,6 @@ gg_input <- function(ggobject) {
 #' or scattermore::geom_scattermost
 #' @import scattermore
 #' @returns ggplot2::geom_point layer
-#' @examples
-#' giotto_point()
 #' 
 giotto_point <- function(
         plot_method = c("ggplot", "scattermore", "scattermost"),
@@ -295,12 +287,15 @@ plotly_network <- function(network,
 #' @returns edges in spatial grid as data.table()
 #' @examples
 #' g <- GiottoData::loadGiottoMini("visium")
+#' 
+#' library(GiottoClass)
 #' g <- createSpatialGrid(gobject = g,
 #' sdimx_stepsize = 400,
 #' sdimy_stepsize = 400,
 #' minimum_padding = 0)
 #' 
 #' my_spatial_grid <- getSpatialGrid(g)
+#' 
 #' plotly_grid(my_spatial_grid)
 #' 
 #' @export
