@@ -39,13 +39,6 @@ jobs:
           _R_CHECK_RD_XREFS: false
         with:
           install-pandoc: false
-
-      - name: Set up dependencies (GiottoData)
-        run: |
-          suppressWarnings({
-            remotes::install_github('drieslab/GiottoData', build = FALSE)
-          })
-        shell: Rscript {0}
       
       - name: Set up dependencies (GiottoUtils)
         run: |
@@ -58,6 +51,13 @@ jobs:
         run: |
           suppressWarnings({
             remotes::install_github('drieslab/GiottoClass', build = FALSE)
+          })
+        shell: Rscript {0}
+        
+      - name: Set up dependencies (GiottoData)
+        run: |
+          suppressWarnings({
+            remotes::install_github('drieslab/GiottoData', build = FALSE)
           })
         shell: Rscript {0}
 
