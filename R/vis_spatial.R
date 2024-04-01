@@ -7367,8 +7367,8 @@ spatGenePlot3D <- function(gobject,
             )
         ))
     } else if (length(savelist) == 2) {
-        cowplot <- suppressWarnings(plotly::subplot(savelist) %>% 
-                                    plotly::layout(
+        cowplot <- plotly::subplot(savelist) %>% 
+            plotly::layout(
             scene = list(
                 xaxis = list(title = "X", nticks = x_ticks),
                 yaxis = list(title = "Y", nticks = y_ticks),
@@ -7393,10 +7393,10 @@ spatGenePlot3D <- function(gobject,
             ),
             # annotations = annotations,
             legend = list(x = 100, y = 0)
-        ))
+        )
     } else if (length(savelist) == 3) {
-        cowplot <- suppressWarnings(plotly::subplot(savelist) %>% 
-                                    plotly::layout(
+        cowplot <- plotly::subplot(savelist) %>% 
+            plotly::layout(
             scene = list(
                 xaxis = list(title = "X", nticks = x_ticks),
                 yaxis = list(title = "Y", nticks = y_ticks),
@@ -7431,10 +7431,10 @@ spatGenePlot3D <- function(gobject,
                 )
             ),
             legend = list(x = 100, y = 0)
-        ))
+        )
     } else if (length(savelist) == 4) {
-        cowplot <- suppressWarnings(plotly::subplot(savelist) %>% 
-                                    plotly::layout(
+        cowplot <- plotly::subplot(savelist) %>% 
+            plotly::layout(
             scene = list(
                 xaxis = list(title = "X", nticks = x_ticks),
                 yaxis = list(title = "Y", nticks = y_ticks),
@@ -7480,7 +7480,7 @@ spatGenePlot3D <- function(gobject,
                 )
             ),
             legend = list(x = 100, y = 0)
-        ))
+        )
     }
 
 
@@ -7814,7 +7814,7 @@ dimGenePlot3D <- function(gobject,
             zaxis = list(title = titleZ)
         ))
     } else if (length(savelist) == 2) {
-        cowplot <- suppressWarnings(plotly::subplot(
+        cowplot <- plotly::subplot(
             savelist, titleX = TRUE, titleY = TRUE) %>%
             plotly::layout(
                 scene = list(
@@ -7830,9 +7830,9 @@ dimGenePlot3D <- function(gobject,
                     zaxis = list(title = titleZ)
                 ),
                 legend = list(x = 100, y = 0)
-            ))
+            )
     } else if (length(savelist) == 3) {
-        cowplot <- suppressWarnings(plotly::subplot(
+        cowplot <- plotly::subplot(
             savelist, titleX = TRUE, titleY = TRUE) %>%
             plotly::layout(
                 scene = list(
@@ -7854,10 +7854,10 @@ dimGenePlot3D <- function(gobject,
                     zaxis = list(title = titleZ)
                 ),
                 legend = list(x = 100, y = 0)
-            ))
+            )
     } else if (length(savelist) == 4) {
-        cowplot <- suppressWarnings(plotly::subplot(savelist) %>% 
-                                    plotly::layout(
+        cowplot <- plotly::subplot(savelist) %>% 
+            plotly::layout(
             scene = list(
                 domain = list(x = c(0, 0.5), y = c(0, 0.5)),
                 xaxis = list(title = titleX),
@@ -7883,7 +7883,7 @@ dimGenePlot3D <- function(gobject,
                 zaxis = list(title = titleZ)
             ),
             legend = list(x = 100, y = 0)
-        ))
+        )
     }
 
     show_plot <- ifelse(is.null(show_plot), 
