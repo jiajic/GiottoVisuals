@@ -225,12 +225,9 @@
         if (!is.null(slot(gobject, "spatial_locs"))) {
             spat_loc_name <- list_spatial_locations_names(
                 gobject, spat_unit = spat_unit)[[1]]
-            # spat_loc_name = names(gobject@spatial_locs[[spat_unit]])[[1]]
-            # cat('No spatial locations have been selected, the first one -',
-            # spat_loc_name, '- will be used \n')
         } else {
             spat_loc_name <- NULL
-            cat("No spatial locations have been found \n")
+            message("No spatial locations have been found")
             return(NULL)
         }
     }
@@ -259,8 +256,8 @@
 
     ## create subsets if needed
     if (!is.null(select_cells) & !is.null(select_cell_groups)) {
-        cat("You have selected both individual cell IDs and a group of 
-            cells \n")
+        message("You have selected both individual cell IDs and a group of 
+        cells")
         group_cell_IDs <- cell_locations_metadata[get(cell_color) %in% 
                                                 select_cell_groups][["cell_ID"]]
         select_cells <- unique(c(select_cells, group_cell_IDs))
@@ -301,14 +298,13 @@
 
 
     ### create 2D plot with ggplot ###
-    # cat('create 2D plot with ggplot \n')
 
     if (isTRUE(verbose)) {
-        cat("Data table with selected information (e.g. cells): \n")
-        print(cell_locations_metadata_selected[seq_len(5), ])
+        message("Data table with selected information (e.g. cells):")
+        message(cell_locations_metadata_selected[seq_len(5), ])
 
-        cat("Data table with non-selected information (e.g. cells): \n")
-        print(cell_locations_metadata_other[seq_len(5), ])
+        message("Data table with non-selected information (e.g. cells):")
+        message(cell_locations_metadata_other[seq_len(5), ])
     }
 
 
@@ -697,7 +693,7 @@ spatPlot2D <- function(
         if (!is.null(group_by_subset)) {
             not_found <- group_by_subset[!group_by_subset %in% unique_groups]
             if (length(not_found) > 0) {
-                cat("the following subset was not found: ", not_found)
+                message("the following subset was not found: ", not_found)
             }
             unique_groups <- unique_groups[unique_groups %in% group_by_subset]
         }
@@ -973,8 +969,6 @@ spatDeconvPlot <- function(gobject,
 
 
     ### create 2D plot with ggplot ###
-    # cat('create 2D plot with ggplot \n')
-
 
     pl <- ggplot2::ggplot()
     pl <- pl + ggplot2::theme_bw()
@@ -1261,8 +1255,8 @@ spatDeconvPlot <- function(gobject,
             stop("\n selection of cells is based on cell_color paramter, 
                 which is a metadata column \n")
         }
-        cat("You have selected both individual cell IDs and a group 
-            of cells \n")
+        message("You have selected both individual cell IDs and a group 
+        of cells")
         group_cell_IDs <- annotated_DT[get(cell_color) %in% 
                                         select_cell_groups][["cell_ID"]]
         select_cells <- unique(c(select_cells, group_cell_IDs))
@@ -1582,7 +1576,7 @@ dimPlot2D <- function(gobject,
             not_found <- group_by_subset[!group_by_subset %in% unique_groups]
 
             if (length(not_found) > 0) {
-                cat("the following subset was not found: ", not_found)
+                message("the following subset was not found: ", not_found)
             }
             unique_groups <- unique_groups[unique_groups %in% group_by_subset]
         }
@@ -2468,12 +2462,9 @@ spatFeatPlot2D_single <- function(
         if (!is.null(slot(gobject, "spatial_locs"))) {
             spat_loc_name <- list_spatial_locations_names(
                 gobject, spat_unit = spat_unit)[[1]]
-            # spat_loc_name = names(gobject@spatial_locs[[spat_unit]])[[1]]
-            # cat('No spatial locations have been selected, the first one -',
-            # spat_loc_name, '- will be used \n')
         } else {
             spat_loc_name <- NULL
-            cat("No spatial locations have been found \n")
+            warning("No spatial locations have been found")
             return(NULL)
         }
     }
@@ -3037,7 +3028,7 @@ spatFeatPlot2D <- function(gobject,
         if (!is.null(group_by_subset)) {
             not_found <- group_by_subset[!group_by_subset %in% unique_groups]
             if (length(not_found) > 0) {
-                cat("the following subset was not found: ", not_found)
+                message("the following subset was not found: ", not_found)
             }
             unique_groups <- unique_groups[unique_groups %in% group_by_subset]
         }
@@ -3390,7 +3381,7 @@ dimFeatPlot2D <- function(gobject,
         ## point layer ##
         if (is.null(feats)) {
             cell_color <- "lightblue"
-            cat("no feats selected")
+            message("no feats selected")
             pl <- pl + ggplot2::geom_point(
                 data = annotated_feat_DT,
                 aes_string(x = dim_names[1], dim_names[2]),
@@ -4674,8 +4665,8 @@ spatDimCellPlot <- function(...) {
             stop("\n selection of cells is based on cell_color paramter, 
                 which is a metadata column \n")
         }
-        cat("You have selected both individual cell IDs and a group 
-            of cells \n")
+        message("You have selected both individual cell IDs and a group 
+        of cells")
         group_cell_IDs <- annotated_DT[get(cell_color) %in% 
                                         select_cell_groups][["cell_ID"]]
         select_cells <- unique(c(select_cells, group_cell_IDs))
@@ -4975,8 +4966,8 @@ spatDimCellPlot <- function(...) {
             stop("\n selection of cells is based on cell_color parameter, 
                 which is a metadata column \n")
         }
-        cat("You have selected both individual cell IDs and a group of 
-            cells \n")
+        message("You have selected both individual cell IDs and a group of 
+        cells")
         group_cell_IDs <- annotated_DT[get(cell_color) %in% 
                                         select_cell_groups][["cell_ID"]]
         select_cells <- unique(c(select_cells, group_cell_IDs))
@@ -5089,8 +5080,8 @@ spatDimCellPlot <- function(...) {
                     )
                 }
                 if (show_center_label == TRUE) {
-                    cat(" center label is not clear to see in 3D plot\n You 
-                        can shut it down with show_center_label = FALSE\n")
+                    message(" center label is not clear to see in 3D plot\n You 
+                    can shut it down with show_center_label = FALSE")
                     pl <- pl %>% plotly::add_trace(
                         mode = "text",
                         type = "scatter3d",
@@ -5206,7 +5197,7 @@ dimPlot3D <- function(gobject,
     save_param = list(),
     default_save_name = "dim3D") {
     if (is.null(dim3_to_use)) {
-        cat("create 2D plot\n")
+        message("create 2D plot")
 
         pl <- .dimPlot_2d_plotly(
             gobject = gobject,
@@ -5236,7 +5227,7 @@ dimPlot3D <- function(gobject,
             point_size = point_size
         )
     } else {
-        cat("create 3D plot\n")
+        message("create 3D plot")
         pl <- .dimPlot_3d_plotly(
             gobject = gobject,
             spat_unit = spat_unit,
@@ -5497,8 +5488,8 @@ plotPCA_3D <- function(gobject,
 
     ## create subsets if needed
     if (!is.null(select_cells) & !is.null(select_cell_groups)) {
-        cat("You have selected both individual cell IDs and a group 
-            of cells \n")
+        message("You have selected both individual cell IDs and a group 
+        of cells")
         group_cell_IDs <- cell_locations_metadata[get(cell_color) %in% 
                                             select_cell_groups][["cell_ID"]]
         select_cells <- unique(c(select_cells, group_cell_IDs))
@@ -5634,7 +5625,7 @@ plotPCA_3D <- function(gobject,
                 )
             }
         } else {
-            cat("cell_color does not exist! \n")
+            message("cell_color does not exist!")
         }
     } else {
         pl <- pl %>% plotly::add_trace(
@@ -5789,8 +5780,8 @@ plotPCA_3D <- function(gobject,
 
     ## create subsets if needed
     if (!is.null(select_cells) & !is.null(select_cell_groups)) {
-        cat("You have selected both individual cell IDs and a group of 
-            cells \n")
+        message("You have selected both individual cell IDs and a group of 
+        cells")
         group_cell_IDs <- cell_locations_metadata[get(cell_color) %in% 
                                             select_cell_groups][["cell_ID"]]
         select_cells <- unique(c(select_cells, group_cell_IDs))
@@ -5867,7 +5858,7 @@ plotPCA_3D <- function(gobject,
                 )
             }
         } else {
-            cat("cell_color does not exist! \n")
+            message("cell_color does not exist!")
         }
     } else {
         pl <- pl %>% plotly::add_trace(
@@ -5995,7 +5986,7 @@ spatPlot3D <- function(gobject,
     save_param = list(),
     default_save_name = "spat3D") {
     if (is.null(sdimz)) {
-        cat("create 2D plot\n")
+        message("create 2D plot")
 
         pl <- .spatPlot_2d_plotly(
             gobject = gobject,
@@ -6028,7 +6019,7 @@ spatPlot3D <- function(gobject,
             show_plot = FALSE
         )
     } else {
-        cat("create 3D plot\n")
+        message("create 3D plot")
         pl <- .spatPlot_3d_plotly(
             gobject = gobject,
             spat_unit = spat_unit,
@@ -6372,8 +6363,8 @@ spatDimPlot3D <- function(gobject,
             stop("\n selection of cells is based on cell_color paramter, 
                 which is a metadata column \n")
         }
-        cat("You have selected both individual cell IDs and a group 
-            of cells \n")
+        message("You have selected both individual cell IDs and a group 
+        of cells")
         group_cell_IDs <- annotated_DT[get(cell_color) %in% 
                                         select_cell_groups][["cell_ID"]]
         select_cells <- unique(c(select_cells, group_cell_IDs))
@@ -6656,8 +6647,8 @@ spatDimPlot3D <- function(gobject,
                     )
             }
             if (show_center_label == TRUE) {
-                cat(" center label is not clear to see in 3D plot\n 
-                    You can shut it down with show_center_label = FALSE\n")
+                message(" center label is not clear to see in 3D plot. 
+                You can shut it down with show_center_label = FALSE")
                 dpl <- dpl %>%
                     plotly::add_trace(
                         mode = "text",
@@ -6693,7 +6684,7 @@ spatDimPlot3D <- function(gobject,
 
     ############ spatial plot ##########
     if (is.null(sdimx) | is.null(sdimy)) {
-        # cat('first and second dimenion need to be defined, default is 
+        # cat('first and second dimension need to be defined, default is 
         # first 2 \n')
         sdimx <- "sdimx"
         sdimy <- "sdimy"
@@ -6893,7 +6884,7 @@ spatDimPlot3D <- function(gobject,
         }
 
         if (show_spatial_grid == TRUE) {
-            cat("3D grid is not clear to view\n")
+            message("3D grid is not clear to view\n")
         }
     }
 
@@ -7240,8 +7231,8 @@ spatGenePlot3D <- function(gobject,
 
 
     if (!is.null(select_cells) & !is.null(select_cell_groups)) {
-        cat("You have selected both individual cell IDs and a group 
-            of cells \n")
+        message("You have selected both individual cell IDs and a group 
+        of cells")
         group_cell_IDs <- cell_locations_metadata[get(cluster_column) %in% 
                                             select_cell_groups][["cell_ID"]]
         select_cells <- unique(c(select_cells, group_cell_IDs))
@@ -7337,8 +7328,8 @@ spatGenePlot3D <- function(gobject,
                 edge_alpha <- 0.5
             } else if (is.character(edge_alpha)) {
                 edge_alpha <- 0.5
-                cat("\nEdge_alpha for plotly mode is not adjustable yet. 
-                    Default 0.5 will be set\n")
+                message("Edge_alpha for plotly mode is not adjustable yet. 
+                Default 0.5 will be set")
             }
             pl <- pl %>% plotly::add_trace(
                 name = "sptial network",
@@ -7355,7 +7346,7 @@ spatGenePlot3D <- function(gobject,
 
         ## plot spatial grid
         if (!is.null(spatial_grid) & show_grid == TRUE) {
-            cat("\n spatial grid is not clear in 3D plot \n")
+            message("spatial grid is not clear in 3D plot")
         }
 
         pl <- pl %>% plotly::colorbar(title = gene)
@@ -7702,8 +7693,8 @@ dimGenePlot3D <- function(gobject,
             stop("\n selection of cells is based on cell_color paramter, 
                 which is a metadata column \n")
         }
-        cat("You have selected both individual cell IDs and a group 
-            of cells \n")
+        message("You have selected both individual cell IDs and a group 
+        of cells")
         group_cell_IDs <- annotated_DT[get(cluster_column) %in% 
                                         select_cell_groups][["cell_ID"]]
         select_cells <- unique(c(select_cells, group_cell_IDs))
@@ -8176,8 +8167,8 @@ spatDimGenePlot3D <- function(gobject,
             stop("\n selection of cells is based on cell_color paramter, 
                 which is a metadata column \n")
         }
-        cat("You have selected both individual cell IDs and a group 
-            of cells \n")
+        message("You have selected both individual cell IDs and a group 
+        of cells")
         group_cell_IDs <- annotated_DT[get(cluster_column) %in% 
                                         select_cell_groups][["cell_ID"]]
         select_cells <- unique(c(select_cells, group_cell_IDs))
@@ -8512,7 +8503,7 @@ spatDimGenePlot3D <- function(gobject,
         }
 
         if (show_spatial_grid == TRUE) {
-            cat("3D grid is not clear to view\n")
+            message("3D grid is not clear to view")
         }
     }
 

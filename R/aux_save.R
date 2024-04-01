@@ -148,7 +148,7 @@ NULL
                 grid::grid.raster(img)
             }
         } else {
-            cat("\t only png & tiff are currently supported \t")
+            warning("\t only png & tiff are currently supported \t")
         }
     }
 }
@@ -298,7 +298,7 @@ NULL
                     grid::grid.raster(img)
                 }
             } else {
-                cat("\t only png & tiff are currently supported \t")
+                warning("\t only png & tiff are currently supported \t")
             }
         }
     }
@@ -387,24 +387,22 @@ all_plots_save_function <- function(gobject,
 #' @examples
 #' showSaveParameters()
 showSaveParameters <- function() {
-    cat("This is a simple guide to help you automatically saving plots. \n")
-    cat("Importantly, defaults for all these parameters can be set at
-        the beginning with createGiottoInstructions() \n")
-    cat("See
-        https://rubd.github.io/Giotto/articles/instructions_and_plotting.html
-        for more information and examples \n \n")
+    message("This is a simple guide to help you automatically saving plots. \n")
+    message("Importantly, defaults for all these parameters can be set at
+    the beginning with createGiottoInstructions() \n")
+    message("See
+    https://rubd.github.io/Giotto/articles/instructions_and_plotting.html
+    for more information and examples \n \n")
 
-    cat("Each plotting function in Giotto has 4 important parameters for
-        showing and/or saving a plot: \n
+    message("Each plotting function in Giotto has 4 important parameters for
+    showing and/or saving a plot: \n
         - show_plot: TRUE or FALSE, show the plot to the console
         - return_plot: TRUE or FALSE, return the plot to the console
         (e.g. to further modify or save the plot
         - save_plot: TRUE or FALSE, automatically save the plot
         - save_param: a list of parameters that can be set \n")
 
-    cat("\n")
-
-    cat("The following list of parameters can be provided to save_param: \n
+    message("The following list of parameters can be provided to save_param: \n
         - save_dir: directory to save the plot to
         - save_folder: if not NULL, a subfolder within save_dir that will
         be created to save the plot to
@@ -419,11 +417,9 @@ showSaveParameters <- function() {
         - units: plotting units (e.g. in)
         - dpi: dpi for each plot if plot is in raster format\n")
 
-    cat("\n")
-
-    cat("Example: \n
+    message("Example: \n
         plotfunction(...,
                     save_plot = TRUE,
                     save_param = list(save_name = 'favorite_name',
-        units = 'png'))")
+                    units = 'png'))")
 }

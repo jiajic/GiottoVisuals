@@ -529,8 +529,8 @@ plotMetaDataHeatmap <- function(gobject,
 
     ## visualization
     if (length(metadata_cols) > 2) {
-        cat("\n visualization is only possible for 1 or 2 metadata annotations,
-            data.table is returned \n")
+        message("visualization is only possible for 1 or 2 metadata annotations,
+        data.table is returned")
         return(metaDT)
     }
 
@@ -681,8 +681,8 @@ plotMetaDataHeatmap <- function(gobject,
         }
     } else {
         if (is.null(first_meta_col) | is.null(second_meta_col)) {
-            cat("\n both first_meta_col and second_meta_col need to be defined,
-                return data.table \n")
+            message("both first_meta_col and second_meta_col need to be defined,
+            return data.table")
             return(metaDT)
         } else {
             # data.table variables
@@ -902,8 +902,8 @@ plotMetaDataCellsHeatmap <- function(
 
     ## visualization
     if (length(metadata_cols) > 2) {
-        cat("\n visualization is only possible for 1 or 2 metadata annotations,
-            data.table is returned \n")
+        message("visualization is only possible for 1 or 2 metadata annotations,
+        data.table is returned")
         return(metaDT)
     }
 
@@ -1001,8 +1001,8 @@ plotMetaDataCellsHeatmap <- function(
         pl <- pl + ggplot2::labs(x = metadata_cols, y = "genes")
     } else {
         if (is.null(first_meta_col) | is.null(second_meta_col)) {
-            cat("\n both first_meta_col and second_meta_col need to be defined,
-                return data.table \n")
+            message("both first_meta_col and second_meta_col need to be defined,
+            return data.table")
             return(metaDT)
         } else {
             # data.table variables

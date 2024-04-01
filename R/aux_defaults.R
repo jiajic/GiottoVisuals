@@ -658,7 +658,7 @@ showColorInstructions <- function() {
         "\n"
     )]
 
-    cat(out)
+    message(out)
     return(invisible(giotto_color_instructions))
 }
 
