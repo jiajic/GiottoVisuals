@@ -1092,7 +1092,8 @@ plotMetaDataCellsHeatmap <- function(
 #' default to "complete"
 #' @return list
 #' @details Creates input data.tables for plotHeatmap function.
-#' @import reshape2 scales
+#' @importFrom reshape2 melt
+#' @importFrom scales rescale_mid
 #' @keywords internal
 .create_heatmap_dt <- function(gobject,
     spat_unit = NULL,

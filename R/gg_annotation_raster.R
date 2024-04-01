@@ -51,7 +51,7 @@ setMethod(
 )
 
 #' @rdname gg_annotation_raster
-#' @import terra
+#' @importFrom terra as.array
 setMethod(
     "gg_annotation_raster",
     signature(ggobj = "gg", gimage = "giottoLargeImage"),
