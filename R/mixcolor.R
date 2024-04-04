@@ -169,7 +169,7 @@ NULL
 
 # vectorized hex 2 rgb matrix
 hex2rgb <- function(x) {
-    sapply(x, grDevices::col2rgb, USE.NAMES = FALSE, simplify = TRUE)
+    vapply(x, grDevices::col2rgb, USE.NAMES = FALSE, FUN.VALUE = numeric(3))
 }
 
 hex2hsv <- function(x) {

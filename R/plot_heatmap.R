@@ -140,7 +140,6 @@ showClusterHeatmap <- function(
 #' @param feat_label_selection subset of features to show on y-axis
 #' @param axis_text_y_size size for y-axis text
 #' @param legend_nrows number of rows for the cluster legend
-#' @import cowplot ggrepel
 #' @returns ggplot
 #' @details If you want to display many features there are 2 ways to proceed:
 #' \itemize{
@@ -529,8 +528,8 @@ plotMetaDataHeatmap <- function(gobject,
 
     ## visualization
     if (length(metadata_cols) > 2) {
-        cat("\n visualization is only possible for 1 or 2 metadata annotations,
-            data.table is returned \n")
+        message("visualization is only possible for 1 or 2 metadata annotations,
+        data.table is returned")
         return(metaDT)
     }
 
@@ -681,8 +680,8 @@ plotMetaDataHeatmap <- function(gobject,
         }
     } else {
         if (is.null(first_meta_col) | is.null(second_meta_col)) {
-            cat("\n both first_meta_col and second_meta_col need to be defined,
-                return data.table \n")
+            message("both first_meta_col and second_meta_col need to be defined,
+            return data.table")
             return(metaDT)
         } else {
             # data.table variables
@@ -902,8 +901,8 @@ plotMetaDataCellsHeatmap <- function(
 
     ## visualization
     if (length(metadata_cols) > 2) {
-        cat("\n visualization is only possible for 1 or 2 metadata annotations,
-            data.table is returned \n")
+        message("visualization is only possible for 1 or 2 metadata annotations,
+        data.table is returned")
         return(metaDT)
     }
 
@@ -1001,8 +1000,8 @@ plotMetaDataCellsHeatmap <- function(
         pl <- pl + ggplot2::labs(x = metadata_cols, y = "genes")
     } else {
         if (is.null(first_meta_col) | is.null(second_meta_col)) {
-            cat("\n both first_meta_col and second_meta_col need to be defined,
-                return data.table \n")
+            message("both first_meta_col and second_meta_col need to be defined,
+            return data.table")
             return(metaDT)
         } else {
             # data.table variables
@@ -1092,7 +1091,6 @@ plotMetaDataCellsHeatmap <- function(
 #' default to "complete"
 #' @return list
 #' @details Creates input data.tables for plotHeatmap function.
-#' @import reshape2 scales
 #' @keywords internal
 .create_heatmap_dt <- function(gobject,
     spat_unit = NULL,

@@ -155,7 +155,6 @@ getColors <- function(
 
 
 # get palettes ####
-#' @import RColorBrewer
 .get_rcolorbrewer_colors <- function(n, pal, strategy) {
     # DT vars
     rn <- maxcolors <- NULL
@@ -177,10 +176,10 @@ getColors <- function(
     package_check("ggsci")
 
     pal_fullname <- paste0("ggsci::pal_", pal, "()")
-    suppressWarnings(
-        # get first 100 colors
-        pal_cols <- eval(parse(text = pal_fullname))(100)
-    )
+    
+    # get first 100 colors
+    pal_cols <- eval(parse(text = pal_fullname))(100)
+    
     get_continuous_colors(
         col = pal_cols[!is.na(pal_cols)],
         n = n,
@@ -288,9 +287,8 @@ getColors <- function(
 .get_rcarto_colors <- function(n, pal, strategy) {
     package_check("rcartocolor", repository = "CRAN")
 
-    pal_col <- suppressWarnings({
-        rcartocolor::carto_pal(n = n, name = pal)
-    })
+    pal_col <- rcartocolor::carto_pal(n = n, name = pal)
+
 
     return(get_continuous_colors(
         col = pal_col,

@@ -301,7 +301,6 @@ spatNetwDistributions <- function(
 #' of the final triangulation from the output.
 #' @param S (RTriangle) Specifies the maximum number of added Steiner points.
 #' @param \dots Other parameters
-#' @import cowplot
 #' @return giotto object with updated spatial network slot
 #' @export
 plotStatDelaunayNetwork <- function(

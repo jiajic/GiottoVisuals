@@ -81,7 +81,7 @@ violinPlot <- function(
     # only keep feats that are in the dataset
     selected_feats <- feats[feats %in% rownames(expr_data)]
     if (length(selected_feats[duplicated(selected_feats)]) != 0) {
-        cat(
+        message(
             "These feats have duplicates: \n",
             selected_feats[duplicated(selected_feats)]
         )

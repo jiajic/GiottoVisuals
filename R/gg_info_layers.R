@@ -19,7 +19,6 @@
 #' selected cells
 #' @param cell_locations_metadata_other annotated location from
 #' non-selected cells
-#' @import ggrepel
 #' @return ggplot
 #' @details Description of parameters.
 #' @keywords internal
@@ -1331,8 +1330,9 @@ plot_feature_hexbin_layer <- function(
 
     # set default binwidth to 1/10 of minor axis
     if (is.null(binwidth)) {
-        minorRange <- spatial_feat_info_subset[, min(diff(sapply(.SD, range))),
-            .SDcols = c("x", "y")
+        minorRange <- spatial_feat_info_subset[, 
+                        min(diff(vapply(.SD, range, FUN.VALUE = numeric(2)))),
+                        .SDcols = c("x", "y")
         ]
         binwidth <- as.integer(minorRange / min_axis_bins)
     }
