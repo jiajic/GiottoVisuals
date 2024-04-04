@@ -24,7 +24,6 @@
 #' @param plot_count manually set the plot count that is appended to a
 #' default_save_name
 #' @param \dots additional parameters to pass downstream save functions
-#' @import cowplot
 #' @returns a plot file
 #' @seealso \code{\link{showSaveParameters}} \code{\link[cowplot]{save_plot}}
 #' \code{\link[grDevices]{png}}

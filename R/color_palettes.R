@@ -155,7 +155,6 @@ getColors <- function(
 
 
 # get palettes ####
-#' @import RColorBrewer
 .get_rcolorbrewer_colors <- function(n, pal, strategy) {
     # DT vars
     rn <- maxcolors <- NULL

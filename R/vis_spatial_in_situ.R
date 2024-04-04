@@ -560,7 +560,6 @@ spatInSituPlotPoints <- function(gobject,
 #' @param legend_text legend text size
 #' @param background_color background color
 #' @details TODO
-#' @import cowplot
 #' @family In Situ visualizations
 #' @returns ggplot
 #' @examples

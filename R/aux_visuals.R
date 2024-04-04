@@ -167,7 +167,6 @@ gg_input <- function(ggobject) {
 #' @keywords internal
 #' @description uses ggplot::geom_point, scattermore::geom_scattermore
 #' or scattermore::geom_scattermost
-#' @import scattermore
 #' @returns ggplot2::geom_point layer
 #' 
 giotto_point <- function(

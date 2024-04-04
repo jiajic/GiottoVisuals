@@ -1067,7 +1067,6 @@ spatDeconvPlot <- function(gobject,
 
 # Create a single 2D dimplot. This is looped through by dimPlot2D() if needed.
 #' @noRd
-#' @importFrom igraph as_data_frame
 #' @keywords internal
 .dimPlot2D_single <- function(gobject,
     spat_unit = NULL,
@@ -4540,7 +4539,6 @@ spatDimCellPlot <- function(...) {
 #' @description Visualize cells at their 2D dimension reduction coordinates 
 #' with plotly
 #' @returns plotly object
-#' @importFrom plotly add_segments
 #' @keywords internal
 .dimPlot_2d_plotly <- function(gobject,
     spat_unit = NULL,

@@ -19,7 +19,6 @@
 #' selected cells
 #' @param cell_locations_metadata_other annotated location from
 #' non-selected cells
-#' @import ggrepel
 #' @return ggplot
 #' @details Description of parameters.
 #' @keywords internal

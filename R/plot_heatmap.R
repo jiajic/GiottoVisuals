@@ -140,7 +140,6 @@ showClusterHeatmap <- function(
 #' @param feat_label_selection subset of features to show on y-axis
 #' @param axis_text_y_size size for y-axis text
 #' @param legend_nrows number of rows for the cluster legend
-#' @import cowplot ggrepel
 #' @returns ggplot
 #' @details If you want to display many features there are 2 ways to proceed:
 #' \itemize{
@@ -1092,8 +1091,6 @@ plotMetaDataCellsHeatmap <- function(
 #' default to "complete"
 #' @return list
 #' @details Creates input data.tables for plotHeatmap function.
-#' @importFrom reshape2 melt
-#' @importFrom scales rescale_mid
 #' @keywords internal
 .create_heatmap_dt <- function(gobject,
     spat_unit = NULL,
