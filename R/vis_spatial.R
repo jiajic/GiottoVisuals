@@ -3899,6 +3899,7 @@ spatCellPlot2D <- function(gobject,
         stop("you need to choose which continuous/numerical cell
             annotations or enrichments you want to visualize")
     }
+    cell_annotation_values <- as.character(cell_annotation_values)
     cell_annotation_values <- cell_annotation_values[
         cell_annotation_values %in% possible_value_cols]
 
