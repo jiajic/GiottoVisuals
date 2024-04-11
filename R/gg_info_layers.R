@@ -1176,6 +1176,7 @@ plot_feature_points_layer <- function(
 
     # expand feature coordinates and/or add jitter to coordinates
     if (isTRUE(expand_counts) | !identical(c(0, 0), jitter)) {
+        if (length(jitter) == 1L) jitter <- rep(jitter, 2)
         spatial_feat_info_subset <- expand_feature_info(
             spatial_feat_info = spatial_feat_info_subset,
             expand_counts = expand_counts,
@@ -1330,7 +1331,7 @@ plot_feature_hexbin_layer <- function(
 
     # set default binwidth to 1/10 of minor axis
     if (is.null(binwidth)) {
-        minorRange <- spatial_feat_info_subset[, 
+        minorRange <- spatial_feat_info_subset[,
                         min(diff(vapply(.SD, range, FUN.VALUE = numeric(2)))),
                         .SDcols = c("x", "y")
         ]
@@ -2097,15 +2098,15 @@ plot_point_layer_ggplot_noFILL <- function(
 #' @returns an updated spatial ggplot object
 #' @examples
 #' g <- GiottoData::loadGiottoMini("visium")
-#' 
-#' my_giottoimage <- GiottoClass::createGiottoImage(g, 
+#'
+#' my_giottoimage <- GiottoClass::createGiottoImage(g,
 #' mg_object = system.file("image.png", package = "GiottoVisuals"),
 #' name = 'image')
-#' 
+#'
 #' my_spatplot <- spatPlot2D(g, return_plot = TRUE)
-#' 
+#'
 #' addGiottoImageToSpatPlot(spatpl = my_spatplot, gimage = my_giottoimage)
-#' 
+#'
 #' @export
 addGiottoImageToSpatPlot <- function(
         spatpl = NULL,
