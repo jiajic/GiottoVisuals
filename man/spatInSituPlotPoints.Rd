@@ -93,7 +93,8 @@ to include}
 \item{count_info_column}{column name with count information
 (if expand_counts = TRUE)}
 
-\item{jitter}{maximum x,y jitter provided as c(x, y)}
+\item{jitter}{numeric. Maximum x,y jitter provided as c(x, y) or a single
+number which will be recycled to length 2.}
 
 \item{show_polygon}{overlay polygon information (e.g. cell shape)}
 

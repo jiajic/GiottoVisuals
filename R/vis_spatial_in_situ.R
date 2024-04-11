@@ -22,7 +22,8 @@
 #' @param expand_counts expand feature coordinate counts (see details)
 #' @param count_info_column column name with count information
 #' (if expand_counts = TRUE)
-#' @param jitter maximum x,y jitter provided as c(x, y)
+#' @param jitter numeric. Maximum x,y jitter provided as c(x, y) or a single
+#' number which will be recycled to length 2.
 #' @param axis_text axis text size
 #' @param axis_title title text size
 #' @param legend_text legend text size
@@ -563,8 +564,8 @@ spatInSituPlotPoints <- function(gobject,
 #' @family In Situ visualizations
 #' @returns ggplot
 #' @examples
-#' g <- GiottoData::loadGiottoMini("vizgen") 
-#' spatInSituPlotHex(g, feats = c("Mlc1", "Gprc5b", "Gfap"), 
+#' g <- GiottoData::loadGiottoMini("vizgen")
+#' spatInSituPlotHex(g, feats = c("Mlc1", "Gprc5b", "Gfap"),
 #' polygon_feat_type = "z0")
 #' @export
 spatInSituPlotHex <- function(
@@ -850,9 +851,9 @@ spatInSituPlotHex <- function(
 #' @returns ggplot
 #' @examples
 #' g <- GiottoData::loadGiottoMini("vizgen")
-#' spatInSituPlotDensity(g, feats = c("Mlc1", "Gprc5b", "Gfap"), 
+#' spatInSituPlotDensity(g, feats = c("Mlc1", "Gprc5b", "Gfap"),
 #' polygon_feat_type = "z0")
-#' 
+#'
 #' @export
 spatInSituPlotDensity <- function(
         gobject,
@@ -1014,7 +1015,7 @@ spatInSituPlotDensity <- function(
 #' g <- GiottoData::loadGiottoMini("vizgen")
 #' x <- GiottoClass::getFeatureInfo(g)
 #' x <- data.table::as.data.table(x)
-#' 
+#'
 #' @keywords internal
 #' @export
 expand_feature_info <- function(

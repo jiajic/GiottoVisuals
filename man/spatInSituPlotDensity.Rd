@@ -107,7 +107,7 @@ TODO
 }
 \examples{
 g <- GiottoData::loadGiottoMini("vizgen")
-spatInSituPlotDensity(g, feats = c("Mlc1", "Gprc5b", "Gfap"), 
+spatInSituPlotDensity(g, feats = c("Mlc1", "Gprc5b", "Gfap"),
 polygon_feat_type = "z0")
 
 }

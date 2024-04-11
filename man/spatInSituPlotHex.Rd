@@ -114,8 +114,8 @@ modalities at the spatial in situ level
 TODO
 }
 \examples{
-g <- GiottoData::loadGiottoMini("vizgen") 
-spatInSituPlotHex(g, feats = c("Mlc1", "Gprc5b", "Gfap"), 
+g <- GiottoData::loadGiottoMini("vizgen")
+spatInSituPlotHex(g, feats = c("Mlc1", "Gprc5b", "Gfap"),
 polygon_feat_type = "z0")
 }
 \seealso{
