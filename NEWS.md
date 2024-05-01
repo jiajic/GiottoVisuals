@@ -1,3 +1,20 @@
+# GiottoVisuals 0.2.0 (2024/05/01)
+
+## breaking changes
+
+## changes
+- _GiottoClass >= 0.3.0_ is now required. (object no longer has `@largeImages` slot)
+- `largeImage_name` arg is deprecated. `image_name` arg should be used instead
+
+## bug fixes
+- removed centroid point that unintentionally gets plotted in polygons
+
+## enhancements
+- `theme_param` arg has been added to some plotting functions that provides access to `ggplot2::theme()` finetuning
+- `gg_annotation_raster()` now performs plot extent detection and resampling of images
+- resampling args are now globally settable (see `?auto_image_resample`)
+
+
 # GiottoVisuals 0.1.7 (2024/03/11)
 
 ## Changes
@@ -9,7 +26,7 @@
 
 ## bug fixes
 - fix `spatPlot2D()` and `spatFeatPlot2D()` largeImage plotting when using `group_by`
-- fix `edge_alpha` param in `spatFeatPlot2D()`
+- fix `edge_alpha` arg in `spatFeatPlot2D()`
 
 ## new
 - `mixRGB()` vectorized additive mixing in RGB space
@@ -19,7 +36,7 @@
 
 # GiottoVisuals 0.1.4 (2024/01/25)
 ## bug fixes
-- fix plotting color gradient when using param `point_shape = "no_border"`
+- fix plotting color gradient when using arg `point_shape = "no_border"`
 - fix image NA value [#865](https://github.com/drieslab/Giotto/issues/865) by rbutleriii
 
 ## new

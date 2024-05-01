@@ -30,6 +30,7 @@ spatDeconvPlot(
   return_plot = NULL,
   save_plot = NULL,
   save_param = list(),
+  theme_param = list(),
   default_save_name = "spatDeconvPlot"
 )
 }
@@ -86,6 +87,8 @@ named vector of colors}
 \item{save_param}{list of saving parameters,
 see \code{\link{showSaveParameters}}}
 
+\item{theme_param}{list of additional params passed to \code{ggplot2::theme()}}
+
 \item{default_save_name}{default save name for saving, don't change,
 change save_name in save_param}
 }
@@ -95,7 +98,4 @@ ggplot
 \description{
 Visualize cell type enrichment / deconvolution results
 in a scatterpie
-}
-\details{
-Description of parameters.
 }

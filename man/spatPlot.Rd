@@ -71,6 +71,7 @@ spatPlot2D(
   return_plot = NULL,
   save_plot = NULL,
   save_param = list(),
+  theme_param = list(),
   default_save_name = "spatPlot2D"
 )
 
@@ -253,6 +254,8 @@ cell_color parameter}
 
 \item{save_param}{list of saving parameters,
 see \code{\link{showSaveParameters}}}
+
+\item{theme_param}{list of additional params passed to \code{ggplot2::theme()}}
 
 \item{default_save_name}{default save name for saving, don't change,
 change save_name in save_param}

@@ -1,6 +1,6 @@
 Package: GiottoVisuals
 Title: Visuals for the Giotto spatial biology analysis ecosystem
-Version: 0.1.7
+Version: 0.2.0
 Authors@R: c(
 	person("Ruben", "Dries", email = "rubendries@gmail.com",
 		 role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7650-7754")),
@@ -33,7 +33,7 @@ Imports:
     data.table,
     ggplot2 (>= 3.1.1),
     GiottoUtils (>= 0.1.0.1),
-    GiottoClass (>= 0.1.0.1),
+    GiottoClass (>= 0.3.0),
     ggrepel,
     igraph (>= 1.2.4.1),
     methods,
@@ -83,6 +83,7 @@ Collate:
     'generics.R'
     'gg_annotation_raster.R'
     'gg_info_layers.R'
+    'gg_settings.R'
     'globals.R'
     'gstop.R'
     'mixcolor.R'

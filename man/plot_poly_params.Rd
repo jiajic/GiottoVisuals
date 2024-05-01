@@ -10,7 +10,7 @@
 
 \item{polygon_feat_type}{feature type associated with polygon information}
 
-\item{polygon_color}{color for polygon border}
+\item{polygon_color}{color for polygon border. Set \code{NA} to remove border}
 
 \item{polygon_bg_color}{color for polygon background
 (overruled by polygon_fill)}

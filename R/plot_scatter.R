@@ -14,7 +14,7 @@
 #' @examples
 #' x <- data.frame(x = rnorm(10), y = rnorm(10))
 #' gg_simple_scatter(data = x, x = "x", y = "y")
-#' 
+#'
 #' @export
 gg_simple_scatter <- function(ggobject = NULL, data, x, y,
     xlab = "x", ylab = "y", main = NULL, ...) {

@@ -60,7 +60,7 @@ spatInSituPlotHex(
 
 \item{polygon_feat_type}{feature type associated with polygon information}
 
-\item{polygon_color}{color for polygon border}
+\item{polygon_color}{color for polygon border. Set \code{NA} to remove border}
 
 \item{polygon_fill}{character. what to color to fill polgyons by
 (e.g. metadata col or spatial enrichment col)}

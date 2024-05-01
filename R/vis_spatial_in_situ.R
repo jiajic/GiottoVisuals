@@ -12,6 +12,7 @@
 #' @inheritParams plot_poly_params
 #' @inheritParams plot_image_params
 #' @inheritParams plot_spatenr_params
+#' @param largeImage_name deprecated
 #' @param spat_loc_name name of spatial locations
 #' @param feats named list of features to plot
 #' @param feat_type feature types of the feats
@@ -33,6 +34,7 @@
 #' @param plot_method method to plot points
 #' @param plot_last which layer to show on top of plot,
 #' polygons (default) or points.
+#' @param theme_param list of additional params passed to `ggplot2::theme()`
 #' @param verbose be verbose
 #' @returns ggplot
 #' @examples
@@ -88,7 +90,7 @@ spatInSituPlotPoints <- function(gobject,
     polygon_fill_gradient_style = c("divergent", "sequential"),
     polygon_fill_as_factor = NULL,
     polygon_fill_code = NULL,
-    polygon_alpha = 0.5,
+    polygon_alpha = NULL,
     polygon_line_size = 0.4,
     axis_text = 8,
     axis_title = 8,
@@ -98,6 +100,7 @@ spatInSituPlotPoints <- function(gobject,
     show_legend = TRUE,
     plot_method = c("ggplot", "scattermore", "scattermost"),
     plot_last = c("polygons", "points"),
+    theme_param = list(),
     show_plot = NULL,
     return_plot = NULL,
     save_plot = NULL,
@@ -117,12 +120,27 @@ spatInSituPlotPoints <- function(gobject,
         }
     }
 
-    if (is.null(feats)) {
+    send_warn <- getOption("giotto.warn_sispp_feats", TRUE)
+    if (is.null(feats) && send_warn) {
         warning(wrap_txt(
             "You need to select features (feats) and modify feature
             types (feat_type) if you want to show individual features
-            (e.g. transcripts)"
+            (e.g. transcripts)
+            This warning is shown once per session"
         ))
+        options("giotto.warn_sispp_feats" = FALSE)
+    }
+
+    # deprecation message
+    if (!is.null(largeImage_name)) {
+        deprecate_warn(
+            when = "0.2.0",
+            what = "spatInSituPlotPoints(largeImage_name)",
+            details = c(
+                "Use `image_name` argument instead for all images to plot."
+            )
+        )
+        image_name <- c(image_name, largeImage_name)
     }
 
     # check valid input
@@ -130,18 +148,12 @@ spatInSituPlotPoints <- function(gobject,
 
     ## giotto image ##
     if (isTRUE(show_image)) {
-        gimage <- select_gimage(
-            gobject = gobject,
-            gimage = gimage,
-            image_name = image_name,
-            largeImage_name = largeImage_name,
-            spat_unit = spat_unit,
-            spat_loc_name = spat_loc_name,
-            feat_type = feat_type,
-            polygon_feat_type = polygon_feat_type
-        )
 
-        if (isTRUE(verbose)) wrap_msg("select image done")
+        # get 1 or more images
+        gimage <- getGiottoImage(
+            gobject = gobject,
+            name = image_name
+        )
     }
 
     # start plotting
@@ -157,9 +169,7 @@ spatInSituPlotPoints <- function(gobject,
             feat_type = feat_type,
             spat_loc_name = spat_loc_name,
             polygon_feat_type = polygon_feat_type,
-            gimage = gimage,
-            sdimx = "sdimx",
-            sdimy = "sdimy"
+            gimage = gimage
         )
 
         if (isTRUE(verbose)) wrap_msg("plot image layer done")
@@ -218,6 +228,13 @@ spatInSituPlotPoints <- function(gobject,
 
         ## 2. plot polygons/morphology second/last
         if (isTRUE(show_polygon)) {
+
+            if (isTRUE(show_image)) {
+                polygon_alpha <- polygon_alpha %null% 0.5
+            } else {
+                polygon_alpha <- polygon_alpha %null% 1
+            }
+
             # Set feat_type and spat_unit
             polygon_feat_type <- set_default_spat_unit(
                 gobject = gobject,
@@ -228,12 +245,6 @@ spatInSituPlotPoints <- function(gobject,
                 spat_unit = polygon_feat_type,
                 feat_type = feat_type
             )
-
-            # feat_type = set_default_feat_type(gobject = gobject,
-            # feat_type = feat_type)
-            # if(is.null(polygon_feat_type)) {
-            #  polygon_feat_type = gobject@expression_feat[[1]]
-            # }
 
             polygon_combo <- combineCellData(
                 gobject = gobject,
@@ -254,8 +265,6 @@ spatInSituPlotPoints <- function(gobject,
                 instrs = instructions(gobject),
                 polygon_dt = polygon_dt,
                 polygon_grouping = "poly_ID",
-                sdimx = sdimx,
-                sdimy = sdimy,
                 fill = polygon_fill,
                 poly_fill_gradient = polygon_fill_gradient,
                 fill_gradient_midpoint = polygon_fill_gradient_midpoint,
@@ -307,8 +316,6 @@ spatInSituPlotPoints <- function(gobject,
                 instrs = instructions(gobject),
                 polygon_dt = polygon_dt,
                 polygon_grouping = "poly_ID",
-                sdimx = sdimx,
-                sdimy = sdimy,
                 fill = polygon_fill,
                 poly_fill_gradient = polygon_fill_gradient,
                 fill_gradient_midpoint = polygon_fill_gradient_midpoint,
@@ -374,15 +381,14 @@ spatInSituPlotPoints <- function(gobject,
     }
 
     ## 3. adjust theme settings
-    plot <- plot + ggplot2::theme(
-        plot.title = ggplot2::element_text(hjust = 0.5),
-        legend.title = ggplot2::element_blank(),
-        legend.text = ggplot2::element_text(size = legend_text),
-        axis.title = ggplot2::element_text(size = axis_title),
-        axis.text = ggplot2::element_text(size = axis_text),
-        panel.grid = ggplot2::element_blank(),
-        panel.background = ggplot2::element_rect(fill = background_color)
+    gg_theme_args <- c(
+        theme_param,
+        legend_text = legend_text,
+        axis_title = axis_title,
+        axis_text = axis_text,
+        background_color = background_color
     )
+    plot <- plot + do.call(.gg_theme, args = gg_theme_args)
 
 
     if (!is.null(coord_fix_ratio)) {
@@ -477,8 +483,6 @@ spatInSituPlotPoints <- function(gobject,
             instrs = instructions(gobject),
             polygon_dt,
             polygon_grouping = "poly_ID",
-            sdimx = sdimx,
-            sdimy = sdimy,
             fill = polygon_fill,
             fill_as_factor = polygon_fill_as_factor,
             color = polygon_color,
@@ -769,8 +773,6 @@ spatInSituPlotHex <- function(
             instrs = instructions(gobject),
             polygon_dt,
             polygon_grouping = "poly_ID",
-            sdimx = sdimx,
-            sdimy = sdimy,
             fill = polygon_fill,
             fill_as_factor = polygon_fill_as_factor,
             color = polygon_color,

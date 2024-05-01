@@ -35,7 +35,7 @@ spatInSituPlotPoints(
   polygon_fill_gradient_style = c("divergent", "sequential"),
   polygon_fill_as_factor = NULL,
   polygon_fill_code = NULL,
-  polygon_alpha = 0.5,
+  polygon_alpha = NULL,
   polygon_line_size = 0.4,
   axis_text = 8,
   axis_title = 8,
@@ -45,6 +45,7 @@ spatInSituPlotPoints(
   show_legend = TRUE,
   plot_method = c("ggplot", "scattermore", "scattermost"),
   plot_last = c("polygons", "points"),
+  theme_param = list(),
   show_plot = NULL,
   return_plot = NULL,
   save_plot = NULL,
@@ -62,8 +63,7 @@ spatInSituPlotPoints(
 
 \item{image_name}{name of a giotto image or multiple images with group_by}
 
-\item{largeImage_name}{name of a giottoLargeImage or multiple images
-with group_by}
+\item{largeImage_name}{deprecated}
 
 \item{spat_unit}{spatial unit (e.g. "cell")}
 
@@ -102,7 +102,7 @@ number which will be recycled to length 2.}
 
 \item{polygon_feat_type}{feature type associated with polygon information}
 
-\item{polygon_color}{color for polygon border}
+\item{polygon_color}{color for polygon border. Set \code{NA} to remove border}
 
 \item{polygon_bg_color}{color for polygon background
 (overruled by polygon_fill)}
@@ -143,6 +143,8 @@ color scaling) or 'sequential' (scaled based on data range)}
 
 \item{plot_last}{which layer to show on top of plot,
 polygons (default) or points.}
+
+\item{theme_param}{list of additional params passed to \code{ggplot2::theme()}}
 
 \item{show_plot}{logical. show plot}
 

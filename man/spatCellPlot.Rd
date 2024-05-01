@@ -60,6 +60,7 @@ spatCellPlot2D(
   cow_rel_h = 1,
   cow_rel_w = 1,
   cow_align = "h",
+  theme_param = list(),
   show_plot = NULL,
   return_plot = NULL,
   save_plot = NULL,
@@ -182,6 +183,8 @@ cell_color parameter}
 \item{cow_rel_w}{cowplot param: relative widths of columns (e.g. c(1,2))}
 
 \item{cow_align}{cowplot param: how to align}
+
+\item{theme_param}{list of additional params passed to \code{ggplot2::theme()}}
 
 \item{show_plot}{logical. show plot}
 

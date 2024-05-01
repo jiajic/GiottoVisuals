@@ -64,7 +64,7 @@ NULL
 #' @param show_polygon overlay polygon information (e.g. cell shape)
 #' @param use_overlap use polygon and feature coordinates overlap results
 #' @param polygon_feat_type feature type associated with polygon information
-#' @param polygon_color color for polygon border
+#' @param polygon_color color for polygon border. Set `NA` to remove border
 #' @param polygon_bg_color color for polygon background
 #' (overruled by polygon_fill)
 #' @param polygon_fill character. what to color to fill polgyons by

@@ -11,7 +11,6 @@
   show_image = FALSE,
   gimage = NULL,
   image_name = NULL,
-  largeImage_name = NULL,
   spat_loc_name = NULL,
   sdimx = "sdimx",
   sdimy = "sdimy",
@@ -59,6 +58,7 @@
   vor_alpha = 1,
   axis_text = 8,
   axis_title = 8,
+  theme_param = list(),
   show_plot = NULL,
   return_plot = NULL,
   save_plot = NULL,
@@ -78,9 +78,7 @@
 
 \item{gimage}{a giotto image}
 
-\item{image_name}{name of a giotto image}
-
-\item{largeImage_name}{name of a giottoLargeImage}
+\item{image_name}{name of giotto image(s) to plot}
 
 \item{spat_loc_name}{name of spatial locations}
 
@@ -128,6 +126,8 @@ use or vector of colors to use (minimum of 2).}
 \item{vor_max_radius}{maximum radius for voronoi 'cells'}
 
 \item{vor_alpha}{transparency of voronoi 'cells'}
+
+\item{theme_param}{list of additional params passed to \code{ggplot2::theme()}}
 
 \item{show_plot}{logical. show plot}
 

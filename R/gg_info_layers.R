@@ -1036,8 +1036,6 @@ plot_cell_polygon_layer <- function(
         instrs = NULL,
         polygon_dt,
         polygon_grouping = "poly_ID",
-        sdimx = "x",
-        sdimy = "y",
         fill = NULL,
         poly_fill_gradient = NULL,
         fill_gradient_midpoint = NULL,
@@ -1381,8 +1379,7 @@ plot_feature_hexbin_layer <- function(
 #' @param spat_loc_name name for spatial locations
 #' @param polygon_feat_type name for feature type associated with
 #' polygon information
-#' @param sdimx x-axis dimension name (default = 'sdimx')
-#' @param sdimy y-axis dimension name (default = 'sdimy')
+#' @param \dots additional args passed to `giotto` `.guess_plot_extent`
 #' @return ggplot
 #' @keywords internal
 #' @noRd
@@ -1390,87 +1387,55 @@ plot_spat_image_layer_ggplot <- function(
         gg_obj,
         gobject,
         gimage,
-        feat_type = NULL,
         spat_unit = NULL,
+        feat_type = NULL,
         spat_loc_name = NULL,
         polygon_feat_type = NULL,
-        sdimx = NULL,
-        sdimy = NULL) {
-    if (is.null(gobject) | is.null(gimage)) {
+        ...) {
+    if (is.null(gobject) || is.null(gimage)) {
         stop("A giotto object and a giotto image need to be provided")
     }
 
-    if (is.null(sdimx) | is.null(sdimy)) {
-        warning("plot_method = ggplot, but spatial dimensions for sdimx
-                and/or sdimy are not specified. \n
-                It will default to the 'sdimx' and 'sdimy' ")
-        sdimx <- "sdimx"
-        sdimy <- "sdimy"
-    }
+    # NSE vars
+    sdimx <- sdimy <- NULL
 
-    # Set feat_type and spat_unit
-    spat_unit <- set_default_spat_unit(
-        gobject = gobject,
-        spat_unit = spat_unit
-    )
-    feat_type <- set_default_feat_type(
-        gobject = gobject,
-        spat_unit = spat_unit,
-        feat_type = feat_type
+    # prefer extent detection from polygon
+    spat_unit <- ifelse(
+        !is.null(polygon_feat_type),
+        yes = polygon_feat_type,
+        no = spat_unit
     )
 
-    # spatial locations
-    spatlocs <- get_spatial_locations(
+    # allows passing of pre-defined `ext` through ...
+    e <- .guess_plot_extent(
         gobject = gobject,
         spat_unit = spat_unit,
+        feat_type = feat_type, # only used in detection from points
         spat_loc_name = spat_loc_name,
-        output = "data.table",
-        copy_obj = TRUE,
-        verbose = FALSE
+        prefer = c("polygon", "spatlocs", "points"),
+        ...
     )
 
-    # Get spatial extent for positioning purposes
-    spat_ext <- spatlocs[, c("sdimx", "sdimy"), with = FALSE]
-
-    # When spatial locations are missing but subcellular info is present
-    # Pull plot extent info from polygon info if present
-
-    if (is.null(spat_ext)) {
-        gpoly <- get_polygon_info(
-            gobject = gobject,
-            polygon_name = polygon_feat_type,
-            return_giottoPolygon = FALSE
-        )
-
-        poly_ext <- terra::ext(gpoly)[seq_len(4)]
-        spat_ext <- data.table::data.table(
-            sdimx = c(poly_ext[["xmin"]], poly_ext[["xmax"]]),
-            sdimy = c(poly_ext[["ymin"]], poly_ext[["ymax"]])
-        )
-    }
-
-    # If still missing, send warning
-    if (is.null(spat_ext)) {
-        warning("No spatial locations or polygon info found.\n
-                Plot spatial extent may be incorrect\n")
-    }
+    bounds_dt <- data.table::data.table(
+        sdimx = e[][c(1, 2)],
+        sdimy = e[][c(3, 4)]
+    )
 
     # Assign region to plot
-    gg_obj <- gg_obj + geom_blank(data = spat_ext, aes_string(sdimx, sdimy))
+    gg_obj <- gg_obj + geom_blank(data = bounds_dt, aes(sdimx, sdimy))
 
     # Assign image(s) to plot
-    gg_obj <- gg_annotation_raster(ggobj = gg_obj, gimage = gimage)
+    gg_obj <- gg_annotation_raster(ggobj = gg_obj, gimage = gimage, ext = e)
 
-
-    if (!is.null(spatlocs)) {
-        gg_obj <- gg_obj +
-            geom_point(
-                data = spatlocs,
-                aes_string(sdimx, sdimy),
-                alpha = 0.5,
-                size = 0.4
-            )
-    }
+    # if (!is.null(spatlocs)) {
+    #     gg_obj <- gg_obj +
+    #         geom_point(
+    #             data = spatlocs,
+    #             aes_string(sdimx, sdimy),
+    #             alpha = 0.5,
+    #             size = 0.4
+    #         )
+    # }
 
     return(gg_obj)
 }

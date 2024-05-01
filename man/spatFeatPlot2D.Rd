@@ -51,6 +51,7 @@ spatFeatPlot2D(
   cow_rel_h = 1,
   cow_rel_w = 1,
   cow_align = "h",
+  theme_param = list(),
   show_plot = NULL,
   return_plot = NULL,
   save_plot = NULL,
@@ -71,8 +72,7 @@ spatFeatPlot2D(
 
 \item{image_name}{name of a giotto image or multiple images with group_by}
 
-\item{largeImage_name}{name of a giottoLargeImage or multiple images
-with group_by}
+\item{largeImage_name}{deprecated}
 
 \item{spat_loc_name}{name of spatial locations}
 
@@ -155,6 +155,8 @@ or 'sequential' (scaled based on data range)}
 
 \item{cow_align}{cowplot param: how to align}
 
+\item{theme_param}{list of additional params passed to \code{ggplot2::theme()}}
+
 \item{show_plot}{logical. show plot}
 
 \item{return_plot}{logical. return ggplot object}
@@ -183,7 +185,7 @@ spatFeatPlot2D(g, feats = "Gna12")
 
 }
 \seealso{
-\code{\link{spatGenePlot3D}}
+\code{\link{spatFeatPlot3D}}
 
 Other spatial feature expression visualizations: 
 \code{\link{spatFeatPlot2D_single}()}
