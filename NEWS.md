@@ -5,14 +5,17 @@
 ## changes
 - _GiottoClass >= 0.3.0_ is now required. (object no longer has `@largeImages` slot)
 - `largeImage_name` arg is deprecated. `image_name` arg should be used instead
+- spatial y dim values are not vertically plotted
+- deprecated `spatDimGenePlot3D()`, `spatGenePlot3D()`, `dimGenePlot3D` in favor of the 'feat' naming scheme
 
 ## bug fixes
 - removed centroid point that unintentionally gets plotted in polygons
 
 ## enhancements
 - `theme_param` arg has been added to some plotting functions that provides access to `ggplot2::theme()` finetuning
-- `gg_annotation_raster()` now performs plot extent detection and resampling of images
+- `gg_annotation_raster()` now performs plot extent detection and resampling of largeImages
 - resampling args are now globally settable (see `?auto_image_resample`)
+- `polygon_alpha` default is now 1 when plotting polys without images, and 0.5 when plotting with images.
 
 
 # GiottoVisuals 0.1.7 (2024/03/11)
