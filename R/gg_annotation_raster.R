@@ -149,8 +149,9 @@ setMethod(
     e <- ext(
         gobject,
         spat_unit = spat_unit,
+        all_data = FALSE,
         verbose = FALSE,
-        name = spat_loc_name,
+        name = list(spatlocs = spat_loc_name),
         # `name` only passes to `getSpatialLocations()` if spatlocs are
         # present and used to find extent
         ... # You can ensure they are used by setting prefer = "spatlocs
