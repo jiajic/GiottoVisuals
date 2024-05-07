@@ -23,37 +23,39 @@
 #' @details Description of parameters.
 #' @keywords internal
 #' @noRd
-plot_spat_point_layer_ggplot <- function(ggobject,
-    instrs = NULL,
-    sdimx = NULL,
-    sdimy = NULL,
-    cell_locations_metadata_selected,
-    cell_locations_metadata_other,
-    cell_color = NULL,
-    color_as_factor = TRUE,
-    cell_color_code = NULL,
-    cell_color_gradient = NULL,
-    gradient_midpoint = NULL,
-    gradient_style = "divergent",
-    gradient_limits = NULL,
-    select_cell_groups = NULL,
-    select_cells = NULL,
-    point_size = 2,
-    point_alpha = 1,
-    point_border_col = "lightgrey",
-    point_border_stroke = 0.1,
-    show_cluster_center = FALSE,
-    show_center_label = TRUE,
-    center_point_size = 4,
-    center_point_border_col = "black",
-    center_point_border_stroke = 0.1,
-    label_size = 4,
-    label_fontface = "bold",
-    show_other_cells = TRUE,
-    other_cell_color = "lightgrey",
-    other_point_size = 1,
-    show_legend = TRUE) {
-    ## specify spatial dimensions first
+plot_spat_point_layer_ggplot <- function(
+        ggobject,
+        instrs = NULL,
+        sdimx = NULL,
+        sdimy = NULL,
+        cell_locations_metadata_selected,
+        cell_locations_metadata_other,
+        cell_color = NULL,
+        color_as_factor = TRUE,
+        cell_color_code = NULL,
+        cell_color_gradient = NULL,
+        gradient_midpoint = NULL,
+        gradient_style = "divergent",
+        gradient_limits = NULL,
+        select_cell_groups = NULL,
+        select_cells = NULL,
+        point_size = 2,
+        point_alpha = 1,
+        point_border_col = "lightgrey",
+        point_border_stroke = 0.1,
+        show_cluster_center = FALSE,
+        show_center_label = TRUE,
+        center_point_size = 4,
+        center_point_border_col = "black",
+        center_point_border_stroke = 0.1,
+        label_size = 4,
+        label_fontface = "bold",
+        show_other_cells = TRUE,
+        other_cell_color = "lightgrey",
+        other_point_size = 1,
+        show_legend = TRUE
+) {
+    ## specify spatial dimensions
     if (is.null(sdimx) || is.null(sdimy)) {
         warning(wrap_txt("plot_method = ggplot,
                         but spatial dimensions for sdimx and/or sdimy
@@ -63,33 +65,79 @@ plot_spat_point_layer_ggplot <- function(ggobject,
         sdimy <- "sdimy"
     }
 
+    shead <- head(cell_locations_metadata_selected, 1)
+    ohead <- head(cell_locations_metadata_other, 1)
+
+    .append_aes_numeric <- function(
+        plist, mapping = plist$mapping, x, param = substitute(x), aes_name,
+        data_head = NULL, rescale_to = NULL
+    ) {
+        if (is.null(mapping)) mapping <- aes()
+
+        if (is.numeric(x)) {
+            # if numeric, bypass checking in data since it's assumed that the
+            # value is supposed to be directly assigned.
+            plist[[aes_name]] <- x
+        } else {
+            # otherwise, assign as point-local aes setting
+            if (!is.null(rescale_to)) {
+                tf <- function(x) scales::rescale(x, to = rescale_to)
+            } else {
+                tf <- function(x) x
+            }
+            plist$mapping <- .append_check_aes(
+                mapping = mapping, x= x, param = param, aes_name = aes_name,
+                inherits = "numeric", data_head = data_head,
+                transforms = tf
+            )
+        }
+        return(plist)
+    }
 
     ### point parameters ##
-    point_size <- as.numeric(point_size)
-    point_alpha <- as.numeric(point_alpha)
-    point_border_stroke <- as.numeric(point_border_stroke)
+    # common params
+    a <- aes(x = sdimx, y = sdimy)
+    common_plist <- list(mapping = a)
+    common_plist <- .append_aes_numeric(
+        plist = common_plist, aes_name = "alpha", x = point_alpha,
+        rescale_to = c(0, 1), data_head = shead
+    )
 
+    # non-common params
+    selected_plist <- other_plist <- common_plist
+    selected_plist <- .append_aes_numeric(
+        plist = selected_plist, aes_name = "size", x = point_size,
+        rescale_to = c(0, 1), data_head = shead
+    )
+    other_plist <- .append_aes_numeric(
+        plist = other_plist, aes_name = "size", x = other_point_size,
+        rescale_to = c(0, 1), data_head = ohead
+    )
+    selected_plist <- .append_aes_numeric(
+        plist = selected_plist, aes_name = "stroke", x = point_border_stroke,
+        rescale_to = c(0, 5), data_head = shead
+    )
+    other_plist$show.legend <- FALSE
+    other_plist$color <- other_cell_color
+    selected_plist$show.legend <- show_legend
+    selected_plist$shape <- 21
+    selected_plist$color <- point_border_col # TODO make this an aes
+
+    # not based on table data
     center_point_size <- as.numeric(center_point_size)
     center_point_border_stroke <- as.numeric(center_point_border_stroke)
-
     label_size <- as.numeric(label_size)
-    other_point_size <- as.numeric(other_point_size)
 
 
     ## ggplot object
+    # * global level params to geom_point() will override point-local aes()
     pl <- ggobject
 
     ## first plot other non-selected cells
     if ((!is.null(select_cells) || !is.null(select_cell_groups)) &&
         isTRUE(show_other_cells)) {
-        pl <- pl + ggplot2::geom_point(
-            data = cell_locations_metadata_other,
-            aes_string(x = sdimx, sdimy),
-            color = other_cell_color,
-            show.legend = FALSE,
-            size = other_point_size,
-            alpha = point_alpha
-        )
+        other_plist$data <- cell_locations_metadata_other
+        pl <- pl + do.call(ggplot2::geom_point, args = other_plist)
     }
 
 
@@ -105,17 +153,11 @@ plot_spat_point_layer_ggplot <- function(ggobject,
 
     # cell color default
     if (is.null(cell_color)) {
-        cell_color <- "lightblue"
-        pl <- pl + ggplot2::geom_point(
-            data = cell_locations_metadata_selected,
-            aes_string(x = sdimx, y = sdimy),
-            show.legend = show_legend,
-            shape = 21,
-            fill = cell_color,
-            size = point_size,
-            stroke = point_border_stroke,
-            color = point_border_col,
-            alpha = point_alpha
+        selected_plist$fill <- "lightblue"
+        selected_plist$data <- cell_locations_metadata_selected
+        pl <- pl + do.call(
+            ggplot2::geom_point,
+            args = selected_plist
         )
     } else if (length(cell_color) > 1L) {
         if (is.numeric(cell_color) || is.factor(cell_color)) {
@@ -125,51 +167,30 @@ plot_spat_point_layer_ggplot <- function(ggobject,
                     number of cells \n")
             }
             cell_locations_metadata_selected[["temp_color"]] <- cell_color
-
-            pl <- pl + ggplot2::geom_point(
-                data = cell_locations_metadata_selected,
-                aes_string2(x = sdimx, y = sdimy, fill = "temp_color"),
-                show.legend = show_legend,
-                shape = 21,
-                size = point_size,
-                color = point_border_col,
-                stroke = point_border_stroke,
-                alpha = point_alpha
+            selected_plist$mapping <- modifyList(
+                selected_plist$mapping, aes(fill = .data[["temp_color"]])
             )
+            selected_plist$data <- cell_locations_metadata_selected
+
+            pl <- pl + do.call(ggplot2::geom_point, args = selected_plist)
+
         } else if (is.character(cell_color)) { # cell_color is hex codes
             if (!all(cell_color %in% grDevices::colors())) {
                 stop("cell_color is not numeric,
                     a factor or vector of colors \n")
             }
-
-            pl <- pl + ggplot2::geom_point(
-                data = cell_locations_metadata_selected,
-                aes_string2(x = sdimx, y = sdimy),
-                show.legend = show_legend,
-                shape = 21,
-                fill = cell_color,
-                size = point_size,
-                color = point_border_col,
-                stroke = point_border_stroke,
-                alpha = point_alpha
-            )
+            selected_plist$fill <- cell_color
+            selected_plist$data <- cell_locations_metadata_selected
+            pl <- pl + do.call(ggplot2::geom_point, args = selected_plist)
         }
     } else if (is.character(cell_color)) {
         if (!cell_color %in% colnames(cell_locations_metadata_selected)) {
             if (!cell_color %in% grDevices::colors()) {
                 stop(cell_color, " is not a color or a column name \n")
             }
-            pl <- pl + ggplot2::geom_point(
-                data = cell_locations_metadata_selected,
-                aes_string2(x = sdimx, y = sdimy),
-                show.legend = show_legend,
-                shape = 21,
-                fill = cell_color,
-                size = point_size,
-                color = point_border_col,
-                stroke = point_border_stroke,
-                alpha = point_alpha
-            )
+            selected_plist$fill <- cell_color
+            selected_plist$data <- cell_locations_metadata_selected
+            pl <- pl + do.call(ggplot2::geom_point, args = selected_plist)
         } else {
             class_cell_color <-
                 class(cell_locations_metadata_selected[[cell_color]])
@@ -195,21 +216,34 @@ plot_spat_point_layer_ggplot <- function(ggobject,
                         limit_numeric_data
                 }
 
-                pl <- pl + ggplot2::geom_point(
-                    data = cell_locations_metadata_selected,
-                    aes_string2(x = sdimx, y = sdimy, fill = cell_color),
-                    show.legend = show_legend,
-                    shape = 21,
-                    size = point_size,
-                    color = point_border_col,
-                    stroke = point_border_stroke,
-                    alpha = point_alpha
+                selected_plist$mapping <- modifyList(
+                    selected_plist$mapping, aes(fill = .data[[cell_color]])
                 )
+
+                selected_plist$data <- cell_locations_metadata_selected
+                pl <- pl + do.call(ggplot2::geom_point, args = selected_plist)
             } else {
                 # convert character or numeric to factor
                 if (isTRUE(color_as_factor)) {
-                    factor_data <-
-                        factor(cell_locations_metadata_selected[[cell_color]])
+                    factor_data <- factor(
+                        cell_locations_metadata_selected[[cell_color]]
+                    )
+                    # TODO running factor() on the data before passing to
+                    # ggplot may result in issues with other params that
+                    # might be expecting continuous inputs.
+
+                    # catch accidental color_as_factor
+                    if (nlevels(factor_data) > 100 &&
+                        !getOption("giotto.plot_many_factors", FALSE)) {
+                        stop(wrap_txt(
+                            "There are more than 100 discrete values to plot.
+                            Should `color_as_factor` be FALSE?
+                            If this is intentional, set option:
+                            'giotto.plot_many_factors' to TRUE",
+                            errWidth = TRUE
+                        ), call. = FALSE)
+                    }
+
                     cell_locations_metadata_selected[[cell_color]] <-
                         factor_data
                 }
@@ -226,16 +260,11 @@ plot_spat_point_layer_ggplot <- function(ggobject,
                     annotated_DT_centers[[cell_color]] <- factor_center_data
                 }
 
-                pl <- pl + ggplot2::geom_point(
-                    data = cell_locations_metadata_selected,
-                    aes_string2(x = sdimx, y = sdimy, fill = cell_color),
-                    show.legend = show_legend,
-                    shape = 21,
-                    size = point_size,
-                    color = point_border_col,
-                    stroke = point_border_stroke,
-                    alpha = point_alpha
+                selected_plist$mapping <- modifyList(
+                    selected_plist$mapping, aes(fill = .data[[cell_color]])
                 )
+                selected_plist$data <- cell_locations_metadata_selected
+                pl <- pl + do.call(ggplot2::geom_point, args = selected_plist)
 
 
                 ## plot centers
@@ -2124,4 +2153,73 @@ addGiottoImageToSpatPlot <- function(
 
 
     return(newpl)
+}
+
+
+# internals ####
+
+#' @name check_aes
+#' @description
+#' Internal function for simplifying checking for ggplot2 aes
+#' params. It determines if the valueto be set is actually in the allowed data
+#' names, and checks if the value inherits from an allowed class if it is a
+#' character and data_names is provided.
+#' @returns logical. TRUE if checks passed. Errors will be raised if checks
+#' fail.
+.append_check_aes <- function(
+        mapping = aes(), # running list of aes mappings of class `uneval`
+        aes_name, # name of aes setting to assign x into
+        x, # aes setting. Either directly provided or requested from `data`
+        param = substitute(x), # name of param input (used with error msgs)
+        data_head = NULL, # provides info about `data` and types
+        inherits = "ANY", # what the `data` or x must inherit from
+        transforms = function(x) x # function to transform the `data` before
+        # plotting. Only used with `data`
+) {
+    param <- as.character(param)
+
+    # check x itself if not asking for a variable in the data
+    if (!inherits(x, inherits) &&
+        !identical(inherits, "ANY") &&
+        is.null(data_head)) {
+        stop(wrap_txt(sprintf(
+            "`%s` must inherit from one of:\n %s",
+            param, paste(inherits, collapse = ", ")
+        ), errWidth = TRUE), call. = FALSE)
+    }
+
+    # if data was not provided, do not check against it and return directly
+    if (is.null(data_head)) {
+        a <- aes(aesthetic = {{x}}) # aesthetic is just a dummy name
+        names(a) <- aes_name # replace dummy name
+        mapping <- modifyList(mapping, a)
+        return(mapping)
+    }
+
+    # check if `x` is a col in data_head
+    x <- as.character(x)
+    dnames <- colnames(data_head)
+    if (!x %in% dnames) {
+        stop(wrap_txt(sprintf(
+            "`%s` assumed to be a plotting variable, %s\n %s",
+            param,
+            "but available values in the data are:",
+            paste(dnames, collapse = ", ")
+        ), errWidth = TRUE), call. = FALSE)
+    }
+
+    # check if `x` col in data inherits from expected type
+    testval <- data_head[[x]]
+    if (!inherits(testval, inherits)) {
+        stop(wrap_txt(sprintf(
+            "`%s` values in data are %s, but must inherit from one of:\n %s",
+            x, class(testval), paste(inherits, collapse = ", ")
+        ), errWidth = TRUE), call. = FALSE)
+    }
+
+    a <- aes(aesthetic = transforms(.data[[x]])) # aesthetic is just a dummy name
+    names(a) <- aes_name # replace dummy name
+    mapping <- modifyList(mapping, a)
+
+    return(mapping)
 }

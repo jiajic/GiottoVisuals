@@ -5,9 +5,9 @@
 #' @importFrom methods slot new
 #' @importFrom methods setGeneric setMethod
 #' @importFrom colorRamp2 colorRamp2
+#' @importFrom ggplot2 aes aes_string .data ggplot theme
 #' @import GiottoUtils
 #' @import GiottoClass
-#' @import ggplot2
 #' @import utils
 #' @import cowplot
 #' @import scattermore
