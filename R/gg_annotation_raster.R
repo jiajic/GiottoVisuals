@@ -234,7 +234,7 @@ setMethod(
 #' @keywords internal
 .auto_resample_gimage <- function(
         img,
-        plot_ext,
+        plot_ext = NULL,
         img_border = 0.125,
         flex_resample = TRUE,
         max_sample = getOption("giotto.plot_img_max_sample", 5e5),
@@ -245,8 +245,9 @@ setMethod(
 ) {
 
     img_ext <- terra::ext(img)
-    bound_poly <- as.polygons(img_ext)
-    crop_ext <- img_ext # default
+    if (is.null(plot_ext)) crop_ext <- img_ext # default
+    else crop_ext <- ext(plot_ext)
+    bound_poly <- as.polygons(crop_ext)
 
     # override max_crop if needed
     if (max_sample > max_crop) max_crop <- max_sample

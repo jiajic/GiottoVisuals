@@ -1400,11 +1400,7 @@ plot_spat_image_layer_ggplot <- function(
     sdimx <- sdimy <- NULL
 
     # prefer extent detection from polygon
-    spat_unit <- ifelse(
-        !is.null(polygon_feat_type),
-        yes = polygon_feat_type,
-        no = spat_unit
-    )
+    if (!is.null(polygon_feat_type)) spat_unit <- polygon_feat_type
 
     # allows passing of pre-defined `ext` through ...
     e <- .guess_plot_extent(
