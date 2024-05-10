@@ -245,9 +245,9 @@ setMethod(
 ) {
 
     img_ext <- terra::ext(img)
-    bound_poly <- as.polygons(img_ext)
     if (is.null(plot_ext)) crop_ext <- img_ext # default
-    else crop_ext <- plot_ext
+    else crop_ext <- ext(plot_ext)
+    bound_poly <- as.polygons(crop_ext)
 
     # override max_crop if needed
     if (max_sample > max_crop) max_crop <- max_sample
