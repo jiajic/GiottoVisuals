@@ -40,13 +40,34 @@
 #' @examples
 #' g <- GiottoData::loadGiottoMini("vizgen")
 #'
+#' # plot the number detected features in the `giotto` object.
 #' spatInSituPlotPoints(
 #'     g,
 #'     polygon_feat_type = "aggregate",
 #'     polygon_fill = "nr_feats",
 #'     polygon_fill_as_factor = FALSE,
+#'     polygon_fill_gradient_style = "sequential",
 #'     polygon_line_size = 0.1,
 #'     polygon_alpha = 1
+#' )
+#'
+#' # plot the same as above, but with the first 4 rna features plotted as
+#' # detection points. Also add in the background and change the polygon
+#' # alpha and border color
+#' spatInSituPlotPoints(
+#'     g,
+#'     polygon_feat_type = "aggregate",
+#'     polygon_fill = "nr_feats",
+#'     polygon_fill_as_factor = FALSE,
+#'     polygon_fill_gradient_style = "sequential",
+#'     polygon_line_size = 0.1,
+#'     polygon_alpha = 0.4,
+#'     polygon_color = "magenta",
+#'     feats = list("rna" = featIDs(g)[1:4]),
+#'     point_size = 0.8,
+#'     plot_last = "points",
+#'     show_image = TRUE,
+#'     image_name = "dapi_z0"
 #' )
 #'
 #' spatInSituPlotPoints(
@@ -55,6 +76,7 @@
 #'     spat_enr_names = "cluster_metagene",
 #'     polygon_fill = "1",
 #'     polygon_fill_as_factor = FALSE,
+#'     polygon_fill_gradient_style = "sequential",
 #'     polygon_alpha = 1
 #' )
 #'
