@@ -70,6 +70,7 @@
 #'     image_name = "dapi_z0"
 #' )
 #'
+#' # plot with spatial enrichment information
 #' spatInSituPlotPoints(
 #'     g,
 #'     polygon_feat_type = "aggregate",
