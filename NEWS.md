@@ -1,4 +1,4 @@
-# GiottoVisuals 0.2.0 (2024/05/01)
+# GiottoVisuals 0.2.0 (2024/05/13)
 
 ## breaking changes
 
