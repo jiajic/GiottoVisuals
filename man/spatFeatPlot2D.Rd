@@ -51,9 +51,10 @@ spatFeatPlot2D(
   cow_rel_h = 1,
   cow_rel_w = 1,
   cow_align = "h",
-  show_plot = NA,
-  return_plot = NA,
-  save_plot = NA,
+  theme_param = list(),
+  show_plot = NULL,
+  return_plot = NULL,
+  save_plot = NULL,
   save_param = list(),
   default_save_name = "spatFeatPlot2D"
 )
@@ -71,11 +72,12 @@ spatFeatPlot2D(
 
 \item{image_name}{name of a giotto image or multiple images with group_by}
 
-\item{largeImage_name}{name of a giottoLargeImage or multiple images with group_by}
+\item{largeImage_name}{deprecated}
 
 \item{spat_loc_name}{name of spatial locations}
 
-\item{group_by}{character. Create multiple plots based on cell annotation column}
+\item{group_by}{character. Create multiple plots based on cell
+annotation column}
 
 \item{group_by_subset}{character. subset the group_by factor column}
 
@@ -153,27 +155,37 @@ or 'sequential' (scaled based on data range)}
 
 \item{cow_align}{cowplot param: how to align}
 
+\item{theme_param}{list of additional params passed to \code{ggplot2::theme()}}
+
 \item{show_plot}{logical. show plot}
 
 \item{return_plot}{logical. return ggplot object}
 
 \item{save_plot}{logical. save the plot}
 
-\item{save_param}{list of saving parameters, see \code{\link{showSaveParameters}}}
+\item{save_param}{list of saving parameters,
+see \code{\link{showSaveParameters}}}
 
-\item{default_save_name}{default save name for saving, don't change, change save_name in save_param}
+\item{default_save_name}{default save name for saving, don't change,
+change save_name in save_param}
 }
 \value{
 ggplot
 }
 \description{
-Visualize cells and feature expression according to spatial coordinates
+Visualize cells and feature expression according to
+spatial coordinates
 }
 \details{
 Description of parameters.
 }
+\examples{
+g <- GiottoData::loadGiottoMini("visium")
+spatFeatPlot2D(g, feats = "Gna12")
+
+}
 \seealso{
-\code{\link{spatGenePlot3D}}
+\code{\link{spatFeatPlot3D}}
 
 Other spatial feature expression visualizations: 
 \code{\link{spatFeatPlot2D_single}()}

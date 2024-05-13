@@ -1,9 +1,9 @@
 Package: GiottoVisuals
 Title: Visuals for the Giotto spatial biology analysis ecosystem
-Version: 0.1.6
+Version: 0.2.0
 Authors@R: c(
 	person("Ruben", "Dries", email = "rubendries@gmail.com",
-		 role = c("aut", "cre")),
+		 role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7650-7754")),
 	person("Jiaji", "George Chen", email = "jiajic@bu.edu",
 		 role = c("aut")),
 	person("Guo-Cheng", "Yuan", email = "guo-cheng.yuan@mssm.edu",
@@ -15,9 +15,8 @@ Authors@R: c(
 	person("Edward", "Ruiz", email = "ecruiz@bu.edu",
 	     role = c("aut"))
 	)
-Maintainer: Ruben Dries <rubendries@gmail.com>
 Description: Expanded visualization and plotting functionality for Giotto Suite.
-License: GPL (>= 3)
+License: MIT + file LICENSE
 Encoding: UTF-8
 URL: https://drieslab.github.io/Giotto/, https://github.com/drieslab/Giotto, https://drieslab.github.io/GiottoVisuals/
 BugReports: https://github.com/drieslab/Giotto/issues
@@ -33,8 +32,8 @@ Imports:
     cowplot (>= 0.9.4),
     data.table,
     ggplot2 (>= 3.1.1),
-    GiottoUtils (>= 0.1.0.1),
-    GiottoClass (>= 0.1.0.1),
+    GiottoUtils (>= 0.1.6),
+    GiottoClass (>= 0.3.0),
     ggrepel,
     igraph (>= 1.2.4.1),
     methods,
@@ -68,10 +67,9 @@ Suggests:
     viridis,
     viridisLite,
     wesanderson,
-    testthat (>= 3.0.0)
-Remotes:
-    drieslab/GiottoUtils,
-    drieslab/GiottoClass
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
 Config/testthat/edition: 3
 Collate: 
     'aux_defaults.R'
@@ -85,6 +83,7 @@ Collate:
     'generics.R'
     'gg_annotation_raster.R'
     'gg_info_layers.R'
+    'gg_settings.R'
     'globals.R'
     'gstop.R'
     'mixcolor.R'
@@ -99,3 +98,5 @@ Collate:
     'vis_spatial_in_situ.R'
     'viz_spatial_network.R'
     'zzz.R'
+biocViews: Software, Technology, Spatial
+VignetteBuilder: knitr

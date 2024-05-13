@@ -1,5 +1,3 @@
-
-
 #' @name gg_simple_scatter
 #' @title gg_simple_scatter
 #' @param ggobject ggplot2 object
@@ -12,23 +10,26 @@
 #' @inheritDotParams ggplot2::aes
 #' @param return ggplot object
 #' @keywords internal
+#' @returns a ggplot object
+#' @examples
+#' x <- data.frame(x = rnorm(10), y = rnorm(10))
+#' gg_simple_scatter(data = x, x = "x", y = "y")
+#'
 #' @export
-gg_simple_scatter = function(ggobject = NULL, data, x, y, xlab = 'x', ylab = 'y', main = NULL, ...) {
-  pl <- gg_input(ggobject)
+gg_simple_scatter <- function(ggobject = NULL, data, x, y,
+    xlab = "x", ylab = "y", main = NULL, ...) {
+    pl <- gg_input(ggobject)
 
-  aes_args_list = list(x = x, y = y, ...)
+    aes_args_list <- list(x = x, y = y, ...)
 
-  pl <- pl +
-    ggplot2::geom_point(data = data, aes_string2(x, y, ...)) +
-    ggplot2::theme_classic() +
-    ggplot2::labs(x = xlab, y = ylab)
+    pl <- pl +
+        ggplot2::geom_point(data = data, aes_string2(x, y, ...)) +
+        ggplot2::theme_classic() +
+        ggplot2::labs(x = xlab, y = ylab)
 
-  if(!is.null(main)) {
-    pl <- pl + ggplot2::ggtitle(label = main)
-  }
+    if (!is.null(main)) {
+        pl <- pl + ggplot2::ggtitle(label = main)
+    }
 
-  pl
+    pl
 }
-
-
-

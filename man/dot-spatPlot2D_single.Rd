@@ -11,7 +11,6 @@
   show_image = FALSE,
   gimage = NULL,
   image_name = NULL,
-  largeImage_name = NULL,
   spat_loc_name = NULL,
   sdimx = "sdimx",
   sdimy = "sdimy",
@@ -59,9 +58,10 @@
   vor_alpha = 1,
   axis_text = 8,
   axis_title = 8,
-  show_plot = NA,
-  return_plot = NA,
-  save_plot = NA,
+  theme_param = list(),
+  show_plot = NULL,
+  return_plot = NULL,
+  save_plot = NULL,
   verbose = FALSE,
   save_param = list(),
   default_save_name = "spatPlot2D_single"
@@ -78,9 +78,7 @@
 
 \item{gimage}{a giotto image}
 
-\item{image_name}{name of a giotto image}
-
-\item{largeImage_name}{name of a giottoLargeImage}
+\item{image_name}{name of giotto image(s) to plot}
 
 \item{spat_loc_name}{name of spatial locations}
 
@@ -88,13 +86,14 @@
 
 \item{sdimy}{y-axis dimension name (default = 'sdimy')}
 
-\item{spat_enr_names}{character. names of spatial enrichment results to include}
+\item{spat_enr_names}{character. names of spatial enrichment results
+to include}
 
 \item{cell_color}{character. what to color cells by (e.g. metadata col or
 spatial enrichment col)}
 
-\item{color_as_factor}{logical. convert color column to factor. discrete colors
-are used when this is TRUE. continuous colors when FALSE.}
+\item{color_as_factor}{logical. convert color column to factor.
+Discrete colors are used when this is TRUE. continuous colors when FALSE.}
 
 \item{cell_color_code}{character. discrete colors to use. palette to use or
 named vector of colors}
@@ -128,6 +127,8 @@ use or vector of colors to use (minimum of 2).}
 
 \item{vor_alpha}{transparency of voronoi 'cells'}
 
+\item{theme_param}{list of additional params passed to \code{ggplot2::theme()}}
+
 \item{show_plot}{logical. show plot}
 
 \item{return_plot}{logical. return ggplot object}
@@ -136,9 +137,11 @@ use or vector of colors to use (minimum of 2).}
 
 \item{verbose}{be verbose}
 
-\item{save_param}{list of saving parameters, see \code{\link{showSaveParameters}}}
+\item{save_param}{list of saving parameters,
+see \code{\link{showSaveParameters}}}
 
-\item{default_save_name}{default save name for saving, don't change, change save_name in save_param}
+\item{default_save_name}{default save name for saving, don't change,
+change save_name in save_param}
 }
 \value{
 ggplot
