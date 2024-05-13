@@ -40,11 +40,11 @@ jobs:
         with:
           install-pandoc: false
           extra-packages: |
-            any:ggdendro
-            any:ComplexHeatmap
-            any:ggalluvial
-            any:ggforce
-            any:ggraph
+            any::ggdendro
+            any::ComplexHeatmap
+            any::ggalluvial
+            any::ggforce
+            any::ggraph
 
       - name: Set up dependencies (GiottoUtils)
         run: |

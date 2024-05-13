@@ -61,11 +61,11 @@ jobs:
           install-pandoc: false
           dependencies: '"hard"' # do not use suggested dependencies
           extra-packages: |
-            any:ggdendro
-            any:ComplexHeatmap
-            any:ggalluvial
-            any:ggforce
-            any:ggraph
+            any::ggdendro
+            any::ComplexHeatmap
+            any::ggalluvial
+            any::ggforce
+            any::ggraph
 
       - name: Set up dependencies (GiottoData)
         run: |
