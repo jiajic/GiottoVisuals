@@ -32,7 +32,7 @@ Imports:
     cowplot (>= 0.9.4),
     data.table,
     ggplot2 (>= 3.1.1),
-    GiottoUtils (>= 0.1.0.1),
+    GiottoUtils (>= 0.1.6),
     GiottoClass (>= 0.3.0),
     ggrepel,
     igraph (>= 1.2.4.1),
