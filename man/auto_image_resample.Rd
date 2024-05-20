@@ -7,7 +7,7 @@
 \usage{
 .auto_resample_gimage(
   img,
-  plot_ext,
+  plot_ext = NULL,
   img_border = 0.125,
   flex_resample = TRUE,
   max_sample = getOption("giotto.plot_img_max_sample", 5e+05),
