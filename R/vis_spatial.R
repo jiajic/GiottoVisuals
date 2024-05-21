@@ -3956,7 +3956,7 @@ spatCellPlot <- function(...) {
 
 #' @title dimCellPlot
 #' @name dimCellPlot
-#' @description Visualize cells according to dimension reduction coordinates
+#' @description Visualize cells according to dimension reduction coordinates.
 #' @inheritParams data_access_params
 #' @inheritParams plot_output_params
 #' @inheritParams plot_cell_params
@@ -3971,7 +3971,10 @@ spatCellPlot <- function(...) {
 #' @returns ggplot
 #' @examples
 #' g <- GiottoData::loadGiottoMini("visium")
-#' dimCellPlot2D(g, cell_annotation_values = "leiden_clus")
+#' dimCellPlot2D(
+#'     g, spat_enr_names = "cluster_metagene",
+#'     cell_annotation_values = as.character(seq(4))
+#' )
 #'
 #' @export
 dimCellPlot2D <- function(gobject,

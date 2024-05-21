@@ -35,8 +35,6 @@ gg_simple_scatter(
   \describe{
     \item{\code{}}{}
   }}
-
-\item{return}{ggplot object}
 }
 \value{
 a ggplot object
