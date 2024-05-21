@@ -152,9 +152,9 @@ nr_feat_polys()
 nr_feat_polys(polygon_fill_gradient_style = "s")
 
 
-# set function level: miami
+# set function level: mako
 GiottoClass::instructions(g, "poly_color_c_rev") <- FALSE
-nr_feat_polys(polygon_fill_gradient = "miami")
+nr_feat_polys(polygon_fill_gradient = "mako")
 
 # set function level: color vector (2 to n colors)
 nr_feat_polys(
