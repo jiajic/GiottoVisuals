@@ -9,9 +9,11 @@
         GiottoUtils::check_github_suite_ver("GiottoVisuals")
         options("giotto.check_version" = FALSE)
     }
+
+    # set defaults
+    options("giotto.color_cd_pal" = c("blue", "white", "red"))
+    options("giotto.color_cs_pal" = "viridis")
 }
 
-# set defaults
-options("giotto.color_cd_pal" = c("blue", "white", "red"))
-options("giotto.color_cs_pal" = "viridis")
+
 
