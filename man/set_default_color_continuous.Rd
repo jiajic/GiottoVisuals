@@ -100,8 +100,9 @@ plot can be passed through \code{data_default} param
 \item \strong{global options} (general session setting with blanket color palette
 type effects)
 \itemize{
-\item options('giotto.color_c_pal) - palette to use. Default for 'divergent'
-data is blue, white, red, for sequential, it is 'viridis'
+\item options('giotto.color_cd_pal) - default continuous divergent palette
+is blue, white, red, for sequential ('giotto.color_cs_pal), it is
+'viridis'
 \item options('giotto.color_c_rev) - whether colors should be reversed
 }
 \item \strong{giotto instructions} (gobject specific and effects specific types of
@@ -151,9 +152,9 @@ nr_feat_polys()
 nr_feat_polys(polygon_fill_gradient_style = "s")
 
 
-# set function level: miami
+# set function level: mako
 GiottoClass::instructions(g, "poly_color_c_rev") <- FALSE
-nr_feat_polys(polygon_fill_gradient = "miami")
+nr_feat_polys(polygon_fill_gradient = "mako")
 
 # set function level: color vector (2 to n colors)
 nr_feat_polys(
