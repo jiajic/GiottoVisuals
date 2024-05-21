@@ -6185,9 +6185,11 @@ spatDimPlot3D <- function(gobject,
         spat_enr_names = spat_enr_names
     )
     annotated_DT <- merge(cell_metadata, dim_DT, by = "cell_ID")
-    spatial_locations <- get_spatial_locations(gobject,
-                                               spat_unit = spat_unit,
-                                               spat_loc_name = spat_loc_name
+    spatial_locations <- getSpatialLocations(
+        gobject,
+        spat_unit = spat_unit,
+        name = spat_loc_name,
+        output = "data.table"
     )
     if (is.null(spatial_locations)) {
         return(NULL)
