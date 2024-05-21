@@ -63,7 +63,7 @@
 #'     polygon_line_size = 0.1,
 #'     polygon_alpha = 0.4,
 #'     polygon_color = "magenta",
-#'     feats = list("rna" = featIDs(g)[1:4]),
+#'     feats = list("rna" = GiottoClass::featIDs(g)[1:4]),
 #'     point_size = 0.8,
 #'     plot_last = "points",
 #'     show_image = TRUE,
