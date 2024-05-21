@@ -10,9 +10,17 @@
         options("giotto.check_version" = FALSE)
     }
 
-    # set defaults
+    ## set defaults ##
+    ## ------------ ##
+
+    # colors
     options("giotto.color_cd_pal" = c("blue", "white", "red"))
     options("giotto.color_cs_pal" = "viridis")
+
+    # image resampling
+    options("giotto.plot_img_max_sample" = 5e5)
+    options("giotto.plot_img_max_crop" = 1e8)
+    options("giotto.plot_img_max_resample_scale" = 100)
 }
 
 
