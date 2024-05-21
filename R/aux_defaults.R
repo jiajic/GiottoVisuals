@@ -10,7 +10,7 @@
 #' @returns numeric
 #' @examples
 #' set_default_cow_n_col(nr_plots = 4)
-#' 
+#'
 #' @export
 set_default_cow_n_col <- function(cow_n_col = NULL,
     nr_plots) {
@@ -89,7 +89,7 @@ NULL
 #' defaults setting.
 #' @param instr_pal,instr_rev,instr_strategy used by upstream function to
 #' pass specific `giottoInstructions` params
-#' 
+#'
 #' @export
 set_default_color_discrete <- function(colors = NULL,
     ...,
@@ -254,9 +254,10 @@ set_default_color_discrete_heatmap_clus <- function(colors = NULL,
 #' plot can be passed through `data_default` param
 #' - **global options** (general session setting with blanket color palette
 #' type effects)
-#'     - options('giotto.color_c_pal) - palette to use. Default for 'divergent'
-#' data is blue, white, red, for sequential, it is 'viridis'
-#'     - options('giotto.color_c_rev) - whether colors should be reversed
+#'   - options('giotto.color_cd_pal) - default continuous divergent palette
+#'   is blue, white, red, for sequential ('giotto.color_cs_pal), it is
+#'   'viridis'
+#'   - options('giotto.color_c_rev) - whether colors should be reversed
 #' - **giotto instructions** (gobject specific and effects specific types of
 #' plots)
 #'     - run `showColorInstructions()` for details on options/params to set in
@@ -275,7 +276,7 @@ set_default_color_discrete_heatmap_clus <- function(colors = NULL,
 #' @param type whether setting is for ggplot2 'fill' or 'color' type function
 #' @param \dots additional params to pass to respective ggplot fill_gradient
 #' functions
-#' @returns continuous color palette 
+#' @returns continuous color palette
 #' @examples
 #' g <- GiottoData::loadGiottoMini("vizgen")
 #'
@@ -371,12 +372,8 @@ set_default_color_continuous <- function(
 
     # global giotto options
     opt_pal <- switch(style,
-        "divergent" = getOption(
-            "giotto.color_c_pal",
-            c("blue", "white", "red")
-        ),
-        # default diverging scale,
-        "sequential" = getOption("giotto.color_c_pal", "viridis")
+        "divergent" = getOption("giotto.color_cd_pal"),
+        "sequential" = getOption("giotto.color_cs_pal")
     )
 
     opt_rev <- getOption("giotto.color_c_rev", FALSE)
@@ -645,7 +642,7 @@ set_default_color_continuous_CCcom_dotplot <- function(
 #' @returns data.table of Giotto color option information
 #' @examples
 #' showColorInstructions()
-#' 
+#'
 #' @export
 showColorInstructions <- function() {
     # DT vars

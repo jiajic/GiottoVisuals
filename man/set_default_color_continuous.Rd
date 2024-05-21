@@ -100,8 +100,9 @@ plot can be passed through \code{data_default} param
 \item \strong{global options} (general session setting with blanket color palette
 type effects)
 \itemize{
-\item options('giotto.color_c_pal) - palette to use. Default for 'divergent'
-data is blue, white, red, for sequential, it is 'viridis'
+\item options('giotto.color_cd_pal) - default continuous divergent palette
+is blue, white, red, for sequential ('giotto.color_cs_pal), it is
+'viridis'
 \item options('giotto.color_c_rev) - whether colors should be reversed
 }
 \item \strong{giotto instructions} (gobject specific and effects specific types of
