@@ -1,6 +1,13 @@
-# GiottoVisuals 0.2.0 (2024/05/13)
+
+# GiottoVisuals 0.2.2 (2024/05/22)
 
 ## breaking changes
+- option `"giotto.color_c_pal"` has been split into `"giotto.color_cd_pal"` and `"giotto.color_cs_pal"` for divergent and sequential continuous palettes
+
+## enhancements
+- some options are now initialized on library load to make them easier to access
+
+# GiottoVisuals 0.2.0 (2024/05/13)
 
 ## changes
 - _GiottoClass >= 0.3.0_ is now required. (object no longer has `@largeImages` slot)
