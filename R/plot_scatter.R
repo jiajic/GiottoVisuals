@@ -8,7 +8,6 @@
 #' @param ylab a title for the y axis
 #' @param main an overall title for the plot
 #' @inheritDotParams ggplot2::aes
-#' @param return ggplot object
 #' @keywords internal
 #' @returns a ggplot object
 #' @examples
@@ -19,8 +18,6 @@
 gg_simple_scatter <- function(ggobject = NULL, data, x, y,
     xlab = "x", ylab = "y", main = NULL, ...) {
     pl <- gg_input(ggobject)
-
-    aes_args_list <- list(x = x, y = y, ...)
 
     pl <- pl +
         ggplot2::geom_point(data = data, aes_string2(x, y, ...)) +

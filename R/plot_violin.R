@@ -3,15 +3,15 @@
 #' @description Creates violinplot for selected clusters
 #' @inheritParams data_access_params
 #' @inheritParams plot_output_params
-#' @param expression_values expression values to 
+#' @param expression_values expression values to
 #' use (e.g. "normalized", "scaled", "custom")
 #' @param feats features to plot
-#' @param cluster_column name of column to use for 
+#' @param cluster_column name of column to use for
 #' clusters (e.g. "leiden_clus")
 #' @param color_violin color violin according to "genes" or "clusters"
 #' @param cluster_custom_order custom order of clusters
 #' @param cluster_color_code color code for clusters
-#' @param strip_position position of gene 
+#' @param strip_position position of gene
 #' labels (e.g. "top", "right", "left", "bottom")
 #' @param strip_text size of strip text
 #' @param axis_text_x_size size of x-axis text
@@ -21,7 +21,7 @@
 #' g <- GiottoData::loadGiottoMini("visium")
 #' violinPlot(g, feats = c("Gna12", "Ccnd2", "Btbd17"),
 #' cluster_column = "leiden_clus")
-#' 
+#'
 #' @export
 violinPlot <- function(
         gobject,
@@ -80,10 +80,11 @@ violinPlot <- function(
 
     # only keep feats that are in the dataset
     selected_feats <- feats[feats %in% rownames(expr_data)]
-    if (length(selected_feats[duplicated(selected_feats)]) != 0) {
+    dup_feats <- selected_feats[duplicated(selected_feats)]
+    if (length(dup_feats) != 0) {
         message(
             "These feats have duplicates: \n",
-            selected_feats[duplicated(selected_feats)]
+            paste(dup_feats, collapse = ", ")
         )
         selected_feats <- unique(selected_feats)
     }

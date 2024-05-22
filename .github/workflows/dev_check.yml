@@ -10,7 +10,7 @@
 name: Dev Workflow - Test and check
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "dev2" ]
 
 permissions:
   contents: read
@@ -39,21 +39,27 @@ jobs:
           _R_CHECK_RD_XREFS: false
         with:
           install-pandoc: false
-      
+          extra-packages: |
+            any::ggdendro
+            any::ComplexHeatmap
+            any::ggalluvial
+            any::ggforce
+            any::ggraph
+
       - name: Set up dependencies (GiottoUtils)
         run: |
           suppressWarnings({
             remotes::install_github('drieslab/GiottoUtils', build = FALSE)
           })
         shell: Rscript {0}
-        
+
       - name: Set up dependencies (GiottoClass)
         run: |
           suppressWarnings({
             remotes::install_github('drieslab/GiottoClass', build = FALSE)
           })
         shell: Rscript {0}
-        
+
       - name: Set up dependencies (GiottoData)
         run: |
           suppressWarnings({
