@@ -1,5 +1,5 @@
 
-# GiottoVisuals 0.2.1
+# GiottoVisuals 0.2.1 (2024/05/21)
 
 ## breaking changes
 - option `"giotto.color_c_pal"` has been split into `"giotto.color_cd_pal"` and `"giotto.color_cs_pal"` for divergent and sequential continuous palettes
