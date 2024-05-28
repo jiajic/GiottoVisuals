@@ -280,7 +280,7 @@ setMethod(
         }
 
         vmsg(.is_debug = TRUE,
-             sprintf("img auto_res: [A] | area: %d | max: %d",
+             sprintf("img auto_res: [A] | area: %f | max: %f",
                      crop_area_px, max_crop))
 
         crop_img <- terra::crop(
@@ -305,7 +305,7 @@ setMethod(
         if (scalef > max_resample_scale) scalef <- max_resample_scale
 
         vmsg(.is_debug = TRUE,
-             sprintf("img auto_res: [B] | scalef: %d | max_scale: %d",
+             sprintf("img auto_res: [B] | scalef: %f | max_scale: %f",
                      scalef, max_resample_scale))
 
         oversample_img <- terra::spatSample(
