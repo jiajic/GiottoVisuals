@@ -29,4 +29,17 @@ edges in spatial grid as data.table()
 \description{
 provide grid segment to draw in plot_ly()
 }
-\keyword{internal}
+\examples{
+g <- GiottoData::loadGiottoMini("visium", verbose = FALSE)
+
+library(GiottoClass)
+g <- createSpatialGrid(gobject = g,
+sdimx_stepsize = 400,
+sdimy_stepsize = 400,
+minimum_padding = 0)
+
+my_spatial_grid <- getSpatialGrid(g)
+
+plotly_grid(my_spatial_grid)
+
+}

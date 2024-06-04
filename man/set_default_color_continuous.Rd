@@ -11,13 +11,13 @@
 \usage{
 set_default_color_continuous(
   colors = NULL,
-  instr_pal,
-  instr_rev,
   midpoint = NULL,
   style = c("divergent", "sequential"),
-  type_default = NULL,
-  type = c("fill", "color"),
-  ...
+  ...,
+  instr_pal,
+  instr_rev,
+  data_default = NULL,
+  type = c("fill", "color")
 )
 
 set_default_color_continuous_cell(
@@ -25,8 +25,8 @@ set_default_color_continuous_cell(
   instrs,
   midpoint = NULL,
   style = "divergent",
-  type_default = NULL,
-  ...
+  ...,
+  data_default = NULL
 )
 
 set_default_color_continuous_poly(
@@ -58,29 +58,35 @@ set_default_color_continuous_CCcom_dotplot(
   instrs,
   midpoint = NULL,
   style = "divergent",
+  ...,
   type = c("fill", "color"),
-  type_default = list(pal = c("darkblue", "blue", "white", "red", "darkred")),
-  ...
+  data_default = list(pal = c("darkblue", "blue", "white", "red", "darkred"))
 )
 }
 \arguments{
-\item{colors}{character or \code{NULL}. 2 to n number of hex color codes or 1 single
-name of a palette to use can be passed}
-
-\item{instr_pal, instr_rev}{used by upstream function to pass specific \code{giottoInstructions} params}
+\item{colors}{character or \code{NULL}. 2 to n number of hex color codes or 1
+single name of a palette to use can be passed}
 
 \item{midpoint}{numeric. midpoint value of color gradient}
 
 \item{style}{scale color scale around \code{midpoint} (divergent) or starting from
 minimum value (sequential)}
 
-\item{type_default}{data type specific default to use}
+\item{\dots}{additional params to pass to respective ggplot fill_gradient
+functions}
+
+\item{instr_pal, instr_rev}{used by upstream function to pass specific
+\code{giottoInstructions} params}
+
+\item{data_default}{data type (e.g. cells, polys, heatmap) specific default
+colors to use}
 
 \item{type}{whether setting is for ggplot2 'fill' or 'color' type function}
 
-\item{\dots}{additional params to pass to respective ggplot fill_gradient functions}
-
 \item{instrs}{\code{giottoInstructions} object (output of \code{instructions(gobject)})}
+}
+\value{
+continuous color palette
 }
 \description{
 Generates a gradient color palette based on input to \code{colors} param. Sets a
@@ -89,17 +95,21 @@ default gradient if \code{NULL} is passed.
 
 Supports colors setting at four levels:
 \itemize{
-\item \strong{type specific defaults} - defaults for a sepecific feature or type of
-plot can be passed through \code{type_default} param
-\item \strong{global options} (general session setting with blanket color palette type effects)
+\item \strong{type specific defaults} - defaults for a specific feature or type of
+plot can be passed through \code{data_default} param
+\item \strong{global options} (general session setting with blanket color palette
+type effects)
 \itemize{
-\item options('giotto.color_c_pal) - palette to use. Default for 'divergent'
-data is blue, white, red, for sequential, it is 'viridis'
+\item options('giotto.color_cd_pal) - default continuous divergent palette
+is blue, white, red, for sequential ('giotto.color_cs_pal), it is
+'viridis'
 \item options('giotto.color_c_rev) - whether colors should be reversed
 }
-\item \strong{giotto instructions} (gobject specific and effects specific types of plots)
+\item \strong{giotto instructions} (gobject specific and effects specific types of
+plots)
 \itemize{
-\item run \code{showColorInstructions()} for details on options/params to set in the \code{giottoInstructions} object
+\item run \code{showColorInstructions()} for details on options/params to set in
+the \code{giottoInstructions} object
 }
 \item \strong{function specific} (directly pass desired colors to plotting function)
 \cr\cr
@@ -107,52 +117,61 @@ data is blue, white, red, for sequential, it is 'viridis'
 }
 \section{Functions}{
 \itemize{
-\item \code{set_default_color_continuous()}: Framework function. Direct use should
-be minimal. Specific wrapper functions should be used for each item that needs
-defaults setting (plots or types of features).
+\item \code{set_default_color_continuous()}: Framework function. Direct use
+should be minimal. Specific wrapper functions should be used for each item
+that needs defaults setting (plots or types of features).
 
 }}
 \examples{
-\dontrun{
-library(GiottoVisuals)
+g <- GiottoData::loadGiottoMini("vizgen")
 
-g = GiottoData::loadGiottoMini('vizgen')
-
-nr_feat_polys = function(...) {
-  spatInSituPlotPoints(g,
-                       polygon_fill = 'nr_feats',
-                       polygon_fill_as_factor = F,
-                       polygon_feat_type = 'aggregate',
-                       polygon_line_size = 0.1,
-                       polygon_alpha = 1,
-                       ...)
+nr_feat_polys <- function(...) {
+    spatInSituPlotPoints(g,
+        polygon_fill = "nr_feats",
+        polygon_fill_as_factor = FALSE,
+        polygon_feat_type = "aggregate",
+        polygon_line_size = 0.1,
+        polygon_alpha = 1,
+        ...
+    )
 }
 
 # default
 nr_feat_polys()
 
 # set global option level: viridis
-options('giotto.color_c_pal' = 'v')
+options("giotto.color_c_pal" = "v")
 nr_feat_polys()
 
 # set instructions level: magma
-instructions(g, 'poly_color_c_pal') = 'magma'
+GiottoClass::instructions(g, "poly_color_c_pal") <- "magma"
 nr_feat_polys()
 
-instructions(g, 'poly_color_c_rev') = TRUE
+GiottoClass::instructions(g, "poly_color_c_rev") <- TRUE
 nr_feat_polys()
-nr_feat_polys(polygon_fill_gradient_style = 's')
+nr_feat_polys(polygon_fill_gradient_style = "s")
 
 
-# set function level: miami
-instructions(g, 'poly_color_c_rev') = FALSE
-nr_feat_polys(polygon_fill_gradient = 'miami')
+# set function level: mako
+GiottoClass::instructions(g, "poly_color_c_rev") <- FALSE
+nr_feat_polys(polygon_fill_gradient = "mako")
 
 # set function level: color vector (2 to n colors)
-nr_feat_polys(polygon_fill_gradient = c('green', 'purple'), polygon_fill_gradient_style = 's')
+nr_feat_polys(
+    polygon_fill_gradient = c("green", "purple"),
+    polygon_fill_gradient_style = "s"
+)
 
-nr_feat_polys(polygon_fill_gradient = c('blue', 'yellow', 'red'), polygon_fill_gradient_style = 's')
+nr_feat_polys(
+    polygon_fill_gradient = c("blue", "yellow", "red"),
+    polygon_fill_gradient_style = "s"
+)
 
-nr_feat_polys(polygon_fill_gradient = c('darkgrey', 'darkblue', 'purple', 'violet', 'cyan'), polygon_fill_gradient_style = 's')
-}
+nr_feat_polys(
+    polygon_fill_gradient = c(
+        "darkgrey", "darkblue", "purple", "violet", "cyan"
+    ),
+    polygon_fill_gradient_style = "s"
+)
+
 }

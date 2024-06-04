@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GiottoVisuals
+# GiottoVisuals <img src="man/figures/logo.png" align="right" alt="" width="160" />
 
 <!-- badges: start -->
 
@@ -9,7 +9,7 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![codecov](https://codecov.io/github/drieslab/GiottoVisuals/graph/badge.svg?token=F4ga1Ahbhw)](https://codecov.io/github/drieslab/GiottoVisuals)
-[![R-CMD-check](https://github.com/drieslab/GiottoVisuals/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/drieslab/GiottoVisuals/actions/workflows/R-CMD-check.yml)
+[![R-CMD-check](https://github.com/drieslab/GiottoVisuals/actions/workflows/main_check.yml/badge.svg)](https://github.com/drieslab/GiottoVisuals/actions/workflows/main_check.yml)
 [![GitHub
 issues](https://img.shields.io/github/issues/drieslab/Giotto)](https://github.com/drieslab/Giotto/issues)
 [![GitHub
@@ -20,11 +20,11 @@ GiottoVisuals contains the main plotting functions of Giotto Suite
 
 ## Installation
 
-You can install the development version of GiottoVisuals like so:
+You can install GiottoVisuals like:
 
 ``` r
-library(remotes)
-install_github('drieslab/GiottoVisuals')
+if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
+pak::pak("drieslab/GiottoVisuals")
 ```
 
 ## Script Organization by Prefixes:

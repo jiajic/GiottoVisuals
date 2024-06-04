@@ -2,12 +2,15 @@
 % Please edit documentation in R/aux_visuals.R
 \name{gg_input}
 \alias{gg_input}
-\title{gg_input}
+\title{gg input}
 \usage{
 gg_input(ggobject)
 }
 \arguments{
 \item{ggobject}{ggplot object or NULL}
+}
+\value{
+A ggplot object
 }
 \description{
 modular handling of ggplot inputs for functions that may either

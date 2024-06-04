@@ -2,12 +2,12 @@
 % Please edit documentation in R/aux_save.R
 \name{plot_save}
 \alias{plot_save}
-\alias{ggplot_save_function}
-\alias{general_save_function}
+\alias{.ggplot_save_function}
+\alias{.general_save_function}
 \alias{all_plots_save_function}
 \title{Plot saving}
 \usage{
-ggplot_save_function(
+.ggplot_save_function(
   gobject,
   plot_object,
   save_dir = NULL,
@@ -15,7 +15,7 @@ ggplot_save_function(
   save_name = NULL,
   default_save_name = "giotto_plot",
   save_format = NULL,
-  show_saved_plot = F,
+  show_saved_plot = FALSE,
   ncol = 1,
   nrow = 1,
   scale = 1,
@@ -29,7 +29,7 @@ ggplot_save_function(
   ...
 )
 
-general_save_function(
+.general_save_function(
   gobject,
   plot_object,
   save_dir = NULL,
@@ -37,7 +37,7 @@ general_save_function(
   save_name = NULL,
   default_save_name = "giotto_plot",
   save_format = c("png", "tiff", "pdf", "svg"),
-  show_saved_plot = F,
+  show_saved_plot = FALSE,
   base_width = NULL,
   base_height = NULL,
   base_aspect_ratio = NULL,
@@ -55,7 +55,7 @@ all_plots_save_function(
   save_name = NULL,
   default_save_name = "giotto_plot",
   save_format = NULL,
-  show_saved_plot = F,
+  show_saved_plot = FALSE,
   ncol = 1,
   nrow = 1,
   scale = 1,
@@ -86,43 +86,58 @@ all_plots_save_function(
 
 \item{show_saved_plot}{load & display the saved plot}
 
-\item{ncol}{number of columns}
+\item{ncol}{number of columns for multiplots}
 
-\item{nrow}{number of rows}
+\item{nrow}{number of rows for multiplot}
 
-\item{scale}{scale}
+\item{scale}{scale of plots}
 
-\item{base_width}{width}
+\item{base_width}{width of plot}
 
-\item{base_height}{height}
+\item{base_height}{height of plot}
 
-\item{base_aspect_ratio}{aspect ratio}
+\item{base_aspect_ratio}{aspect ratio of plot}
 
-\item{units}{units}
+\item{units}{plotting units (e.g. in)}
 
-\item{dpi}{Plot resolution}
+\item{dpi}{dpi for each plot if plot is in raster format}
 
-\item{limitsize}{When TRUE (the default), ggsave will not save images larger than 50x50 inches, to prevent the common error of specifying dimensions in pixels.}
+\item{limitsize}{When TRUE (the default), ggsave will not save images larger
+than 50x50 inches, to prevent the common error of specifying dimensions in
+pixels.}
 
-\item{plot_count}{count number for plot}
+\item{plot_count}{manually set the plot count that is appended to a
+default_save_name}
 
 \item{\dots}{additional parameters to pass downstream save functions}
+}
+\value{
+a plot file
 }
 \description{
 Functions to automatically save plots to directory of interest
 }
 \section{Functions}{
 \itemize{
-\item \code{ggplot_save_function()}: ggplot saving. ... passes to cowplot::save_plot
+\item \code{.ggplot_save_function()}: (internal) ggplot saving. ...
+passes to cowplot::save_plot
 
-\item \code{general_save_function()}: base and general saving. ... passes to grDevices png, tiff, pdf, svg
-
-\item \code{all_plots_save_function()}: wrapper for ggplot and general saving. ... passes to the respective save function
+\item \code{.general_save_function()}: (internal) base and general saving.
+... passes to grDevices png, tiff, pdf, svg
 
 }}
+\examples{
+g <- GiottoClass::createGiottoInstructions(save_plot = TRUE)
+df <- data.frame(x = rnorm(5), y = rnorm(5))
+g_plot <- ggplot2::ggplot(df, ggplot2::aes(x,y)) + ggplot2::geom_point()
+all_plots_save_function(g, g_plot)
+
+}
 \seealso{
 \code{\link{showSaveParameters}} \code{\link[cowplot]{save_plot}}
-\code{\link[grDevices]{png}} \code{\link[grDevices]{tiff}} \code{\link[grDevices]{pdf}}
+\code{\link[grDevices]{png}}
+\code{\link[grDevices]{tiff}}
+\code{\link[grDevices]{pdf}}
 \code{\link[grDevices]{svg}}
 }
 \keyword{internal}

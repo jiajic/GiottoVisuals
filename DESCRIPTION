@@ -1,38 +1,39 @@
 Package: GiottoVisuals
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9003
+Title: Visuals for the Giotto spatial biology analysis ecosystem
+Version: 0.2.4
 Authors@R: c(
 	person("Ruben", "Dries", email = "rubendries@gmail.com",
-		 role = c("aut", "cre")),
+		 role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7650-7754")),
 	person("Jiaji", "George Chen", email = "jiajic@bu.edu",
 		 role = c("aut")),
 	person("Guo-Cheng", "Yuan", email = "guo-cheng.yuan@mssm.edu",
 		 role = c("aut")),
-  person("Matthew", "O'Brien", email = "mobrien2@bu.edu",
-	   role = c("aut")),
-	person("Joselyn", "Chávez", email = "joselynchavezf@gmail.com",
-	   role = c("aut"))
+    person("Matthew", "O'Brien", email = "mobrien2@bu.edu",
+	     role = c("aut")),
+	person("Joselyn C.", "Chávez-Fuentes", email = "joselynchavezf@gmail.com",
+	     role = c("aut"), comment = c(ORCID = "0000-0002-4974-4591")),
+	person("Edward", "Ruiz", email = "ecruiz@bu.edu",
+	     role = c("aut"))
 	)
-Maintainer: Ruben Dries <rubendries@gmail.com>
 Description: Expanded visualization and plotting functionality for Giotto Suite.
-License: GPL (>= 3)
+License: MIT + file LICENSE
 Encoding: UTF-8
-URL: https://drieslab.github.io/Giotto/, https://github.com/drieslab/Giotto
+URL: https://drieslab.github.io/Giotto/, https://github.com/drieslab/Giotto, https://drieslab.github.io/GiottoVisuals/
 BugReports: https://github.com/drieslab/Giotto/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Depends:
-    base (>= 3.5.0),
-    utils (>= 3.5.0),
-    R (>= 3.5.0),
-    GiottoUtils,
-    GiottoClass
+    base (>= 4.4.0),
+    utils (>= 4.4.0),
+    R (>= 4.4.0),
 Imports:
     checkmate,
     colorRamp2,
     cowplot (>= 0.9.4),
     data.table,
     ggplot2 (>= 3.1.1),
+    GiottoUtils (>= 0.1.8),
+    GiottoClass (>= 0.3.1),
     ggrepel,
     igraph (>= 1.2.4.1),
     methods,
@@ -66,10 +67,9 @@ Suggests:
     viridis,
     viridisLite,
     wesanderson,
-    testthat (>= 3.0.0)
-Remotes:
-    drieslab/GiottoUtils,
-    drieslab/GiottoClass
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
 Config/testthat/edition: 3
 Collate: 
     'aux_defaults.R'
@@ -80,14 +80,23 @@ Collate:
     'colorRamp2.R'
     'color_palettes.R'
     'dd.R'
+    'generics.R'
+    'gg_annotation_raster.R'
     'gg_info_layers.R'
+    'gg_settings.R'
     'globals.R'
+    'gstop.R'
+    'mixcolor.R'
     'plot_dendrogram.R'
     'plot_heatmap.R'
+    'plot_sankey.R'
     'plot_scatter.R'
     'plot_violin.R'
     'spatialDE_visuals.R'
+    'suite_reexports.R'
     'vis_spatial.R'
     'vis_spatial_in_situ.R'
     'viz_spatial_network.R'
     'zzz.R'
+biocViews: Software, Technology, Spatial
+VignetteBuilder: knitr
