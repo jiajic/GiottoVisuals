@@ -24,6 +24,8 @@
 #' @param feat_type feature types of the feats
 #' @param sdimx spatial dimension x
 #' @param sdimy spatial dimension y
+#' @param xlim limits of x-scale (min/max vector) 
+#' @param ylim limits of y-scale (min/max vector)
 #' @param point_size size of the points
 #' @param stroke stroke to apply to feature points
 #' @param expand_counts expand feature coordinate counts (see details)
@@ -69,6 +71,8 @@ spatInSituPlotPoints <- function(gobject,
                                  feat_shape_code = NULL,
                                  sdimx = 'x',
                                  sdimy = 'y',
+                                 xlim = NULL,
+                                 ylim = NULL,
                                  point_size = 1.5,
                                  stroke = 0.5,
                                  expand_counts = FALSE,
@@ -342,11 +346,20 @@ spatInSituPlotPoints <- function(gobject,
                                 panel.background = element_rect(fill = background_color))
 
 
-
+  # subset data based on x and y limits
+  if(!is.null(xlim)) {
+    plot <- plot + ggplot2::xlim(xlim)
+  }
+  if(!is.null(ylim)) {
+    plot <- plot + ggplot2::ylim(ylim)
+  }
+  
+  # fix coordinates
   if(!is.null(coord_fix_ratio)) {
     plot = plot + ggplot2::coord_fixed(ratio = coord_fix_ratio)
   }
 
+  
   return(plot_output_handler(
     gobject = gobject,
     plot_object = plot,
