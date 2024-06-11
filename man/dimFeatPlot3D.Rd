@@ -126,7 +126,7 @@ Description of parameters.
 }}
 \examples{
 g <- GiottoData::loadGiottoMini("starmap")
-dimFeatPlot3D(g, genes = "Slc17a7")
 
+dimFeatPlot3D(g, genes = "Slc17a7", dim_reduction_name = "3D_umap")
 }
 \concept{dimension reduction gene expression visualizations}
