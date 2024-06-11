@@ -7514,40 +7514,41 @@ spatGenePlot3D <- function(...) {
 #' @returns plotly
 #' @examples
 #' g <- GiottoData::loadGiottoMini("starmap")
-#' dimFeatPlot3D(g, genes = "Slc17a7")
-#'
+#' 
+#' dimFeatPlot3D(g, genes = "Slc17a7", dim_reduction_name = "3D_umap")
 #' @export
-dimFeatPlot3D <- function(gobject,
-                          feat_type = NULL,
-                          spat_unit = NULL,
-                          expression_values = c("normalized", "scaled", "custom"),
-                          genes = NULL,
-                          dim_reduction_to_use = "umap",
-                          dim_reduction_name = "umap",
-                          dim1_to_use = 1,
-                          dim2_to_use = 2,
-                          dim3_to_use = 3,
-                          show_NN_network = FALSE,
-                          nn_network_to_use = "sNN",
-                          network_name = "sNN.pca",
-                          network_color = "lightgray",
-                          cluster_column = NULL,
-                          select_cell_groups = NULL,
-                          select_cells = NULL,
-                          show_other_cells = TRUE,
-                          other_cell_color = "lightgrey",
-                          other_point_size = 1,
-                          edge_alpha = NULL,
-                          point_size = 2,
-                          genes_high_color = NULL,
-                          genes_mid_color = "white",
-                          genes_low_color = "blue",
-                          show_legend = TRUE,
-                          show_plot = NULL,
-                          return_plot = NULL,
-                          save_plot = NULL,
-                          save_param = list(),
-                          default_save_name = "dimFeatPlot3D") {
+dimFeatPlot3D <- function(
+    gobject,
+    feat_type = NULL,
+    spat_unit = NULL,
+    expression_values = c("normalized", "scaled", "custom"),
+    genes = NULL,
+    dim_reduction_to_use = "umap",
+    dim_reduction_name = "umap",
+    dim1_to_use = 1,
+    dim2_to_use = 2,
+    dim3_to_use = 3,
+    show_NN_network = FALSE,
+    nn_network_to_use = "sNN",
+    network_name = "sNN.pca",
+    network_color = "lightgray",
+    cluster_column = NULL,
+    select_cell_groups = NULL,
+    select_cells = NULL,
+    show_other_cells = TRUE,
+    other_cell_color = "lightgrey",
+    other_point_size = 1,
+    edge_alpha = NULL,
+    point_size = 2,
+    genes_high_color = NULL,
+    genes_mid_color = "white",
+    genes_low_color = "blue",
+    show_legend = TRUE,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
+    save_param = list(),
+    default_save_name = "dimFeatPlot3D") {
     # Set feat_type and spat_unit
     spat_unit <- set_default_spat_unit(
         gobject = gobject,
@@ -7562,7 +7563,7 @@ dimFeatPlot3D <- function(gobject,
     ## select genes ##
     selected_genes <- genes
     values <- match.arg(expression_values, c("normalized", "scaled", "custom"))
-    expr_values <- get_expression_values(
+    expr_values <- getExpression(
         gobject = gobject,
         spat_unit = spat_unit,
         feat_type = feat_type,
@@ -7597,11 +7598,11 @@ dimFeatPlot3D <- function(gobject,
 
 
     ## dimension reduction ##
-    dim_dfr <- get_dimReduction(gobject,
-                                reduction = "cells",
-                                reduction_method = dim_reduction_to_use,
-                                name = dim_reduction_name,
-                                output = "data.table"
+    dim_dfr <- getDimReduction(gobject,
+                               reduction = "cells",
+                               reduction_method = dim_reduction_to_use,
+                               name = dim_reduction_name,
+                               output = "data.table"
     )
     dim_dfr <- dim_dfr[, c(dim1_to_use, dim2_to_use, dim3_to_use)]
     dim_names <- colnames(dim_dfr)
@@ -7620,12 +7621,12 @@ dimFeatPlot3D <- function(gobject,
     # create input for network
     if (show_NN_network == TRUE) {
         # nn_network
-        selected_nn_network <- get_NearestNetwork(
+        selected_nn_network <- getNearestNetwork(
             gobject = gobject,
             feat_type = feat_type,
             spat_unit = spat_unit,
-            nn_network_to_use = nn_network_to_use,
-            network_name = network_name,
+            nn_type = nn_network_to_use,
+            name = network_name,
             output = "igraph"
         )
         network_DT <- data.table::as.data.table(igraph::as_data_frame(
