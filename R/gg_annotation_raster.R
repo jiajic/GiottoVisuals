@@ -73,57 +73,26 @@ setMethod(
         }
 
         # get plotting minmax
-        extent <- terra::ext(gimage@raster_object)[seq_len(4)]
+        extent <- terra::ext(gimage)[seq_len(4)]
         xmin <- extent[["xmin"]]
         xmax <- extent[["xmax"]]
         ymin <- extent[["ymin"]]
         ymax <- extent[["ymax"]]
 
-        # convert raster object into array with 3 channels
-        img_array <- terra::as.array(gimage@raster_object)
-
-        # TODO: check if required, fixes NaN values
-        # replacing NA's by zero or another value directly in raster object?
-        # raster[is.na(raster[])] <- 0
-        if (is.nan(max(img_array[, , 1]))) {
-            img_array[, , 1][is.nan(img_array[, , 1])] <- max(img_array[, , 1],
-                na.rm = TRUE
+        # convert raster object into array with 3 channels + alpha
+        img_array_rgb <- terra::as.array(gimage@raster_object) %>%
+            .gg_process_img_array(
+                maxval = gimage@max_window,
+                col = gimage@colors
             )
-        }
-
-        if (dim(img_array)[3] > 1) {
-            if (is.nan(max(img_array[, , 2]))) {
-                img_array[, , 2][is.nan(img_array[, , 2])] <-
-                    max(img_array[, , 2], na.rm = TRUE)
-            }
-        }
-
-        if (dim(img_array)[3] > 2) {
-            if (is.nan(max(img_array[, , 3]))) {
-                img_array[, , 3][is.nan(img_array[, , 3])] <-
-                    max(img_array[, , 3], na.rm = TRUE)
-            }
-        }
-
-        img_array <- img_array / max(img_array, na.rm = TRUE)
-        if (dim(img_array)[3] == 1) {
-            img_array_RGB <- array(NA, dim = c(dim(img_array)[seq_len(2)], 3))
-            img_array_RGB[, , seq_len(3)] <- img_array
-        } else {
-            img_array_RGB <- img_array
-        }
-
-        # handle NA values
-        img_array_RGB[is.na(img_array_RGB)] <- 0
 
         # append to ggobj
         ggobj <- ggobj + annotation_raster(
-            img_array_RGB,
+            img_array_rgb,
             xmin = xmin, xmax = xmax,
             ymin = ymin, ymax = ymax
         )
 
-        # TODO geom_raster to accommodate single-channel
         return(ggobj)
     }
 )
@@ -321,5 +290,68 @@ setMethod(
     }
     return(img)
 }
+
+# make an image array compatible with ggplot::annotation_raster()
+# maxval is the cutoff after which everything is max intensity
+# returns:
+# - if rgb, a properly scaled and cleaned array
+# - if single channel, a native raster
+.gg_process_img_array <- function(x, maxval = NULL, col = NULL) {
+    nlyr <- dim(x)[3L] # number of channels/layers
+    if (is.na(nlyr)) nlyr <- 1L
+    # NOTE: 4 layers allowed (rgba), but may conflict with actual 4 info
+    # layer cases which SHOULD be converted to 3 layer
+    #
+    # more than 4 layers -> directly ignore layers past the 3rd
+    if (nlyr > 4L) {
+        nlyr <- 3L
+        x <- x[, , seq_len(3)]
+    }
+
+    # handle NaN values -- set as max value of that layer
+    # these may arise due to save artefacting when values are larger than
+    # expected
+    for (lyr in seq_len(nlyr)) {
+        if (is.nan(max(x[, , lyr]))) {
+            x[, , lyr][is.nan(x[, , lyr])] <-
+                max(x[, , lyr], na.rm = TRUE)
+        }
+    }
+
+    # handle NA values -- set as 0
+    x[is.na(x)] <- 0
+
+    if (nlyr == 1L) {
+        # SINGLE CHANNEL #
+        # max window cutoff
+        if (!is.null(maxval)) x[x > maxval] <- maxval
+        # colorize
+        if (is.null(col)) {
+            col <- getMonochromeColors("white", n = 256)
+        }
+        r <- .colorize_single_channel_raster(x, col = col)
+    } else {
+        # RGB EXPECTED #
+        # convert to range 0:1 (needed for as.raster())
+        x <- scales::rescale(x, to = c(0, 1))
+        r <- as.raster(x)
+    }
+
+    return(r)
+}
+
+# `x` is array to use
+# `col` is character vector of colors to use
+.colorize_single_channel_raster <- function(x, col) {
+    if (!is.na(dim(x)[3L]))x <- x[,, 1L] # convert to matrix
+    r <- range(x, na.rm = TRUE)
+    x <- (x - r[1])/(r[2] - r[1])
+    x <- round(x * (length(col) - 1) + 1)
+    x[] <- col[x]
+    as.raster(x)
+}
+
+
+
 
 
