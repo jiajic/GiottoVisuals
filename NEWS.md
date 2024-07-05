@@ -4,6 +4,9 @@
 ## enhancements
 - `giottoLargeImage` `max_window` and `colors` slot info is now followed during ggplot plotting
 
+## new
+- `geom_text_repel()` and `geom_label_repel()` from `ggplot2` are now re-exported
+
 # GiottoVisuals 0.2.3 (2024/05/28)
 
 ## bug fixes
