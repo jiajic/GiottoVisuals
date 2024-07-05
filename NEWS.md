@@ -1,6 +1,8 @@
 
 # GiottoVisuals 0.2.4 
 
+## enhancements
+- `giottoLargeImage` `max_window` and `colors` slot info is now followed during ggplot plotting
 
 # GiottoVisuals 0.2.3 (2024/05/28)
 
