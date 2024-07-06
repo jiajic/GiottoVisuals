@@ -63,14 +63,13 @@ setMethod(
     signature(ggobj = "gg", gimage = "giottoLargeImage"),
     function(ggobj, gimage, ext = NULL, ...) {
 
-        # apply plot ext
-        if (!is.null(ext)) {
-            gimage <- .auto_resample_gimage(
-                img = gimage,
-                plot_ext = ext,
-                ...
-            )
-        }
+        # resample from extent
+        if (is.null(ext)) ext <- ext(gimage)
+        gimage <- .auto_resample_gimage(
+            img = gimage,
+            plot_ext = ext,
+            ...
+        )
 
         # get plotting minmax
         extent <- terra::ext(gimage)[seq_len(4)]
@@ -213,16 +212,17 @@ setMethod(
         )
 ) {
 
+    # 1. determine image and cropping extents
     img_ext <- terra::ext(img)
     if (is.null(plot_ext)) crop_ext <- img_ext # default
     else crop_ext <- ext(plot_ext)
     bound_poly <- as.polygons(crop_ext)
 
-    # override max_crop if needed
+    # 1.5. override max_crop if needed
     if (max_sample > max_crop) max_crop <- max_sample
 
-    # apply img border
-    # - cropping with extent larger than the image extent works
+    # 2. apply img border expansion
+    # - note: cropping with extent larger than the image extent works
     if (img_border > 0) {
 
         crop_ext <- bound_poly %>%
@@ -233,19 +233,22 @@ setMethod(
         crop_ext <- ext(crop(bound_poly, crop_ext))
     }
 
-    # determine ratio of crop vs original
+    # 3. determine ratio of crop vs original
     original_dims <- dim(img)[c(2L, 1L)] # x, y ordering
     ratios <- range(crop_ext) / range(img_ext) # x, y ordering
     crop_dims <- original_dims * ratios
     crop_area_px <- prod(crop_dims)
 
+    # 4. perform flexible resample/crop
     if (!isTRUE(flex_resample) || crop_area_px <= max_crop) {
         # [METHOD A]:
         # 1. Crop if needed
         # 2. resample to final image
         if (!isTRUE(flex_resample) && crop_area_px > max_crop) {
-            warning("Plotting large regions with flex_resample == FALSE will
-                    increase time and may require scratch space.")
+            warning(
+                "Plotting large regions with flex_resample == FALSE will\n ",
+                "increase time and may require scratch space."
+            )
         }
 
         vmsg(.is_debug = TRUE,
@@ -291,11 +294,14 @@ setMethod(
     return(img)
 }
 
+
+
+
+
+
 # make an image array compatible with ggplot::annotation_raster()
 # maxval is the cutoff after which everything is max intensity
-# returns:
-# - if rgb, a properly scaled and cleaned array
-# - if single channel, a native raster
+# returns: raster
 .gg_process_img_array <- function(x, maxval = NULL, col = NULL) {
     nlyr <- dim(x)[3L] # number of channels/layers
     if (is.na(nlyr)) nlyr <- 1L
