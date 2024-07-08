@@ -1,6 +1,12 @@
 
 # GiottoVisuals 0.2.4 
 
+## enhancements
+- `giottoLargeImage` `max_window` and `colors` slot info is now followed during ggplot plotting
+- `giottoAffineImage` compatibility for giotto ggplot2 plotting functions
+
+## new
+- `geom_text_repel()` and `geom_label_repel()` from `ggplot2` are now re-exported
 
 # GiottoVisuals 0.2.3 (2024/05/28)
 
