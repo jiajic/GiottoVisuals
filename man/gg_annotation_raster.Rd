@@ -5,6 +5,7 @@
 \alias{gg_annotation_raster,gg,list-method}
 \alias{gg_annotation_raster,gg,giottoImage-method}
 \alias{gg_annotation_raster,gg,giottoLargeImage-method}
+\alias{gg_annotation_raster,gg,giottoAffineImage-method}
 \title{Append image to ggplot as annotation_raster}
 \usage{
 \S4method{gg_annotation_raster}{gg,list}(ggobj, gimage, ...)
@@ -12,6 +13,8 @@
 \S4method{gg_annotation_raster}{gg,giottoImage}(ggobj, gimage, ...)
 
 \S4method{gg_annotation_raster}{gg,giottoLargeImage}(ggobj, gimage, ext = NULL, ...)
+
+\S4method{gg_annotation_raster}{gg,giottoAffineImage}(ggobj, gimage, ext, ...)
 }
 \arguments{
 \item{ggobj}{ggplot2 \code{gg} object}
