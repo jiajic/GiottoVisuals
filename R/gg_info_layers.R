@@ -1412,10 +1412,7 @@ plot_spat_image_layer_ggplot <- function(
         ...
     )
 
-    bounds_dt <- data.table::data.table(
-        sdimx = e[][c(1, 2)],
-        sdimy = e[][c(3, 4)]
-    )
+    bounds_dt <- .ext_to_dummy_df(e)
 
     # Assign region to plot
     gg_obj <- gg_obj + geom_blank(data = bounds_dt, aes(sdimx, sdimy))
@@ -1436,7 +1433,15 @@ plot_spat_image_layer_ggplot <- function(
     return(gg_obj)
 }
 
-
+# internal to convert a SpatExtent into a data.frame with x and y values that
+# ggplot2 can use to determine bounds of placement
+.ext_to_dummy_df <- function(x) {
+    data.frame(
+        sdimx = x[][c(1, 2)],
+        sdimy = x[][c(3, 4)],
+        row.names = NULL
+    )
+}
 
 
 
