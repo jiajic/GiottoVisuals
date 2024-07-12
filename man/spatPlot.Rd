@@ -309,7 +309,7 @@ spatPlot2D(g,
 
 
 # load another dataset with 3D data
-starmap <- GiottoData::loadGiottoData("starmap", verbose = FALSE)
+starmap <- GiottoData::loadGiottoMini("starmap", verbose = FALSE)
 
 # default is to rescale plot as a 3D cube
 spatPlot3D(starmap, cell_color = "leiden_clus")
