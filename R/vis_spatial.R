@@ -357,24 +357,24 @@
     )
 
     pl <- switch(point_shape,
-                 "border" = do.call(
-                     plot_spat_point_layer_ggplot,
-                     args = c(
-                         point_general_params,
-                         point_border_specific_params
-                     )
-                 ),
-                 "no_border" = do.call(
-                     plot_spat_point_layer_ggplot_noFILL,
-                     args = point_general_params
-                 ),
-                 "voronoi" = do.call(
-                     plot_spat_voronoi_layer_ggplot,
-                     args = c(
-                         point_general_params,
-                         point_voronoi_specific_params
-                     )
-                 )
+        "border" = do.call(
+         plot_spat_point_layer_ggplot,
+         args = c(
+             point_general_params,
+             point_border_specific_params
+         )
+        ),
+        "no_border" = do.call(
+         plot_spat_point_layer_ggplot_noFILL,
+         args = point_general_params
+        ),
+        "voronoi" = do.call(
+            plot_spat_voronoi_layer_ggplot,
+            args = c(
+                 point_general_params,
+                 point_voronoi_specific_params
+            )
+        )
     )
 
 
@@ -7514,7 +7514,7 @@ spatGenePlot3D <- function(...) {
 #' @returns plotly
 #' @examples
 #' g <- GiottoData::loadGiottoMini("starmap")
-#' 
+#'
 #' dimFeatPlot3D(g, genes = "Slc17a7", dim_reduction_name = "3D_umap")
 #' @export
 dimFeatPlot3D <- function(

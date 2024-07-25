@@ -1,5 +1,4 @@
 #' @name gg_annotation_raster
-#' @keywords internal
 #' @title Append image to ggplot as annotation_raster
 #' @param ggobj ggplot2 `gg` object
 #' @param gimage `giottoLargeImage`, `giottoImage` or `list` thereof
@@ -9,6 +8,7 @@
 #' `giottoLargeImage` passes to automated resampling params see
 #' `?auto_image_resample` for details
 #' @return `gg` object with images to plot appended as annotation rasters
+#' @keywords internal
 NULL
 
 #' @rdname gg_annotation_raster
