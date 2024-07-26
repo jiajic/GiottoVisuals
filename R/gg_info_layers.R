@@ -1396,9 +1396,6 @@ plot_spat_image_layer_ggplot <- function(
         stop("A giotto object and a giotto image need to be provided")
     }
 
-    # NSE vars
-    sdimx <- sdimy <- NULL
-
     # prefer extent detection from polygon
     if (!is.null(polygon_feat_type)) spat_unit <- polygon_feat_type
 
@@ -1412,36 +1409,13 @@ plot_spat_image_layer_ggplot <- function(
         ...
     )
 
-    bounds_dt <- .ext_to_dummy_df(e)
-
-    # Assign region to plot
-    gg_obj <- gg_obj + geom_blank(data = bounds_dt, aes(sdimx, sdimy))
-
     # Assign image(s) to plot
     gg_obj <- gg_annotation_raster(ggobj = gg_obj, gimage = gimage, ext = e)
-
-    # if (!is.null(spatlocs)) {
-    #     gg_obj <- gg_obj +
-    #         geom_point(
-    #             data = spatlocs,
-    #             aes_string(sdimx, sdimy),
-    #             alpha = 0.5,
-    #             size = 0.4
-    #         )
-    # }
 
     return(gg_obj)
 }
 
-# internal to convert a SpatExtent into a data.frame with x and y values that
-# ggplot2 can use to determine bounds of placement
-.ext_to_dummy_df <- function(x) {
-    data.frame(
-        sdimx = x[][c(1, 2)],
-        sdimy = x[][c(3, 4)],
-        row.names = NULL
-    )
-}
+
 
 
 
