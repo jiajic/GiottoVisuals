@@ -1,69 +1,87 @@
 #' @name gg_annotation_raster
 #' @title Append image to ggplot as annotation_raster
+#' @description
+#' Add a spatially mapped image to a *ggplot2* `gg` object.
+#' For terra-based images, the image will be a cropped and sampled version
+#' of the full size image on disk that has sufficient resolution for the size
+#' of the plot requested.
+#'
 #' @param ggobj ggplot2 `gg` object
 #' @param gimage `giottoLargeImage`, `giottoImage` or `list` thereof
+#' @param ext Object that responds to `ext()`. Defines the plot spatial ROI
+#' This extent defines which portions of the image(s) will be plotted/should
+#' be sampled for. The default is the same extent as the image.
+#' @param geom_blank logical. Whether to apply `[ggplot2::geom_blank()]` to the
+#' `gg` object so that the image can be plotted by itself.
 #' @param \dots additional params to pass
 #' @details
 #' No ... params are implemented for `giottoImage`. \cr ... params for
 #' `giottoLargeImage` passes to automated resampling params see
 #' `?auto_image_resample` for details
 #' @return `gg` object with images to plot appended as annotation rasters
-#' @keywords internal
 NULL
 
+# * list ####
 #' @rdname gg_annotation_raster
+#' @export
 setMethod(
     "gg_annotation_raster",
     signature(ggobj = "gg", gimage = "list"),
-    function(ggobj, gimage, ...) {
+    function(ggobj, gimage, ext = NULL, geom_blank = TRUE, ...) {
+
+        # apply geom_blank
+        ext <- ext %null% ext(gimage[[1L]])
+        if (geom_blank) ggobj <- .gg_geom_blank(ggobj, ext)
+
+        # attach images in a loop
         for (i in seq_along(gimage)) {
-            ggobj <- gg_annotation_raster(ggobj, gimage[[i]], ...)
+            ggobj <- gg_annotation_raster(
+                ggobj, gimage[[i]],
+                ext = ext,
+                geom_blank = FALSE, # hardcode FALSE since already done.
+                ...
+            )
         }
         return(ggobj)
     }
 )
 
+# * giottoImage ####
 #' @rdname gg_annotation_raster
+#' @export
 setMethod(
     "gg_annotation_raster",
     signature(ggobj = "gg", gimage = "giottoImage"),
-    function(ggobj, gimage, ...) {
-        # extract min and max from object
-        my_xmax <- gimage@minmax[1]
-        my_xmin <- gimage@minmax[2]
-        my_ymax <- gimage@minmax[3]
-        my_ymin <- gimage@minmax[4]
+    function(ggobj, gimage, ext = NULL, geom_blank = TRUE, ...) {
+
+        # apply geom_blank
+        ext <- ext %null% ext(gimage)
+        if (geom_blank) ggobj <- .gg_geom_blank(ggobj, ext)
 
         # convert giotto image object into array
         img_array <- as.numeric(gimage@mg_object[[1]])
 
-        # extract adjustments from object
-        xmax_b <- gimage@boundaries[1]
-        xmin_b <- gimage@boundaries[2]
-        ymax_b <- gimage@boundaries[3]
-        ymin_b <- gimage@boundaries[4]
-
         # append to ggobj
-        ggobj <- ggobj + annotation_raster(
-            img_array,
-            xmin = my_xmin - xmin_b, xmax = my_xmax + xmax_b,
-            ymin = my_ymin - ymin_b, ymax = my_ymax + ymax_b
-        )
+        ggobj <- .gg_append_imagearray(ggobj, img_array, ext)
 
         # TODO geom_raster to accommodate single-channel
         return(ggobj)
     }
 )
 
+# * giottoLargeImage ####
 #' @rdname gg_annotation_raster
-#' @param ext Object that responds to `ext()`. Defines the plot spatial ROI
-#' that the image should be sampled for.
+#' @export
 setMethod(
     "gg_annotation_raster",
     signature(ggobj = "gg", gimage = "giottoLargeImage"),
-    function(ggobj, gimage, ext = NULL, ...) {
+    function(ggobj, gimage, ext = NULL, geom_blank = TRUE, ...) {
+
+        # geom_blank
+        ext <- ext %null% ext(gimage)
+        if (geom_blank) ggobj <- .gg_geom_blank(ggobj, ext)
+
         # resample from extent
-        if (is.null(ext)) ext <- ext(gimage)
         gimage <- .auto_resample_gimage(
             img = gimage,
             plot_ext = ext,
@@ -72,19 +90,26 @@ setMethod(
             ...
         )
 
-        ggobj <- .gg_append_image(ggobj = ggobj, gimage = gimage)
+        # append raster to gg
+        ggobj <- .gg_append_spatraster(ggobj = ggobj, gimage = gimage)
 
         return(ggobj)
     }
 )
 
+# * giottoAffineImage ####
 #' @rdname gg_annotation_raster
+#' @export
 setMethod(
     "gg_annotation_raster",
     signature(ggobj = "gg", gimage = "giottoAffineImage"),
-    function(ggobj, gimage, ext, ...) {
+    function(ggobj, gimage, ext = NULL, geom_blank = TRUE, ...) {
+
+        # geom_blank
+        ext <- ext %null% ext(gimage)
+        if (geom_blank) ggobj <- .gg_geom_blank(ggobj, ext)
+
         # resample from extent
-        if (is.null(ext)) ext <- ext(gimage)
         gimage <- .auto_resample_gimage(
             img = gimage,
             plot_ext = ext,
@@ -93,7 +118,8 @@ setMethod(
             ...
         )
 
-        ggobj <- .gg_append_image(ggobj = ggobj, gimage = gimage)
+        # append raster to gg
+        ggobj <- .gg_append_spatraster(ggobj = ggobj, gimage = gimage)
 
         return(ggobj)
     }
@@ -135,6 +161,29 @@ setMethod(
     return(e)
 }
 
+# internal to convert a SpatExtent into a data.frame with x and y values that
+# ggplot2 can use to determine bounds of placement
+.ext_to_dummy_df <- function(x) {
+    data.frame(
+        sdimx = x[][c(1, 2)],
+        sdimy = x[][c(3, 4)],
+        row.names = NULL
+    )
+}
+
+# apply a region to plot to the gg object. Input should be a SpatExtent or
+# coercible. Returns ggobject with geom_blank assigned
+.gg_geom_blank <- function(ggobj, e) {
+    # NSE vars
+    sdimx <- sdimy <- NULL
+
+    # create minimal dummy value data.frame of spatial locations that cover
+    # the spatial region to plot
+    bounds_dt <- .ext_to_dummy_df(e)
+    # assign region to plot
+    ggobj <- ggobj + geom_blank(data = bounds_dt, aes(sdimx, sdimy))
+    return(ggobj)
+}
 
 #' @name auto_image_resample
 #' @title Optimized image resampling
@@ -385,30 +434,36 @@ setMethod(
 # `x` is array to use
 # `col` is character vector of colors to use
 .colorize_single_channel_raster <- function(x, col) {
-    if (!is.na(dim(x)[3L]))x <- x[,, 1L] # convert to matrix
+    if (!is.na(dim(x)[3L])) x <- x[,, 1L] # convert to matrix
     r <- range(x, na.rm = TRUE)
     x <- (x - r[1])/(r[2] - r[1])
     x <- round(x * (length(col) - 1) + 1)
     x[] <- col[x]
-    as.raster(x)
+    terra::as.raster(x)
+}
+
+# append image array to a gg object
+.gg_append_imagearray <- function(ggobj, a, ext) {
+    # append to ggobj
+    extent <- ext(ext)[seq_len(4L)]
+    ggobj <- ggobj + annotation_raster(a,
+        xmin = extent[["xmin"]], xmax = extent[["xmax"]],
+        ymin = extent[["ymin"]], ymax = extent[["ymax"]]
+    )
 }
 
 # append a giotto image object containing a SpatRaster that has already been
 # resampled/pulled into memory. Output is a `gg` object
-.gg_append_image <- function(ggobj, gimage) {
+.gg_append_spatraster <- function(ggobj, gimage) {
     # convert gimage to a raster
-    r <- terra::as.array(gimage@raster_object) %>%
+    a <- terra::as.array(gimage@raster_object) %>%
         .gg_imgarray_2_raster(
             maxval = gimage@max_window,
             col = gimage@colors
         )
 
-    # append to ggobj
-    extent <- ext(gimage)[seq_len(4L)]
-    ggobj <- ggobj + annotation_raster(r,
-        xmin = extent[["xmin"]], xmax = extent[["xmax"]],
-        ymin = extent[["ymin"]], ymax = extent[["ymax"]]
-    )
-
+    ggobj <- .gg_append_imagearray(ggobj, a, ext(gimage))
     return(ggobj)
 }
+
+

@@ -4,6 +4,7 @@
 ## enhancements
 - `giottoLargeImage` `max_window` and `colors` slot info is now followed during ggplot plotting
 - `giottoAffineImage` compatibility for giotto ggplot2 plotting functions
+- `gg_annotation_raster()` now also performs `geom_blank()` with the extent provided through `ext` param. This can be turned off by setting `geom_blank() = FALSE`
 
 ## new
 - `geom_text_repel()` and `geom_label_repel()` from `ggplot2` are now re-exported
