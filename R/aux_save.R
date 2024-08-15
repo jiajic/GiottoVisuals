@@ -61,40 +61,22 @@ NULL
     }
 
     ## get save information and set defaults
-    if (is.null(save_dir)) {
-        save_dir <- readGiottoInstructions(gobject,
-            param = "save_dir"
-        )
-    }
-    if (is.null(save_folder)) save_folder <- NULL
-    if (is.null(plot_count)) plot_count <- getOption("giotto.plot_count")
+    save_dir <- save_dir %null% instructions(gobject, param = "save_dir")
+    # if (is.null(save_folder)) save_folder <- NULL
+    plot_count <- plot_count %null% getOption("giotto.plot_count")
     if (is.null(save_name)) {
         save_name <- default_save_name
         save_name <- paste0(plot_count, "-", save_name)
         options("giotto.plot_count" = plot_count + 1L)
     }
-    if (is.null(save_format)) {
-        save_format <- readGiottoInstructions(gobject,
-            param = "plot_format"
-        )
-    }
-    if (is.null(dpi)) dpi <- readGiottoInstructions(gobject, param = "dpi")
-    if (is.null(base_width)) {
-        base_width <- readGiottoInstructions(gobject,
-            param = "width"
-        )
-    }
-    if (is.null(base_height)) {
-        base_height <- readGiottoInstructions(gobject,
-            param = "height"
-        )
-    }
-    if (is.null(base_aspect_ratio)) base_aspect_ratio <- 1.1
-    if (is.null(units)) {
-        units <- readGiottoInstructions(gobject,
-            param = "units"
-        )
-    }
+    save_format <- save_format %null%
+        instructions(gobject, param = "plot_format")
+    dpi <- dpi %null% instructions(gobject, param = "dpi")
+    base_width <- base_width %null% instructions(gobject, param = "width")
+    base_height <- base_height %null% instructions(gobject, param = "height")
+    base_aspect_ratio <- base_aspect_ratio %null% 1.1
+    units <- units %null% instructions(gobject, param = "units")
+
 
     ## checking
     dpi <- as.numeric(dpi)
@@ -185,40 +167,22 @@ NULL
     }
 
     ## get save information and set defaults
-    if (is.null(save_dir)) {
-        save_dir <- readGiottoInstructions(gobject,
-            param = "save_dir"
-        )
-    }
-    if (is.null(save_folder)) save_folder <- NULL
-    if (is.null(plot_count)) plot_count <- getOption("giotto.plot_count")
+    save_dir <- save_dir %null% instructions(gobject, param = "save_dir")
+    # if (is.null(save_folder)) save_folder <- NULL
+    plot_count <- plot_count %null% getOption("giotto.plot_count")
     if (is.null(save_name)) {
         save_name <- default_save_name
         save_name <- paste0(plot_count, "-", save_name)
         options("giotto.plot_count" = plot_count + 1)
     }
-    if (is.null(save_format)) {
-        save_format <- readGiottoInstructions(gobject,
-            param = "plot_format"
-        )
-    }
-    if (is.null(dpi)) dpi <- readGiottoInstructions(gobject, param = "dpi")
-    if (is.null(base_width)) {
-        base_width <- readGiottoInstructions(gobject,
-            param = "width"
-        )
-    }
-    if (is.null(base_height)) {
-        base_height <- readGiottoInstructions(gobject,
-            param = "height"
-        )
-    }
-    if (is.null(base_aspect_ratio)) base_aspect_ratio <- 1.1
-    if (is.null(units)) {
-        units <- readGiottoInstructions(gobject,
-            param = "units"
-        )
-    }
+    save_format <- save_format %null%
+        instructions(gobject, param = "plot_format")
+    dpi <- dpi %null% instructions(gobject, param = "dpi")
+    base_width <- base_width %null% instructions(gobject, param = "width")
+    base_height <- base_height %null% instructions(gobject, param = "height")
+    base_aspect_ratio <- base_aspect_ratio %null% 1.1
+    units <- units %null% instructions(gobject, param = "units")
+
 
     ## checking
     dpi <- as.numeric(dpi)
@@ -309,7 +273,7 @@ NULL
 #' df <- data.frame(x = rnorm(5), y = rnorm(5))
 #' g_plot <- ggplot2::ggplot(df, ggplot2::aes(x,y)) + ggplot2::geom_point()
 #' all_plots_save_function(g, g_plot)
-#' 
+#'
 #' @export
 all_plots_save_function <- function(gobject,
     plot_object,
