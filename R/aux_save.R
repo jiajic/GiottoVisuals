@@ -34,238 +34,7 @@ NULL
 
 
 
-#' @describeIn plot_save (internal) ggplot saving. ...
-#' passes to cowplot::save_plot
-#' @keywords internal
-.ggplot_save_function <- function(gobject,
-    plot_object,
-    save_dir = NULL,
-    save_folder = NULL,
-    save_name = NULL,
-    default_save_name = "giotto_plot",
-    save_format = NULL,
-    show_saved_plot = FALSE,
-    ncol = 1,
-    nrow = 1,
-    scale = 1,
-    base_width = NULL,
-    base_height = NULL,
-    base_aspect_ratio = NULL,
-    units = NULL,
-    dpi = NULL,
-    limitsize = TRUE,
-    plot_count = NULL,
-    ...) {
-    if (is.null(plot_object)) {
-        stop("\t there is no object to plot \t")
-    }
 
-    ## get save information and set defaults
-    save_dir <- save_dir %null% instructions(gobject, param = "save_dir")
-    # if (is.null(save_folder)) save_folder <- NULL
-    plot_count <- plot_count %null% getOption("giotto.plot_count")
-    if (is.null(save_name)) {
-        save_name <- default_save_name
-        save_name <- paste0(plot_count, "-", save_name)
-        options("giotto.plot_count" = plot_count + 1L)
-    }
-    save_format <- save_format %null%
-        instructions(gobject, param = "plot_format")
-    dpi <- dpi %null% instructions(gobject, param = "dpi")
-    base_width <- base_width %null% instructions(gobject, param = "width")
-    base_height <- base_height %null% instructions(gobject, param = "height")
-    base_aspect_ratio <- base_aspect_ratio %null% 1.1
-    units <- units %null% instructions(gobject, param = "units")
-
-
-    ## checking
-    dpi <- as.numeric(dpi)
-    base_width <- as.numeric(base_width)
-    base_height <- as.numeric(base_height)
-    base_aspect_ratio <- as.numeric(base_aspect_ratio)
-
-    # create saving location
-    if (!is.null(save_folder)) {
-        file_location <- paste0(save_dir, "/", save_folder)
-    } else {
-        file_location <- save_dir
-    }
-    if (!file.exists(file_location)) dir.create(file_location, recursive = TRUE)
-    file_name <- paste0(save_name, ".", save_format)
-
-    cowplot::save_plot(
-        plot = plot_object,
-        filename = file_name,
-        path = file_location,
-        device = save_format,
-        ncol = ncol,
-        nrow = nrow,
-        scale = scale,
-        base_width = base_width,
-        base_height = base_height,
-        base_aspect_ratio = base_aspect_ratio,
-        units = units,
-        dpi = dpi,
-        limitsize = limitsize,
-        ...
-    )
-
-    # show saved plot if requested
-    if (isTRUE(show_saved_plot)) {
-        if (save_format == "png") {
-            if (package_check("png", optional = TRUE)) {
-                img <- png::readPNG(source = paste0(
-                    file_location, "/",
-                    file_name
-                ))
-                grid::grid.raster(img)
-            }
-        } else if (save_format == "tiff") {
-            if (package_check("tiff", optional = TRUE)) {
-                img <- tiff::readTIFF(source = paste0(
-                    file_location, "/",
-                    file_name
-                ))
-                grid::grid.raster(img)
-            }
-        } else {
-            warning("\t only png & tiff are currently supported \t")
-        }
-    }
-}
-
-
-
-#' @describeIn plot_save (internal) base and general saving.
-#' ... passes to grDevices png, tiff, pdf, svg
-#' @keywords internal
-.general_save_function <- function(
-        gobject,
-        plot_object,
-        save_dir = NULL,
-        save_folder = NULL,
-        save_name = NULL,
-        default_save_name = "giotto_plot",
-        save_format = c("png", "tiff", "pdf", "svg"),
-        show_saved_plot = FALSE,
-        base_width = NULL,
-        base_height = NULL,
-        base_aspect_ratio = NULL,
-        units = NULL,
-        dpi = NULL,
-        plot_count = NULL,
-        ...) {
-    if (is.null(plot_object)) {
-        stop("\t there is no object to plot \t")
-    }
-    save_format <- match.arg(save_format,
-        choices = c("png", "tiff", "pdf", "svg")
-    )
-
-    if (any("plotly" %in% class(plot_object))) {
-        save_format <- "html"
-    }
-
-    ## get save information and set defaults
-    save_dir <- save_dir %null% instructions(gobject, param = "save_dir")
-    # if (is.null(save_folder)) save_folder <- NULL
-    plot_count <- plot_count %null% getOption("giotto.plot_count")
-    if (is.null(save_name)) {
-        save_name <- default_save_name
-        save_name <- paste0(plot_count, "-", save_name)
-        options("giotto.plot_count" = plot_count + 1)
-    }
-    save_format <- save_format %null%
-        instructions(gobject, param = "plot_format")
-    dpi <- dpi %null% instructions(gobject, param = "dpi")
-    base_width <- base_width %null% instructions(gobject, param = "width")
-    base_height <- base_height %null% instructions(gobject, param = "height")
-    base_aspect_ratio <- base_aspect_ratio %null% 1.1
-    units <- units %null% instructions(gobject, param = "units")
-
-
-    ## checking
-    dpi <- as.numeric(dpi)
-    base_width <- as.numeric(base_width)
-    base_height <- as.numeric(base_height)
-    base_aspect_ratio <- as.numeric(base_aspect_ratio)
-
-    # create saving location
-    if (!is.null(save_folder)) {
-        file_location <- paste0(save_dir, "/", save_folder)
-    } else {
-        file_location <- save_dir
-    }
-    if (!file.exists(file_location)) dir.create(file_location, recursive = TRUE)
-    file_name <- paste0(save_name, ".", save_format)
-    full_location <- paste0(file_location, "/", file_name)
-
-    if (any("plotly" %in% class(plot_object))) {
-        htmlwidgets::saveWidget(plotly::as_widget(plot_object),
-            file = full_location
-        )
-    } else {
-        if (save_format == "png") {
-            grDevices::png(
-                filename = full_location, width = base_width,
-                height = base_height, res = dpi, units = units, ...
-            )
-            print(plot_object)
-            grDevices::dev.off()
-        }
-
-        if (save_format == "tiff") {
-            grDevices::tiff(
-                filename = full_location, width = base_width,
-                height = base_height, units = units, ...
-            )
-            print(plot_object)
-            grDevices::dev.off()
-        }
-
-        if (save_format == "pdf") {
-            grDevices::pdf(
-                file = full_location, width = base_width,
-                height = base_height, useDingbats = FALSE, ...
-            )
-            print(plot_object)
-            grDevices::dev.off()
-        }
-
-        if (save_format == "svg") {
-            grDevices::svg(
-                filename = full_location, width = base_width,
-                height = base_height, ...
-            )
-            print(plot_object)
-            grDevices::dev.off()
-        }
-
-
-        # show saved plot if requested
-        if (isTRUE(show_saved_plot)) {
-            if (save_format == "png") {
-                if (package_check("png", optional = TRUE)) {
-                    img <- png::readPNG(source = paste0(
-                        file_location,
-                        "/", file_name
-                    ))
-                    grid::grid.raster(img)
-                }
-            } else if (save_format == "tiff") {
-                if (package_check("tiff", optional = TRUE)) {
-                    img <- tiff::readTIFF(source = paste0(
-                        file_location,
-                        "/", file_name
-                    ))
-                    grid::grid.raster(img)
-                }
-            } else {
-                warning("\t only png & tiff are currently supported \t")
-            }
-        }
-    }
-}
 
 #' @rdname plot_save
 #' @examples
@@ -386,3 +155,246 @@ showSaveParameters <- function() {
                     save_param = list(save_name = 'favorite_name',
                     units = 'png'))")
 }
+
+
+
+
+# internals ####
+
+
+#' @describeIn plot_save (internal) ggplot saving. ...
+#' passes to cowplot::save_plot
+#' @keywords internal
+.ggplot_save_function <- function(gobject,
+                                  plot_object,
+                                  save_dir = NULL,
+                                  save_folder = NULL,
+                                  save_name = NULL,
+                                  default_save_name = "giotto_plot",
+                                  save_format = NULL,
+                                  show_saved_plot = FALSE,
+                                  ncol = 1,
+                                  nrow = 1,
+                                  scale = 1,
+                                  base_width = NULL,
+                                  base_height = NULL,
+                                  base_aspect_ratio = NULL,
+                                  units = NULL,
+                                  dpi = NULL,
+                                  limitsize = TRUE,
+                                  plot_count = NULL,
+                                  ...) {
+    if (is.null(plot_object)) {
+        stop("\t there is no object to plot \t")
+    }
+
+    ## get save information and set defaults
+    save_dir <- save_dir %null% instructions(gobject, param = "save_dir")
+    # if (is.null(save_folder)) save_folder <- NULL
+    plot_count <- plot_count %null% getOption("giotto.plot_count")
+    if (is.null(save_name)) {
+        save_name <- default_save_name
+        save_name <- paste0(plot_count, "-", save_name)
+        options("giotto.plot_count" = plot_count + 1L)
+    }
+    save_format <- save_format %null%
+        instructions(gobject, param = "plot_format")
+    dpi <- dpi %null% instructions(gobject, param = "dpi")
+    base_width <- base_width %null% instructions(gobject, param = "width")
+    base_height <- base_height %null% instructions(gobject, param = "height")
+    base_aspect_ratio <- base_aspect_ratio %null% 1.1
+    units <- units %null% instructions(gobject, param = "units")
+
+
+    ## checking
+    dpi <- as.numeric(dpi)
+    base_width <- as.numeric(base_width)
+    base_height <- as.numeric(base_height)
+    base_aspect_ratio <- as.numeric(base_aspect_ratio)
+
+    # create saving location
+    if (!is.null(save_folder)) {
+        file_location <- paste0(save_dir, "/", save_folder)
+    } else {
+        file_location <- save_dir
+    }
+    if (!file.exists(file_location)) dir.create(file_location, recursive = TRUE)
+    file_name <- paste0(save_name, ".", save_format)
+
+    cowplot::save_plot(
+        plot = plot_object,
+        filename = file_name,
+        path = file_location,
+        device = save_format,
+        ncol = ncol,
+        nrow = nrow,
+        scale = scale,
+        base_width = base_width,
+        base_height = base_height,
+        base_aspect_ratio = base_aspect_ratio,
+        units = units,
+        dpi = dpi,
+        limitsize = limitsize,
+        ...
+    )
+
+    # show saved plot if requested
+    if (isTRUE(show_saved_plot)) {
+        if (save_format == "png") {
+            if (package_check("png", optional = TRUE)) {
+                img <- png::readPNG(source = paste0(
+                    file_location, "/",
+                    file_name
+                ))
+                grid::grid.raster(img)
+            }
+        } else if (save_format == "tiff") {
+            if (package_check("tiff", optional = TRUE)) {
+                img <- tiff::readTIFF(source = paste0(
+                    file_location, "/",
+                    file_name
+                ))
+                grid::grid.raster(img)
+            }
+        } else {
+            warning("\t only png & tiff are currently supported \t")
+        }
+    }
+}
+
+
+
+#' @describeIn plot_save (internal) base and general saving.
+#' ... passes to grDevices png, tiff, pdf, svg
+#' @keywords internal
+.general_save_function <- function(
+        gobject,
+        plot_object,
+        save_dir = NULL,
+        save_folder = NULL,
+        save_name = NULL,
+        default_save_name = "giotto_plot",
+        save_format = c("png", "tiff", "pdf", "svg"),
+        show_saved_plot = FALSE,
+        base_width = NULL,
+        base_height = NULL,
+        base_aspect_ratio = NULL,
+        units = NULL,
+        dpi = NULL,
+        plot_count = NULL,
+        ...) {
+    if (is.null(plot_object)) {
+        stop("\t there is no object to plot \t")
+    }
+    save_format <- match.arg(save_format,
+                             choices = c("png", "tiff", "pdf", "svg")
+    )
+
+    if (any("plotly" %in% class(plot_object))) {
+        save_format <- "html"
+    }
+
+    ## get save information and set defaults
+    save_dir <- save_dir %null% instructions(gobject, param = "save_dir")
+    # if (is.null(save_folder)) save_folder <- NULL
+    plot_count <- plot_count %null% getOption("giotto.plot_count")
+    if (is.null(save_name)) {
+        save_name <- default_save_name
+        save_name <- paste0(plot_count, "-", save_name)
+        options("giotto.plot_count" = plot_count + 1)
+    }
+    save_format <- save_format %null%
+        instructions(gobject, param = "plot_format")
+    dpi <- dpi %null% instructions(gobject, param = "dpi")
+    base_width <- base_width %null% instructions(gobject, param = "width")
+    base_height <- base_height %null% instructions(gobject, param = "height")
+    base_aspect_ratio <- base_aspect_ratio %null% 1.1
+    units <- units %null% instructions(gobject, param = "units")
+
+
+    ## checking
+    dpi <- as.numeric(dpi)
+    base_width <- as.numeric(base_width)
+    base_height <- as.numeric(base_height)
+    base_aspect_ratio <- as.numeric(base_aspect_ratio)
+
+    # create saving location
+    if (!is.null(save_folder)) {
+        file_location <- paste0(save_dir, "/", save_folder)
+    } else {
+        file_location <- save_dir
+    }
+    if (!file.exists(file_location)) dir.create(file_location, recursive = TRUE)
+    file_name <- paste0(save_name, ".", save_format)
+    full_location <- paste0(file_location, "/", file_name)
+
+    if (any("plotly" %in% class(plot_object))) {
+        htmlwidgets::saveWidget(plotly::as_widget(plot_object),
+                                file = full_location
+        )
+    } else {
+        if (save_format == "png") {
+            grDevices::png(
+                filename = full_location, width = base_width,
+                height = base_height, res = dpi, units = units, ...
+            )
+            print(plot_object)
+            grDevices::dev.off()
+        }
+
+        if (save_format == "tiff") {
+            grDevices::tiff(
+                filename = full_location, width = base_width,
+                height = base_height, units = units, ...
+            )
+            print(plot_object)
+            grDevices::dev.off()
+        }
+
+        if (save_format == "pdf") {
+            grDevices::pdf(
+                file = full_location, width = base_width,
+                height = base_height, useDingbats = FALSE, ...
+            )
+            print(plot_object)
+            grDevices::dev.off()
+        }
+
+        if (save_format == "svg") {
+            grDevices::svg(
+                filename = full_location, width = base_width,
+                height = base_height, ...
+            )
+            print(plot_object)
+            grDevices::dev.off()
+        }
+
+
+        # show saved plot if requested
+        if (isTRUE(show_saved_plot)) {
+            if (save_format == "png") {
+                if (package_check("png", optional = TRUE)) {
+                    img <- png::readPNG(source = paste0(
+                        file_location,
+                        "/", file_name
+                    ))
+                    grid::grid.raster(img)
+                }
+            } else if (save_format == "tiff") {
+                if (package_check("tiff", optional = TRUE)) {
+                    img <- tiff::readTIFF(source = paste0(
+                        file_location,
+                        "/", file_name
+                    ))
+                    grid::grid.raster(img)
+                }
+            } else {
+                warning("\t only png & tiff are currently supported \t")
+            }
+        }
+    }
+}
+
+
+
+
