@@ -2,11 +2,33 @@
 % Please edit documentation in R/aux_save.R
 \name{plot_save}
 \alias{plot_save}
+\alias{all_plots_save_function}
 \alias{.ggplot_save_function}
 \alias{.general_save_function}
-\alias{all_plots_save_function}
 \title{Plot saving}
 \usage{
+all_plots_save_function(
+  gobject,
+  plot_object,
+  save_dir = NULL,
+  save_folder = NULL,
+  save_name = NULL,
+  default_save_name = "giotto_plot",
+  save_format = NULL,
+  show_saved_plot = FALSE,
+  ncol = 1,
+  nrow = 1,
+  scale = 1,
+  base_width = NULL,
+  base_height = NULL,
+  base_aspect_ratio = NULL,
+  units = NULL,
+  dpi = NULL,
+  limitsize = TRUE,
+  plot_count = NULL,
+  ...
+)
+
 .ggplot_save_function(
   gobject,
   plot_object,
@@ -43,28 +65,6 @@
   base_aspect_ratio = NULL,
   units = NULL,
   dpi = NULL,
-  plot_count = NULL,
-  ...
-)
-
-all_plots_save_function(
-  gobject,
-  plot_object,
-  save_dir = NULL,
-  save_folder = NULL,
-  save_name = NULL,
-  default_save_name = "giotto_plot",
-  save_format = NULL,
-  show_saved_plot = FALSE,
-  ncol = 1,
-  nrow = 1,
-  scale = 1,
-  base_width = NULL,
-  base_height = NULL,
-  base_aspect_ratio = NULL,
-  units = NULL,
-  dpi = NULL,
-  limitsize = TRUE,
   plot_count = NULL,
   ...
 )
