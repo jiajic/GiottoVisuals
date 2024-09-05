@@ -72,25 +72,25 @@ all_plots_save_function <- function(gobject,
     dpi = NULL,
     limitsize = TRUE,
     plot_count = NULL,
-    gpsparam = NULL,
+    GPSPARAM = NULL,
     ...) {
 
     # get save params
-    if (is.null(gpsparam)) {
+    if (is.null(GPSPARAM)) {
         type <- "general"
         if(any("ggplot" %in% class(plot_object))) type <- "gg"
         if (any("plotly" %in% class(plot_object))) type <- "plotly"
 
         a <- .grab_gpsparam_args()
-        gpsparam <- do.call(gpsparam, args = c(
+        GPSPARAM <- do.call(gpsparam, args = c(
             a, list(instructions = instructions(gobject), type = type)
         ))
     }
 
-    checkmate::assert_class(gpsparam, "giotto_plot_save_param")
+    checkmate::assert_class(GPSPARAM, "giotto_plot_save_param")
 
     if (identical(getOption("giotto.verbose"), "debug")) {
-        print(gpsparam)
+        print(GPSPARAM)
     }
 
     # perform save
@@ -103,7 +103,7 @@ all_plots_save_function <- function(gobject,
             nrow = nrow,
             scale = scale,
             limitsize = limitsize,
-            gpsparam = gpsparam,
+            GPSPARAM = GPSPARAM,
             ...
         )
     } else {
@@ -111,7 +111,7 @@ all_plots_save_function <- function(gobject,
             gobject = gobject,
             plot_object = plot_object,
             show_saved_plot = show_saved_plot,
-            gpsparam = gpsparam,
+            GPSPARAM = GPSPARAM,
             ...
         )
     }
@@ -269,7 +269,7 @@ showSaveParameters <- function() {
 
 # internals ####
 
-# gpsparam should be a `giotto_plot_save_param` object if provided
+# GPSPARAM should be a `giotto_plot_save_param` object if provided
 #' @noMd
 #' @keywords internal
 .ggplot_save_function <- function(
@@ -280,14 +280,14 @@ showSaveParameters <- function() {
         nrow = 1,
         scale = 1,
         limitsize = TRUE,
-        gpsparam = NULL,
+        GPSPARAM = NULL,
         ...
 ) {
     if (is.null(plot_object)) {
         stop("\t there is no object to plot \t")
     }
 
-    sparam <- gpsparam
+    sparam <- GPSPARAM
 
     # create saving location
     fullpath <- sparam$fullpath
@@ -338,21 +338,21 @@ showSaveParameters <- function() {
 
 
 
-# gpsparam should be a `giotto_plot_save_param` object if provided
+# GPSPARAM should be a `giotto_plot_save_param` object if provided
 #' @noMd
 #' @keywords internal
 .general_save_function <- function(
         gobject,
         plot_object,
         show_saved_plot = FALSE,
-        gpsparam = NULL,
+        GPSPARAM = NULL,
         ...
 ) {
     if (is.null(plot_object)) {
         stop("\t there is no object to plot \t")
     }
 
-    sparam <- gpsparam
+    sparam <- GPSPARAM
 
     fullpath <- sparam$fullpath
     save_format <- sparam$save_format
@@ -450,14 +450,14 @@ print.giotto_plot_save_param <- function(x, ...) {
     print_list(x)
 }
 
-# gpsparam should be a `giotto_plot_save_param`
-.plot_px_area <- function(gpsparam) {
+# GPSPARAM should be a `giotto_plot_save_param`
+.plot_px_area <- function(GPSPARAM) {
 
-    dims <- c(gpsparam$base_height, gpsparam$base_width)
-    pxdims <- switch(gpsparam$units,
-        "in" = dims * gpsparam$dpi,
-        "cm" = (dims / 2.54) * gpsparam$dpi,
-        "mm" = (dims / 25.4) * gpsparam$dpi,
+    dims <- c(GPSPARAM$base_height, GPSPARAM$base_width)
+    pxdims <- switch(GPSPARAM$units,
+        "in" = dims * GPSPARAM$dpi,
+        "cm" = (dims / 2.54) * GPSPARAM$dpi,
+        "mm" = (dims / 25.4) * GPSPARAM$dpi,
         "px" = dims
     )
     round(prod(pxdims))
