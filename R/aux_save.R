@@ -82,7 +82,7 @@ all_plots_save_function <- function(gobject,
 
     checkmate::assert_class(gpsparam, "giotto_plot_save_param")
 
-    if (getOption("giotto.verbose") == "debug") {
+    if (identical(getOption("giotto.verbose"), "debug")) {
         print(gpsparam)
     }
 
