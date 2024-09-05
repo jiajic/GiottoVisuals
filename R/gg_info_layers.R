@@ -4,7 +4,9 @@
 # are used in the final plot.                                                 #
 # --------------------------------------------------------------------------- #
 
-
+# TODO clean up this code a little more
+#   (there should only be one geom_point() call)
+# TODO support dimFeatPlot()
 
 # spatial ####
 
