@@ -42,68 +42,66 @@
 #' @details Description of parameters.
 #' @keywords internal
 #' @seealso \code{\link{spatPlot3D}}
-.spatPlot2D_single <- function(
-        gobject,
-        feat_type = NULL,
-        spat_unit = NULL,
-        show_image = FALSE,
-        gimage = NULL,
-        image_name = NULL,
-        spat_loc_name = NULL,
-        sdimx = "sdimx",
-        sdimy = "sdimy",
-        spat_enr_names = NULL,
-        cell_color = NULL,
-        color_as_factor = TRUE,
-        cell_color_code = NULL,
-        cell_color_gradient = NULL,
-        gradient_midpoint = NULL,
-        gradient_style = "divergent",
-        gradient_limits = NULL,
-        select_cell_groups = NULL,
-        select_cells = NULL,
-        point_shape = c("border", "no_border", "voronoi"),
-        point_size = 3,
-        point_alpha = 1,
-        point_border_col = "black",
-        point_border_stroke = 0.1,
-        show_cluster_center = FALSE,
-        show_center_label = FALSE,
-        center_point_size = 4,
-        center_point_border_col = "black",
-        center_point_border_stroke = 0.1,
-        label_size = 4,
-        label_fontface = "bold",
-        show_network = FALSE,
-        spatial_network_name = "Delaunay_network",
-        network_color = NULL,
-        network_alpha = 1,
-        show_grid = FALSE,
-        spatial_grid_name = "spatial_grid",
-        grid_color = NULL,
-        show_other_cells = TRUE,
-        other_cell_color = "lightgrey",
-        other_point_size = 1,
-        other_cells_alpha = 0.1,
-        coord_fix_ratio = 1,
-        title = NULL,
-        show_legend = TRUE,
-        legend_text = 8,
-        legend_symbol_size = 1,
-        background_color = "white",
-        vor_border_color = "white",
-        vor_max_radius = 200,
-        vor_alpha = 1,
-        axis_text = 8,
-        axis_title = 8,
-        theme_param = list(),
-
-        show_plot = NULL,
-        return_plot = NULL,
-        save_plot = NULL,
-        verbose = FALSE,
-        save_param = list(),
-        default_save_name = "spatPlot2D_single") {
+.spatPlot2D_single <- function(gobject,
+    feat_type = NULL,
+    spat_unit = NULL,
+    show_image = FALSE,
+    gimage = NULL,
+    image_name = NULL,
+    spat_loc_name = NULL,
+    sdimx = "sdimx",
+    sdimy = "sdimy",
+    spat_enr_names = NULL,
+    cell_color = NULL,
+    color_as_factor = TRUE,
+    cell_color_code = NULL,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = "divergent",
+    gradient_limits = NULL,
+    select_cell_groups = NULL,
+    select_cells = NULL,
+    point_shape = c("border", "no_border", "voronoi"),
+    point_size = 3,
+    point_alpha = 1,
+    point_border_col = "black",
+    point_border_stroke = 0.1,
+    show_cluster_center = FALSE,
+    show_center_label = FALSE,
+    center_point_size = 4,
+    center_point_border_col = "black",
+    center_point_border_stroke = 0.1,
+    label_size = 4,
+    label_fontface = "bold",
+    show_network = FALSE,
+    spatial_network_name = "Delaunay_network",
+    network_color = NULL,
+    network_alpha = 1,
+    show_grid = FALSE,
+    spatial_grid_name = "spatial_grid",
+    grid_color = NULL,
+    show_other_cells = TRUE,
+    other_cell_color = "lightgrey",
+    other_point_size = 1,
+    other_cells_alpha = 0.1,
+    coord_fix_ratio = 1,
+    title = NULL,
+    show_legend = TRUE,
+    legend_text = 8,
+    legend_symbol_size = 1,
+    background_color = "white",
+    vor_border_color = "white",
+    vor_max_radius = 200,
+    vor_alpha = 1,
+    axis_text = 8,
+    axis_title = 8,
+    theme_param = list(),
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
+    verbose = FALSE,
+    save_param = list(),
+    default_save_name = "spatPlot2D_single") {
     # Check params
     checkmate::assert_class(gobject, "giotto")
 
@@ -177,7 +175,9 @@
     if (is.null(spat_loc_name)) {
         if (!is.null(slot(gobject, "spatial_locs"))) {
             spat_loc_name <- list_spatial_locations_names(
-                gobject, spat_unit = spat_unit)[[1]]
+                gobject,
+                spat_unit = spat_unit
+            )[[1]]
         } else {
             spat_loc_name <- NULL
             message("No spatial locations have been found")
@@ -212,23 +212,23 @@
         message("You have selected both individual cell IDs and a group of
         cells")
         group_cell_IDs <- cell_locations_metadata[get(cell_color) %in%
-                                                      select_cell_groups][["cell_ID"]]
+            select_cell_groups][["cell_ID"]]
         select_cells <- unique(c(select_cells, group_cell_IDs))
     } else if (!is.null(select_cell_groups)) {
         select_cells <- cell_locations_metadata[get(cell_color) %in%
-                                                    select_cell_groups][["cell_ID"]]
+            select_cell_groups][["cell_ID"]]
     }
 
     if (!is.null(select_cells)) {
         cell_locations_metadata_other <-
             cell_locations_metadata[!cell_locations_metadata$cell_ID %in%
-                                        select_cells]
+                select_cells]
         cell_locations_metadata_selected <-
             cell_locations_metadata[cell_locations_metadata$cell_ID %in%
-                                        select_cells]
+                select_cells]
         spatial_network <- spatial_network[spatial_network$to %in%
-                                               select_cells & spatial_network$from %in%
-                                               select_cells]
+            select_cells & spatial_network$from %in%
+            select_cells]
 
         # if specific cells are selected
         # cell_locations_metadata = cell_locations_metadata_selected
@@ -242,7 +242,7 @@
     # only keep names from selected groups
     if (!is.null(select_cell_groups) & !is.null(cell_color_code)) {
         cell_color_code <- cell_color_code[names(cell_color_code) %in%
-                                               select_cell_groups]
+            select_cell_groups]
     }
 
     # data.table and ggplot variables
@@ -358,21 +358,21 @@
 
     pl <- switch(point_shape,
         "border" = do.call(
-         plot_spat_point_layer_ggplot,
-         args = c(
-             point_general_params,
-             point_border_specific_params
-         )
+            plot_spat_point_layer_ggplot,
+            args = c(
+                point_general_params,
+                point_border_specific_params
+            )
         ),
         "no_border" = do.call(
-         plot_spat_point_layer_ggplot_noFILL,
-         args = point_general_params
+            plot_spat_point_layer_ggplot_noFILL,
+            args = point_general_params
         ),
         "voronoi" = do.call(
             plot_spat_voronoi_layer_ggplot,
             args = c(
-                 point_general_params,
-                 point_voronoi_specific_params
+                point_general_params,
+                point_voronoi_specific_params
             )
         )
     )
@@ -393,11 +393,13 @@
         if (point_shape %in% c("border", "voronoi")) {
             pl <- pl +
                 guides(fill = guide_legend(
-                    override.aes = list(size = legend_symbol_size)))
+                    override.aes = list(size = legend_symbol_size)
+                ))
         } else if (point_shape == "no_border") {
             pl <- pl +
                 guides(color = guide_legend(
-                    override.aes = list(size = legend_symbol_size)))
+                    override.aes = list(size = legend_symbol_size)
+                ))
         }
     }
 
@@ -409,8 +411,10 @@
 
     # provide x, y and plot titles
     if (is.null(title)) title <- cell_color
-    pl <- pl + ggplot2::labs(x = "x coordinates", y = "y coordinates",
-                             title = title)
+    pl <- pl + ggplot2::labs(
+        x = "x coordinates", y = "y coordinates",
+        title = title
+    )
 
     return(plot_output_handler(
         gobject = gobject,
@@ -482,73 +486,72 @@
 #' @details coord_fix_ratio: set to NULL to use default ggplot parameters
 #' @returns ggplot
 #' @export
-spatPlot2D <- function(
-        gobject,
-        spat_unit = NULL,
-        feat_type = NULL,
-        show_image = FALSE,
-        gimage = NULL,
-        image_name = NULL,
-        largeImage_name = NULL,
-        group_by = NULL,
-        group_by_subset = NULL,
-        spat_loc_name = NULL,
-        sdimx = "sdimx",
-        sdimy = "sdimy",
-        spat_enr_names = NULL,
-        cell_color = NULL,
-        color_as_factor = TRUE,
-        cell_color_code = NULL,
-        cell_color_gradient = NULL,
-        gradient_midpoint = NULL,
-        gradient_style = c("divergent", "sequential"),
-        gradient_limits = NULL,
-        select_cell_groups = NULL,
-        select_cells = NULL,
-        point_shape = c("border", "no_border", "voronoi"),
-        point_size = 3,
-        point_alpha = 1,
-        point_border_col = "black",
-        point_border_stroke = 0.1,
-        show_cluster_center = FALSE,
-        show_center_label = FALSE,
-        center_point_size = 4,
-        center_point_border_col = "black",
-        center_point_border_stroke = 0.1,
-        label_size = 4,
-        label_fontface = "bold",
-        show_network = FALSE,
-        spatial_network_name = "Delaunay_network",
-        network_color = NULL,
-        network_alpha = 1,
-        show_grid = FALSE,
-        spatial_grid_name = "spatial_grid",
-        grid_color = NULL,
-        show_other_cells = TRUE,
-        other_cell_color = "lightgrey",
-        other_point_size = 1,
-        other_cells_alpha = 0.1,
-        coord_fix_ratio = 1,
-        title = NULL,
-        show_legend = TRUE,
-        legend_text = 10,
-        legend_symbol_size = 2,
-        background_color = "white",
-        vor_border_color = "white",
-        vor_max_radius = 200,
-        vor_alpha = 1,
-        axis_text = 8,
-        axis_title = 8,
-        cow_n_col = NULL,
-        cow_rel_h = 1,
-        cow_rel_w = 1,
-        cow_align = "h",
-        show_plot = NULL,
-        return_plot = NULL,
-        save_plot = NULL,
-        save_param = list(),
-        theme_param = list(),
-        default_save_name = "spatPlot2D") {
+spatPlot2D <- function(gobject,
+    spat_unit = NULL,
+    feat_type = NULL,
+    show_image = FALSE,
+    gimage = NULL,
+    image_name = NULL,
+    largeImage_name = NULL,
+    group_by = NULL,
+    group_by_subset = NULL,
+    spat_loc_name = NULL,
+    sdimx = "sdimx",
+    sdimy = "sdimy",
+    spat_enr_names = NULL,
+    cell_color = NULL,
+    color_as_factor = TRUE,
+    cell_color_code = NULL,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = c("divergent", "sequential"),
+    gradient_limits = NULL,
+    select_cell_groups = NULL,
+    select_cells = NULL,
+    point_shape = c("border", "no_border", "voronoi"),
+    point_size = 3,
+    point_alpha = 1,
+    point_border_col = "black",
+    point_border_stroke = 0.1,
+    show_cluster_center = FALSE,
+    show_center_label = FALSE,
+    center_point_size = 4,
+    center_point_border_col = "black",
+    center_point_border_stroke = 0.1,
+    label_size = 4,
+    label_fontface = "bold",
+    show_network = FALSE,
+    spatial_network_name = "Delaunay_network",
+    network_color = NULL,
+    network_alpha = 1,
+    show_grid = FALSE,
+    spatial_grid_name = "spatial_grid",
+    grid_color = NULL,
+    show_other_cells = TRUE,
+    other_cell_color = "lightgrey",
+    other_point_size = 1,
+    other_cells_alpha = 0.1,
+    coord_fix_ratio = 1,
+    title = NULL,
+    show_legend = TRUE,
+    legend_text = 10,
+    legend_symbol_size = 2,
+    background_color = "white",
+    vor_border_color = "white",
+    vor_max_radius = 200,
+    vor_alpha = 1,
+    axis_text = 8,
+    axis_title = 8,
+    cow_n_col = NULL,
+    cow_rel_h = 1,
+    cow_rel_w = 1,
+    cow_align = "h",
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
+    save_param = list(),
+    theme_param = list(),
+    default_save_name = "spatPlot2D") {
     checkmate::assert_class(gobject, "giotto")
 
     # deprecation message
@@ -666,11 +669,14 @@ spatPlot2D <- function(
                 if (cell_color %in% colnames(comb_metadata)) {
                     if (isTRUE(color_as_factor)) {
                         number_colors <- length(
-                            unique(comb_metadata[[cell_color]]))
+                            unique(comb_metadata[[cell_color]])
+                        )
                         cell_color_code <- set_default_color_discrete_cell(
-                            instrs = instructions(gobject))(n = number_colors)
+                            instrs = instructions(gobject)
+                        )(n = number_colors)
                         names(cell_color_code) <- unique(
-                            comb_metadata[[cell_color]])
+                            comb_metadata[[cell_color]]
+                        )
                         cell_color_code <- cell_color_code
                     }
                 }
@@ -699,8 +705,7 @@ spatPlot2D <- function(
         for (group_id in seq_along(unique_groups)) {
             group <- unique_groups[group_id]
 
-            subset_cell_IDs <- comb_metadata[get(group_by) == group
-            ][["cell_ID"]]
+            subset_cell_IDs <- comb_metadata[get(group_by) == group][["cell_ID"]]
             spp_params$gobject <- subsetGiotto(
                 gobject = gobject,
                 spat_unit = spat_unit,
@@ -825,32 +830,32 @@ spatPlot <- function(...) {
 #' @returns ggplot
 #' @export
 spatDeconvPlot <- function(gobject,
-                           spat_unit = NULL,
-                           feat_type = NULL,
-                           deconv_name = "DWLS",
-                           show_image = FALSE,
-                           gimage = NULL,
-                           image_name = NULL,
-                           largeImage_name = NULL,
-                           spat_loc_name = NULL,
-                           sdimx = "sdimx",
-                           sdimy = "sdimy",
-                           cell_color_code = NULL,
-                           line_color = NA,
-                           radius = 10,
-                           alpha = 1,
-                           legend_text = 8,
-                           background_color = "white",
-                           title = NULL,
-                           axis_text = 8,
-                           axis_title = 8,
-                           coord_fix_ratio = 1,
-                           show_plot = NULL,
-                           return_plot = NULL,
-                           save_plot = NULL,
-                           save_param = list(),
-                           theme_param = list(),
-                           default_save_name = "spatDeconvPlot") {
+    spat_unit = NULL,
+    feat_type = NULL,
+    deconv_name = "DWLS",
+    show_image = FALSE,
+    gimage = NULL,
+    image_name = NULL,
+    largeImage_name = NULL,
+    spat_loc_name = NULL,
+    sdimx = "sdimx",
+    sdimy = "sdimy",
+    cell_color_code = NULL,
+    line_color = NA,
+    radius = 10,
+    alpha = 1,
+    legend_text = 8,
+    background_color = "white",
+    title = NULL,
+    axis_text = 8,
+    axis_title = 8,
+    coord_fix_ratio = 1,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
+    save_param = list(),
+    theme_param = list(),
+    default_save_name = "spatDeconvPlot") {
     # check for installed packages
     package_check(pkg_name = "scatterpie", repository = "CRAN")
 
@@ -965,14 +970,17 @@ spatDeconvPlot <- function(gobject,
 
     # print, return and save parameters
     show_plot <- ifelse(is.null(show_plot),
-                        readGiottoInstructions(gobject, param = "show_plot"),
-                        show_plot)
+        readGiottoInstructions(gobject, param = "show_plot"),
+        show_plot
+    )
     save_plot <- ifelse(is.null(save_plot),
-                        readGiottoInstructions(gobject, param = "save_plot"),
-                        save_plot)
+        readGiottoInstructions(gobject, param = "save_plot"),
+        save_plot
+    )
     return_plot <- ifelse(is.null(return_plot),
-                          readGiottoInstructions(gobject, param = "return_plot"),
-                          return_plot)
+        readGiottoInstructions(gobject, param = "return_plot"),
+        return_plot
+    )
 
     ## print plot
     if (show_plot == TRUE) {
@@ -1007,53 +1015,53 @@ spatDeconvPlot <- function(gobject,
 #' @noRd
 #' @keywords internal
 .dimPlot2D_single <- function(gobject,
-                              spat_unit = NULL,
-                              feat_type = NULL,
-                              dim_reduction_to_use = "umap",
-                              dim_reduction_name = NULL,
-                              dim1_to_use = 1,
-                              dim2_to_use = 2,
-                              spat_enr_names = NULL,
-                              show_NN_network = FALSE,
-                              nn_network_to_use = "sNN",
-                              network_name = "sNN.pca",
-                              cell_color = NULL,
-                              color_as_factor = TRUE,
-                              cell_color_code = NULL,
-                              cell_color_gradient = NULL,
-                              gradient_midpoint = NULL,
-                              gradient_style = c("divergent", "sequential"),
-                              gradient_limits = NULL,
-                              select_cell_groups = NULL,
-                              select_cells = NULL,
-                              show_other_cells = TRUE,
-                              other_cell_color = "lightgrey",
-                              other_point_size = 0.5,
-                              show_cluster_center = FALSE,
-                              show_center_label = TRUE,
-                              center_point_size = 4,
-                              center_point_border_col = "black",
-                              center_point_border_stroke = 0.1,
-                              label_size = 4,
-                              label_fontface = "bold",
-                              edge_alpha = NULL,
-                              point_shape = c("border", "no_border"),
-                              point_size = 1,
-                              point_alpha = 1,
-                              point_border_col = "black",
-                              point_border_stroke = 0.1,
-                              title = NULL,
-                              show_legend = TRUE,
-                              legend_text = 8,
-                              legend_symbol_size = 1,
-                              background_color = "white",
-                              axis_text = 8,
-                              axis_title = 8,
-                              show_plot = NULL,
-                              return_plot = NULL,
-                              save_plot = NULL,
-                              save_param = list(),
-                              default_save_name = "dimPlot2D_single") {
+    spat_unit = NULL,
+    feat_type = NULL,
+    dim_reduction_to_use = "umap",
+    dim_reduction_name = NULL,
+    dim1_to_use = 1,
+    dim2_to_use = 2,
+    spat_enr_names = NULL,
+    show_NN_network = FALSE,
+    nn_network_to_use = "sNN",
+    network_name = "sNN.pca",
+    cell_color = NULL,
+    color_as_factor = TRUE,
+    cell_color_code = NULL,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = c("divergent", "sequential"),
+    gradient_limits = NULL,
+    select_cell_groups = NULL,
+    select_cells = NULL,
+    show_other_cells = TRUE,
+    other_cell_color = "lightgrey",
+    other_point_size = 0.5,
+    show_cluster_center = FALSE,
+    show_center_label = TRUE,
+    center_point_size = 4,
+    center_point_border_col = "black",
+    center_point_border_stroke = 0.1,
+    label_size = 4,
+    label_fontface = "bold",
+    edge_alpha = NULL,
+    point_shape = c("border", "no_border"),
+    point_size = 1,
+    point_alpha = 1,
+    point_border_col = "black",
+    point_border_stroke = 0.1,
+    title = NULL,
+    show_legend = TRUE,
+    legend_text = 8,
+    legend_symbol_size = 1,
+    background_color = "white",
+    axis_text = 8,
+    axis_title = 8,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
+    save_param = list(),
+    default_save_name = "dimPlot2D_single") {
     checkmate::assert_class(gobject, "giotto")
 
     # Set feat_type and spat_unit
@@ -1073,8 +1081,10 @@ spatDeconvPlot <- function(gobject,
             if (feat_type == "rna") {
                 dim_reduction_name <- dim_reduction_to_use
             } else {
-                dim_reduction_name <- paste0(feat_type, ".",
-                                             dim_reduction_to_use)
+                dim_reduction_name <- paste0(
+                    feat_type, ".",
+                    dim_reduction_to_use
+                )
             }
         }
     }
@@ -1092,9 +1102,11 @@ spatDeconvPlot <- function(gobject,
     )
 
     if (!dim_reduction_name %in% dim_red_names) {
-        stop("\n dimension reduction: ", dim_reduction_to_use,
-             " or dimension reduction name: ", dim_reduction_name,
-             " is not available \n")
+        stop(
+            "\n dimension reduction: ", dim_reduction_to_use,
+            " or dimension reduction name: ", dim_reduction_name,
+            " is not available \n"
+        )
     }
 
 
@@ -1130,7 +1142,9 @@ spatDeconvPlot <- function(gobject,
     cell_metadata[, cell_ID := as.character(cell_ID)]
 
     annotated_DT <- data.table::merge.data.table(cell_metadata,
-                                                 dim_DT, by = "cell_ID")
+        dim_DT,
+        by = "cell_ID"
+    )
 
 
     # create input for network
@@ -1146,33 +1160,41 @@ spatDeconvPlot <- function(gobject,
         )
 
         network_DT <- data.table::as.data.table(
-            igraph::as_data_frame(selected_nn_network, what = "edges"))
+            igraph::as_data_frame(selected_nn_network, what = "edges")
+        )
 
         # annotated network
         old_dim_names <- dim_names
 
-        annotated_network_DT <- merge(network_DT, dim_DT, by.x = "from",
-                                      by.y = "cell_ID")
+        annotated_network_DT <- merge(network_DT, dim_DT,
+            by.x = "from",
+            by.y = "cell_ID"
+        )
         from_dim_names <- paste0("from_", old_dim_names)
-        data.table::setnames(annotated_network_DT, old = old_dim_names,
-                             new = from_dim_names)
+        data.table::setnames(annotated_network_DT,
+            old = old_dim_names,
+            new = from_dim_names
+        )
 
         annotated_network_DT <- merge(annotated_network_DT, dim_DT,
-                                      by.x = "to", by.y = "cell_ID")
+            by.x = "to", by.y = "cell_ID"
+        )
         to_dim_names <- paste0("to_", old_dim_names)
-        data.table::setnames(annotated_network_DT, old = old_dim_names,
-                             new = to_dim_names)
+        data.table::setnames(annotated_network_DT,
+            old = old_dim_names,
+            new = to_dim_names
+        )
     }
 
     # add % variance information if reduction is PCA
     if (dim_reduction_to_use == "pca") {
         pcaObj <- get_dimReduction(gobject,
-                                   spat_unit = spat_unit,
-                                   feat_type = feat_type,
-                                   reduction = "cells",
-                                   reduction_method = dim_reduction_to_use,
-                                   name = dim_reduction_name,
-                                   output = "dimObj"
+            spat_unit = spat_unit,
+            feat_type = feat_type,
+            reduction = "cells",
+            reduction_method = dim_reduction_to_use,
+            name = dim_reduction_name,
+            output = "dimObj"
         )
         eigenvalues <- pcaObj@misc$eigenvalues
 
@@ -1195,23 +1217,24 @@ spatDeconvPlot <- function(gobject,
         message("You have selected both individual cell IDs and a group
         of cells")
         group_cell_IDs <- annotated_DT[get(cell_color) %in%
-                                           select_cell_groups][["cell_ID"]]
+            select_cell_groups][["cell_ID"]]
         select_cells <- unique(c(select_cells, group_cell_IDs))
     } else if (!is.null(select_cell_groups)) {
         select_cells <- annotated_DT[get(cell_color) %in%
-                                         select_cell_groups][["cell_ID"]]
+            select_cell_groups][["cell_ID"]]
     }
 
     if (!is.null(select_cells)) {
         annotated_DT_other <- annotated_DT[!annotated_DT$cell_ID %in%
-                                               select_cells]
+            select_cells]
         annotated_DT_selected <- annotated_DT[annotated_DT$cell_ID %in%
-                                                  select_cells]
+            select_cells]
 
         if (show_NN_network == TRUE) {
             annotated_network_DT <- annotated_network_DT[
                 annotated_network_DT$to %in% select_cells &
-                    annotated_network_DT$from %in% select_cells]
+                    annotated_network_DT$from %in% select_cells
+            ]
         }
 
         # if specific cells are selected
@@ -1313,10 +1336,14 @@ spatDeconvPlot <- function(gobject,
             y_name <- paste0("pca", "-", dim_names[2])
 
             # provide x, y and plot titles
-            x_title <- sprintf("%s explains %.02f%% of variance",
-                               x_name, var_expl_vec[dim1_to_use])
-            y_title <- sprintf("%s explains %.02f%% of variance",
-                               y_name, var_expl_vec[dim2_to_use])
+            x_title <- sprintf(
+                "%s explains %.02f%% of variance",
+                x_name, var_expl_vec[dim1_to_use]
+            )
+            y_title <- sprintf(
+                "%s explains %.02f%% of variance",
+                y_name, var_expl_vec[dim2_to_use]
+            )
 
             if (is.null(title)) title <- cell_color
             pl <- pl + ggplot2::labs(x = x_title, y = y_title, title = title)
@@ -1345,10 +1372,12 @@ spatDeconvPlot <- function(gobject,
     if (color_as_factor == TRUE) {
         if (point_shape == "border") {
             pl <- pl + guides(fill = guide_legend(
-                override.aes = list(size = legend_symbol_size)))
+                override.aes = list(size = legend_symbol_size)
+            ))
         } else if (point_shape == "no_border") {
             pl <- pl + guides(color = guide_legend(
-                override.aes = list(size = legend_symbol_size)))
+                override.aes = list(size = legend_symbol_size)
+            ))
         }
     }
 
@@ -1383,59 +1412,59 @@ spatDeconvPlot <- function(gobject,
 #' dimPlot2D(g)
 #' @export
 dimPlot2D <- function(gobject,
-                      spat_unit = NULL,
-                      feat_type = NULL,
-                      group_by = NULL,
-                      group_by_subset = NULL,
-                      dim_reduction_to_use = "umap",
-                      dim_reduction_name = NULL,
-                      dim1_to_use = 1,
-                      dim2_to_use = 2,
-                      spat_enr_names = NULL,
-                      show_NN_network = FALSE,
-                      nn_network_to_use = "sNN",
-                      network_name = "sNN.pca",
-                      cell_color = NULL,
-                      color_as_factor = TRUE,
-                      cell_color_code = NULL,
-                      cell_color_gradient = NULL,
-                      gradient_midpoint = NULL,
-                      gradient_style = c("divergent", "sequential"),
-                      gradient_limits = NULL,
-                      select_cell_groups = NULL,
-                      select_cells = NULL,
-                      show_other_cells = TRUE,
-                      other_cell_color = "lightgrey",
-                      other_point_size = 0.5,
-                      show_cluster_center = FALSE,
-                      show_center_label = TRUE,
-                      center_point_size = 4,
-                      center_point_border_col = "black",
-                      center_point_border_stroke = 0.1,
-                      label_size = 4,
-                      label_fontface = "bold",
-                      edge_alpha = NULL,
-                      point_shape = c("border", "no_border"),
-                      point_size = 1,
-                      point_alpha = 1,
-                      point_border_col = "black",
-                      point_border_stroke = 0.1,
-                      title = NULL,
-                      show_legend = TRUE,
-                      legend_text = 10,
-                      legend_symbol_size = 2,
-                      background_color = "white",
-                      axis_text = 8,
-                      axis_title = 8,
-                      cow_n_col = NULL,
-                      cow_rel_h = 1,
-                      cow_rel_w = 1,
-                      cow_align = "h",
-                      show_plot = NULL,
-                      return_plot = NULL,
-                      save_plot = NULL,
-                      save_param = list(),
-                      default_save_name = "dimPlot2D") {
+    spat_unit = NULL,
+    feat_type = NULL,
+    group_by = NULL,
+    group_by_subset = NULL,
+    dim_reduction_to_use = "umap",
+    dim_reduction_name = NULL,
+    dim1_to_use = 1,
+    dim2_to_use = 2,
+    spat_enr_names = NULL,
+    show_NN_network = FALSE,
+    nn_network_to_use = "sNN",
+    network_name = "sNN.pca",
+    cell_color = NULL,
+    color_as_factor = TRUE,
+    cell_color_code = NULL,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = c("divergent", "sequential"),
+    gradient_limits = NULL,
+    select_cell_groups = NULL,
+    select_cells = NULL,
+    show_other_cells = TRUE,
+    other_cell_color = "lightgrey",
+    other_point_size = 0.5,
+    show_cluster_center = FALSE,
+    show_center_label = TRUE,
+    center_point_size = 4,
+    center_point_border_col = "black",
+    center_point_border_stroke = 0.1,
+    label_size = 4,
+    label_fontface = "bold",
+    edge_alpha = NULL,
+    point_shape = c("border", "no_border"),
+    point_size = 1,
+    point_alpha = 1,
+    point_border_col = "black",
+    point_border_stroke = 0.1,
+    title = NULL,
+    show_legend = TRUE,
+    legend_text = 10,
+    legend_symbol_size = 2,
+    background_color = "white",
+    axis_text = 8,
+    axis_title = 8,
+    cow_n_col = NULL,
+    cow_rel_h = 1,
+    cow_rel_w = 1,
+    cow_align = "h",
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
+    save_param = list(),
+    default_save_name = "dimPlot2D") {
     # arg_list <- c(as.list(environment())) # get all args as list
     checkmate::assert_class(gobject, "giotto")
 
@@ -1526,11 +1555,14 @@ dimPlot2D <- function(gobject,
                 if (cell_color %in% colnames(comb_metadata)) {
                     if (color_as_factor == TRUE) {
                         number_colors <- length(
-                            unique(comb_metadata[[cell_color]]))
+                            unique(comb_metadata[[cell_color]])
+                        )
                         cell_color_code <- set_default_color_discrete_cell(
-                            instrs = instructions(gobject))(n = number_colors)
+                            instrs = instructions(gobject)
+                        )(n = number_colors)
                         names(cell_color_code) <- unique(
-                            comb_metadata[[cell_color]])
+                            comb_metadata[[cell_color]]
+                        )
                         cell_color_code <- cell_color_code
                     }
                 }
@@ -1545,7 +1577,8 @@ dimPlot2D <- function(gobject,
             group <- unique_groups[group_id]
 
             subset_cell_IDs <- comb_metadata[
-                get(group_by) == group][["cell_ID"]]
+                get(group_by) == group
+            ][["cell_ID"]]
             temp_gobject <- subsetGiotto(
                 gobject = gobject,
                 spat_unit = spat_unit,
@@ -1672,9 +1705,9 @@ dimPlot <- function(...) {
 #' plotUMAP_2D(g)
 #' @export
 plotUMAP_2D <- function(gobject,
-                        dim_reduction_name = NULL,
-                        default_save_name = "UMAP_2D",
-                        ...) {
+    dim_reduction_name = NULL,
+    default_save_name = "UMAP_2D",
+    ...) {
     checkmate::assert_class(gobject, "giotto")
 
     dimPlot2D(
@@ -1703,9 +1736,9 @@ plotUMAP_2D <- function(gobject,
 #'
 #' @export
 plotUMAP <- function(gobject,
-                     dim_reduction_name = NULL,
-                     default_save_name = "UMAP",
-                     ...) {
+    dim_reduction_name = NULL,
+    default_save_name = "UMAP",
+    ...) {
     checkmate::assert_class(gobject, "giotto")
 
     dimPlot2D(
@@ -1739,9 +1772,9 @@ plotUMAP <- function(gobject,
 #'
 #' @export
 plotTSNE_2D <- function(gobject,
-                        dim_reduction_name = NULL,
-                        default_save_name = "tSNE_2D",
-                        ...) {
+    dim_reduction_name = NULL,
+    default_save_name = "tSNE_2D",
+    ...) {
     checkmate::assert_class(gobject, "giotto")
 
     dimPlot2D(
@@ -1771,9 +1804,9 @@ plotTSNE_2D <- function(gobject,
 #'
 #' @export
 plotTSNE <- function(gobject,
-                     dim_reduction_name = NULL,
-                     default_save_name = "tSNE",
-                     ...) {
+    dim_reduction_name = NULL,
+    default_save_name = "tSNE",
+    ...) {
     checkmate::assert_class(gobject, "giotto")
 
     dimPlot2D(
@@ -1805,9 +1838,9 @@ plotTSNE <- function(gobject,
 #'
 #' @export
 plotPCA_2D <- function(gobject,
-                       dim_reduction_name = NULL,
-                       default_save_name = "PCA_2D",
-                       ...) {
+    dim_reduction_name = NULL,
+    default_save_name = "PCA_2D",
+    ...) {
     checkmate::assert_class(gobject, "giotto")
 
     dimPlot2D(
@@ -1839,9 +1872,9 @@ plotPCA_2D <- function(gobject,
 #'
 #' @export
 plotPCA <- function(gobject,
-                    dim_reduction_name = NULL,
-                    default_save_name = "PCA",
-                    ...) {
+    dim_reduction_name = NULL,
+    default_save_name = "PCA",
+    ...) {
     checkmate::assert_class(gobject, "giotto")
 
     dimPlot2D(
@@ -1929,87 +1962,86 @@ plotPCA <- function(gobject,
 #' @export
 #' @seealso \code{\link{spatDimPlot3D}}
 spatDimPlot2D <- function(gobject,
-                          spat_unit = NULL,
-                          feat_type = NULL,
-                          show_image = FALSE,
-                          gimage = NULL,
-                          image_name = NULL,
-                          largeImage_name = NULL,
-                          spat_loc_name = NULL,
-                          plot_alignment = c("vertical", "horizontal"),
-                          dim_reduction_to_use = "umap",
-                          dim_reduction_name = NULL,
-                          dim1_to_use = 1,
-                          dim2_to_use = 2,
-                          sdimx = "sdimx",
-                          sdimy = "sdimy",
-                          spat_enr_names = NULL,
-                          cell_color = NULL,
-                          color_as_factor = TRUE,
-                          cell_color_code = NULL,
-                          cell_color_gradient = NULL,
-                          gradient_midpoint = NULL,
-                          gradient_style = c("divergent", "sequential"),
-                          gradient_limits = NULL,
-                          select_cell_groups = NULL,
-                          select_cells = NULL,
-                          dim_point_shape = c("border", "no_border"),
-                          dim_point_size = 1,
-                          dim_point_alpha = 1,
-                          dim_point_border_col = "black",
-                          dim_point_border_stroke = 0.1,
-                          spat_point_shape = c("border", "no_border", "voronoi"),
-                          spat_point_size = 1,
-                          spat_point_alpha = 1,
-                          spat_point_border_col = "black",
-                          spat_point_border_stroke = 0.1,
-                          dim_show_cluster_center = FALSE,
-                          dim_show_center_label = TRUE,
-                          dim_center_point_size = 4,
-                          dim_center_point_border_col = "black",
-                          dim_center_point_border_stroke = 0.1,
-                          dim_label_size = 4,
-                          dim_label_fontface = "bold",
-                          spat_show_cluster_center = FALSE,
-                          spat_show_center_label = FALSE,
-                          spat_center_point_size = 4,
-                          spat_center_point_border_col = "blue",
-                          spat_center_point_border_stroke = 0.1,
-                          spat_label_size = 4,
-                          spat_label_fontface = "bold",
-                          show_NN_network = FALSE,
-                          nn_network_to_use = "sNN",
-                          network_name = "sNN.pca",
-                          nn_network_alpha = 0.05,
-                          show_spatial_network = FALSE,
-                          spat_network_name = "Delaunay_network",
-                          spat_network_color = "blue",
-                          spat_network_alpha = 0.5,
-                          show_spatial_grid = FALSE,
-                          spat_grid_name = "spatial_grid",
-                          spat_grid_color = "blue",
-                          show_other_cells = TRUE,
-                          other_cell_color = "lightgrey",
-                          dim_other_point_size = 1,
-                          spat_other_point_size = 1,
-                          spat_other_cells_alpha = 0.5,
-                          dim_show_legend = FALSE,
-                          spat_show_legend = FALSE,
-                          legend_text = 10,
-                          legend_symbol_size = 2,
-                          dim_background_color = "white",
-                          spat_background_color = "white",
-                          vor_border_color = "white",
-                          vor_max_radius = 200,
-                          vor_alpha = 1,
-                          axis_text = 8,
-                          axis_title = 8,
-                          show_plot = NULL,
-                          return_plot = NULL,
-                          save_plot = NULL,
-                          save_param = list(),
-                          default_save_name = "spatDimPlot2D") {
-
+    spat_unit = NULL,
+    feat_type = NULL,
+    show_image = FALSE,
+    gimage = NULL,
+    image_name = NULL,
+    largeImage_name = NULL,
+    spat_loc_name = NULL,
+    plot_alignment = c("vertical", "horizontal"),
+    dim_reduction_to_use = "umap",
+    dim_reduction_name = NULL,
+    dim1_to_use = 1,
+    dim2_to_use = 2,
+    sdimx = "sdimx",
+    sdimy = "sdimy",
+    spat_enr_names = NULL,
+    cell_color = NULL,
+    color_as_factor = TRUE,
+    cell_color_code = NULL,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = c("divergent", "sequential"),
+    gradient_limits = NULL,
+    select_cell_groups = NULL,
+    select_cells = NULL,
+    dim_point_shape = c("border", "no_border"),
+    dim_point_size = 1,
+    dim_point_alpha = 1,
+    dim_point_border_col = "black",
+    dim_point_border_stroke = 0.1,
+    spat_point_shape = c("border", "no_border", "voronoi"),
+    spat_point_size = 1,
+    spat_point_alpha = 1,
+    spat_point_border_col = "black",
+    spat_point_border_stroke = 0.1,
+    dim_show_cluster_center = FALSE,
+    dim_show_center_label = TRUE,
+    dim_center_point_size = 4,
+    dim_center_point_border_col = "black",
+    dim_center_point_border_stroke = 0.1,
+    dim_label_size = 4,
+    dim_label_fontface = "bold",
+    spat_show_cluster_center = FALSE,
+    spat_show_center_label = FALSE,
+    spat_center_point_size = 4,
+    spat_center_point_border_col = "blue",
+    spat_center_point_border_stroke = 0.1,
+    spat_label_size = 4,
+    spat_label_fontface = "bold",
+    show_NN_network = FALSE,
+    nn_network_to_use = "sNN",
+    network_name = "sNN.pca",
+    nn_network_alpha = 0.05,
+    show_spatial_network = FALSE,
+    spat_network_name = "Delaunay_network",
+    spat_network_color = "blue",
+    spat_network_alpha = 0.5,
+    show_spatial_grid = FALSE,
+    spat_grid_name = "spatial_grid",
+    spat_grid_color = "blue",
+    show_other_cells = TRUE,
+    other_cell_color = "lightgrey",
+    dim_other_point_size = 1,
+    spat_other_point_size = 1,
+    spat_other_cells_alpha = 0.5,
+    dim_show_legend = FALSE,
+    spat_show_legend = FALSE,
+    legend_text = 10,
+    legend_symbol_size = 2,
+    dim_background_color = "white",
+    spat_background_color = "white",
+    vor_border_color = "white",
+    vor_max_radius = 200,
+    vor_alpha = 1,
+    axis_text = 8,
+    axis_title = 8,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
+    save_param = list(),
+    default_save_name = "spatDimPlot2D") {
     # deprecation message
     if (!is.null(largeImage_name)) {
         deprecate_warn(
@@ -2034,24 +2066,28 @@ spatDimPlot2D <- function(gobject,
     )
 
     plot_alignment <- match.arg(plot_alignment,
-                                choices = c("vertical", "horizontal"))
+        choices = c("vertical", "horizontal")
+    )
 
 
     # create matching cell_color_code
     if (is.null(cell_color_code)) {
         if (is.character(cell_color)) {
             cell_metadata <- pDataDT(gobject,
-                                     spat_unit = spat_unit,
-                                     feat_type = feat_type
+                spat_unit = spat_unit,
+                feat_type = feat_type
             )
             if (cell_color %in% colnames(cell_metadata)) {
                 if (color_as_factor == TRUE) {
                     number_colors <- length(
-                        unique(cell_metadata[[cell_color]]))
+                        unique(cell_metadata[[cell_color]])
+                    )
                     cell_color_code <- set_default_color_discrete_cell(
-                        instrs = instructions(gobject))(n = number_colors)
+                        instrs = instructions(gobject)
+                    )(n = number_colors)
                     names(cell_color_code) <- unique(
-                        cell_metadata[[cell_color]])
+                        cell_metadata[[cell_color]]
+                    )
                     cell_color_code <- cell_color_code
                 }
             }
@@ -2175,15 +2211,19 @@ spatDimPlot2D <- function(gobject,
     if (plot_alignment == "vertical") {
         ncol <- 1
         nrow <- 2
-        combo_plot <- cowplot::plot_grid(dmpl, spl, ncol = ncol,
-                                         nrow = nrow, rel_heights = c(1),
-                                         rel_widths = c(1), align = "v")
+        combo_plot <- cowplot::plot_grid(dmpl, spl,
+            ncol = ncol,
+            nrow = nrow, rel_heights = c(1),
+            rel_widths = c(1), align = "v"
+        )
     } else {
         ncol <- 2
         nrow <- 1
-        combo_plot <- cowplot::plot_grid(dmpl, spl, ncol = ncol,
-                                         nrow = nrow, rel_heights = c(1),
-                                         rel_widths = c(1), align = "h")
+        combo_plot <- cowplot::plot_grid(dmpl, spl,
+            ncol = ncol,
+            nrow = nrow, rel_heights = c(1),
+            rel_widths = c(1), align = "h"
+        )
     }
 
     return(plot_output_handler(
@@ -2264,59 +2304,57 @@ spatDimPlot <- function(gobject, ...) {
 #'
 #' @export
 #' @seealso \code{\link{spatFeatPlot3D}}
-spatFeatPlot2D_single <- function(
-        gobject,
-        spat_unit = NULL,
-        feat_type = NULL,
-        show_image = FALSE,
-        gimage = NULL,
-        image_name = NULL,
-        largeImage_name = NULL,
-        spat_loc_name = "raw",
-        sdimx = "sdimx",
-        sdimy = "sdimy",
-        spat_enr_names = NULL,
-        expression_values = c("normalized", "scaled", "custom"),
-        feats,
-        order = TRUE,
-        cell_color_gradient = NULL,
-        gradient_midpoint = NULL,
-        gradient_style = c("divergent", "sequential"),
-        gradient_limits = NULL,
-        show_network = FALSE,
-        network_color = NULL,
-        edge_alpha = 0.5,
-        spatial_network_name = "Delaunay_network",
-        show_grid = FALSE,
-        grid_color = NULL,
-        spatial_grid_name = "spatial_grid",
-        midpoint = 0,
-        scale_alpha_with_expression = FALSE,
-        point_shape = c("border", "no_border", "voronoi"),
-        point_size = 1,
-        point_alpha = 1,
-        point_border_col = "black",
-        point_border_stroke = 0.1,
-        coord_fix_ratio = 1,
-        show_legend = TRUE,
-        legend_text = 8,
-        background_color = "white",
-        vor_border_color = "white",
-        vor_alpha = 1,
-        vor_max_radius = 200,
-        axis_text = 8,
-        axis_title = 8,
-        cow_n_col = NULL,
-        cow_rel_h = 1,
-        cow_rel_w = 1,
-        cow_align = "h",
-        theme_param = list(),
-        show_plot = NULL,
-        return_plot = NULL,
-        save_plot = NULL,
-        save_param = list(),
-        default_save_name = "spatFeatPlot2D_single"
-) {
+spatFeatPlot2D_single <- function(gobject,
+    spat_unit = NULL,
+    feat_type = NULL,
+    show_image = FALSE,
+    gimage = NULL,
+    image_name = NULL,
+    largeImage_name = NULL,
+    spat_loc_name = "raw",
+    sdimx = "sdimx",
+    sdimy = "sdimy",
+    spat_enr_names = NULL,
+    expression_values = c("normalized", "scaled", "custom"),
+    feats,
+    order = TRUE,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = c("divergent", "sequential"),
+    gradient_limits = NULL,
+    show_network = FALSE,
+    network_color = NULL,
+    edge_alpha = 0.5,
+    spatial_network_name = "Delaunay_network",
+    show_grid = FALSE,
+    grid_color = NULL,
+    spatial_grid_name = "spatial_grid",
+    midpoint = 0,
+    scale_alpha_with_expression = FALSE,
+    point_shape = c("border", "no_border", "voronoi"),
+    point_size = 1,
+    point_alpha = 1,
+    point_border_col = "black",
+    point_border_stroke = 0.1,
+    coord_fix_ratio = 1,
+    show_legend = TRUE,
+    legend_text = 8,
+    background_color = "white",
+    vor_border_color = "white",
+    vor_alpha = 1,
+    vor_max_radius = 200,
+    axis_text = 8,
+    axis_title = 8,
+    cow_n_col = NULL,
+    cow_rel_h = 1,
+    cow_rel_w = 1,
+    cow_align = "h",
+    theme_param = list(),
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
+    save_param = list(),
+    default_save_name = "spatFeatPlot2D_single") {
     # data.table variables
     cell_ID <- NULL
 
@@ -2334,14 +2372,17 @@ spatFeatPlot2D_single <- function(
 
     # print, return and save parameters
     show_plot <- ifelse(is.null(show_plot),
-                        readGiottoInstructions(gobject, param = "show_plot"),
-                        show_plot)
+        readGiottoInstructions(gobject, param = "show_plot"),
+        show_plot
+    )
     save_plot <- ifelse(is.null(save_plot),
-                        readGiottoInstructions(gobject, param = "save_plot"),
-                        save_plot)
+        readGiottoInstructions(gobject, param = "save_plot"),
+        save_plot
+    )
     return_plot <- ifelse(is.null(return_plot),
-                          readGiottoInstructions(gobject, param = "return_plot"),
-                          return_plot)
+        readGiottoInstructions(gobject, param = "return_plot"),
+        return_plot
+    )
 
     # Set feat_type and spat_unit
     spat_unit <- set_default_spat_unit(
@@ -2364,12 +2405,17 @@ spatFeatPlot2D_single <- function(
 
     # point shape
     point_shape <- match.arg(point_shape,
-                             choices = c("border", "no_border", "voronoi"))
+        choices = c("border", "no_border", "voronoi")
+    )
 
     # expression values
-    values <- match.arg(expression_values,
-                        unique(c("normalized", "scaled", "custom",
-                                 expression_values)))
+    values <- match.arg(
+        expression_values,
+        unique(c(
+            "normalized", "scaled", "custom",
+            expression_values
+        ))
+    )
     expr_values <- get_expression_values(
         gobject = gobject,
         spat_unit = spat_unit,
@@ -2386,18 +2432,22 @@ spatFeatPlot2D_single <- function(
     # get selected feat expression values in data.table format
     if (length(selected_feats) == 1) {
         subset_expr_data <- expr_values[rownames(expr_values) %in%
-                                            selected_feats, ]
+            selected_feats, ]
         t_sub_expr_data_DT <- data.table::data.table(
             "selected_feat" = subset_expr_data,
-            "cell_ID" = colnames(expr_values))
-        data.table::setnames(t_sub_expr_data_DT, "selected_feat",
-                             selected_feats)
+            "cell_ID" = colnames(expr_values)
+        )
+        data.table::setnames(
+            t_sub_expr_data_DT, "selected_feat",
+            selected_feats
+        )
     } else {
         subset_expr_data <- expr_values[rownames(expr_values) %in%
-                                            selected_feats, ]
+            selected_feats, ]
         t_sub_expr_data <- t_flex(subset_expr_data)
         t_sub_expr_data_DT <- data.table::as.data.table(
-            as.matrix(t_sub_expr_data))
+            as.matrix(t_sub_expr_data)
+        )
         t_sub_expr_data_DT[, cell_ID := rownames(t_sub_expr_data)]
     }
 
@@ -2406,7 +2456,9 @@ spatFeatPlot2D_single <- function(
     if (is.null(spat_loc_name)) {
         if (!is.null(slot(gobject, "spatial_locs"))) {
             spat_loc_name <- list_spatial_locations_names(
-                gobject, spat_unit = spat_unit)[[1]]
+                gobject,
+                spat_unit = spat_unit
+            )[[1]]
         } else {
             spat_loc_name <- NULL
             warning("No spatial locations have been found")
@@ -2483,7 +2535,8 @@ spatFeatPlot2D_single <- function(
         # order spatial units (e.g. cell IDs) based on expression of feature
         if (isTRUE(order)) {
             cell_locations_metadata_feats <- cell_locations_metadata_feats[
-                order(get(feat))]
+                order(get(feat))
+            ]
         }
 
 
@@ -2533,14 +2586,22 @@ spatFeatPlot2D_single <- function(
             if (!is.null(spatial_grid) && isTRUE(show_grid)) {
                 if (is.null(grid_color)) grid_color <- "black"
 
-                xmin <- paste0(gsub(pattern = "sdim",
-                                    replacement = "", x = sdimx), "_start")
-                ymin <- paste0(gsub(pattern = "sdim",
-                                    replacement = "", x = sdimy), "_start")
-                xmax <- paste0(gsub(pattern = "sdim",
-                                    replacement = "", x = sdimx), "_end")
-                ymax <- paste0(gsub(pattern = "sdim",
-                                    replacement = "", x = sdimy), "_end")
+                xmin <- paste0(gsub(
+                    pattern = "sdim",
+                    replacement = "", x = sdimx
+                ), "_start")
+                ymin <- paste0(gsub(
+                    pattern = "sdim",
+                    replacement = "", x = sdimy
+                ), "_start")
+                xmax <- paste0(gsub(
+                    pattern = "sdim",
+                    replacement = "", x = sdimx
+                ), "_end")
+                ymax <- paste0(gsub(
+                    pattern = "sdim",
+                    replacement = "", x = sdimy
+                ), "_end")
 
                 pl <- pl + ggplot2::geom_rect(
                     data = spatial_grid,
@@ -2567,14 +2628,15 @@ spatFeatPlot2D_single <- function(
             upper_lim <- gradient_limits[[2]]
             numeric_data <- cell_locations_metadata_feats[[feat]]
             limit_numeric_data <- ifelse(numeric_data > upper_lim, upper_lim,
-                                         ifelse(numeric_data < lower_lim, lower_lim, numeric_data)
+                ifelse(numeric_data < lower_lim, lower_lim, numeric_data)
             )
             cell_locations_metadata_feats[[feat]] <- limit_numeric_data
         }
 
         if (is.null(gradient_midpoint)) {
             gradient_midpoint <- stats::median(
-                cell_locations_metadata_feats[[feat]])
+                cell_locations_metadata_feats[[feat]]
+            )
         }
 
 
@@ -2724,14 +2786,22 @@ spatFeatPlot2D_single <- function(
             if (!is.null(spatial_grid) & show_grid == TRUE) {
                 if (is.null(grid_color)) grid_color <- "black"
 
-                xmin <- paste0(gsub(pattern = "sdim",
-                                    replacement = "", x = sdimx), "_start")
-                ymin <- paste0(gsub(pattern = "sdim",
-                                    replacement = "", x = sdimy), "_start")
-                xmax <- paste0(gsub(pattern = "sdim",
-                                    replacement = "", x = sdimx), "_end")
-                ymax <- paste0(gsub(pattern = "sdim",
-                                    replacement = "", x = sdimy), "_end")
+                xmin <- paste0(gsub(
+                    pattern = "sdim",
+                    replacement = "", x = sdimx
+                ), "_start")
+                ymin <- paste0(gsub(
+                    pattern = "sdim",
+                    replacement = "", x = sdimy
+                ), "_start")
+                xmax <- paste0(gsub(
+                    pattern = "sdim",
+                    replacement = "", x = sdimx
+                ), "_end")
+                ymax <- paste0(gsub(
+                    pattern = "sdim",
+                    replacement = "", x = sdimy
+                ), "_end")
 
                 pl <- pl + ggplot2::geom_rect(
                     data = spatial_grid, aes_string(
@@ -2793,9 +2863,13 @@ spatFeatPlot2D_single <- function(
 
     ## save plot
     if (save_plot == TRUE) {
-        do.call("all_plots_save_function",
-                c(list(gobject = gobject, plot_object = combo_plot,
-                       default_save_name = default_save_name), save_param))
+        do.call(
+            "all_plots_save_function",
+            c(list(
+                gobject = gobject, plot_object = combo_plot,
+                default_save_name = default_save_name
+            ), save_param)
+        )
     }
 
     ## return plot
@@ -2849,58 +2923,57 @@ spatFeatPlot2D_single <- function(
 #' @export
 #' @seealso \code{\link{spatFeatPlot3D}}
 spatFeatPlot2D <- function(gobject,
-                           feat_type = NULL,
-                           spat_unit = NULL,
-                           show_image = FALSE,
-                           gimage = NULL,
-                           image_name = NULL,
-                           largeImage_name = NULL,
-                           spat_loc_name = NULL,
-                           group_by = NULL,
-                           group_by_subset = NULL,
-                           sdimx = "sdimx",
-                           sdimy = "sdimy",
-                           expression_values = c("normalized", "scaled", "custom"),
-                           feats,
-                           order = TRUE,
-                           cell_color_gradient = NULL,
-                           gradient_midpoint = NULL,
-                           gradient_style = c("divergent", "sequential"),
-                           gradient_limits = NULL,
-                           show_network = FALSE,
-                           network_color = NULL,
-                           edge_alpha = NULL,
-                           spatial_network_name = "Delaunay_network",
-                           show_grid = FALSE,
-                           grid_color = NULL,
-                           spatial_grid_name = "spatial_grid",
-                           midpoint = 0,
-                           scale_alpha_with_expression = FALSE,
-                           point_shape = c("border", "no_border", "voronoi"),
-                           point_size = 1,
-                           point_alpha = 1,
-                           point_border_col = "black",
-                           point_border_stroke = 0.1,
-                           coord_fix_ratio = 1,
-                           show_legend = TRUE,
-                           legend_text = 8,
-                           background_color = "white",
-                           vor_border_color = "white",
-                           vor_alpha = 1,
-                           vor_max_radius = 200,
-                           axis_text = 8,
-                           axis_title = 8,
-                           cow_n_col = NULL,
-                           cow_rel_h = 1,
-                           cow_rel_w = 1,
-                           cow_align = "h",
-                           theme_param = list(),
-                           show_plot = NULL,
-                           return_plot = NULL,
-                           save_plot = NULL,
-                           save_param = list(),
-                           default_save_name = "spatFeatPlot2D") {
-
+    feat_type = NULL,
+    spat_unit = NULL,
+    show_image = FALSE,
+    gimage = NULL,
+    image_name = NULL,
+    largeImage_name = NULL,
+    spat_loc_name = NULL,
+    group_by = NULL,
+    group_by_subset = NULL,
+    sdimx = "sdimx",
+    sdimy = "sdimy",
+    expression_values = c("normalized", "scaled", "custom"),
+    feats,
+    order = TRUE,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = c("divergent", "sequential"),
+    gradient_limits = NULL,
+    show_network = FALSE,
+    network_color = NULL,
+    edge_alpha = NULL,
+    spatial_network_name = "Delaunay_network",
+    show_grid = FALSE,
+    grid_color = NULL,
+    spatial_grid_name = "spatial_grid",
+    midpoint = 0,
+    scale_alpha_with_expression = FALSE,
+    point_shape = c("border", "no_border", "voronoi"),
+    point_size = 1,
+    point_alpha = 1,
+    point_border_col = "black",
+    point_border_stroke = 0.1,
+    coord_fix_ratio = 1,
+    show_legend = TRUE,
+    legend_text = 8,
+    background_color = "white",
+    vor_border_color = "white",
+    vor_alpha = 1,
+    vor_max_radius = 200,
+    axis_text = 8,
+    axis_title = 8,
+    cow_n_col = NULL,
+    cow_rel_h = 1,
+    cow_rel_w = 1,
+    cow_align = "h",
+    theme_param = list(),
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
+    save_param = list(),
+    default_save_name = "spatFeatPlot2D") {
     # deprecation message
     if (!is.null(largeImage_name)) {
         deprecate_warn(
@@ -3013,7 +3086,8 @@ spatFeatPlot2D <- function(gobject,
             group <- unique_groups[group_id]
 
             subset_cell_IDs <- comb_metadata[
-                get(group_by) == group][["cell_ID"]]
+                get(group_by) == group
+            ][["cell_ID"]]
             sfp_params$gobject <- subsetGiotto(
                 gobject = gobject,
                 feat_type = feat_type,
@@ -3097,54 +3171,57 @@ spatFeatPlot2D <- function(gobject,
 #'
 #' @export
 dimFeatPlot2D <- function(gobject,
-                          spat_unit = NULL,
-                          feat_type = NULL,
-                          expression_values = c("normalized", "scaled", "custom"),
-                          feats = NULL,
-                          order = TRUE,
-                          dim_reduction_to_use = "umap",
-                          dim_reduction_name = NULL,
-                          dim1_to_use = 1,
-                          dim2_to_use = 2,
-                          show_NN_network = FALSE,
-                          nn_network_to_use = "sNN",
-                          network_name = "sNN.pca",
-                          network_color = "lightgray",
-                          edge_alpha = NULL,
-                          scale_alpha_with_expression = FALSE,
-                          point_shape = c("border", "no_border"),
-                          point_size = 1,
-                          point_alpha = 1,
-                          cell_color_gradient = NULL,
-                          gradient_midpoint = NULL,
-                          gradient_style = c("divergent", "sequential"),
-                          gradient_limits = NULL,
-                          point_border_col = "black",
-                          point_border_stroke = 0.1,
-                          show_legend = TRUE,
-                          legend_text = 10,
-                          background_color = "white",
-                          axis_text = 8,
-                          axis_title = 8,
-                          cow_n_col = NULL,
-                          cow_rel_h = 1,
-                          cow_rel_w = 1,
-                          cow_align = "h",
-                          show_plot = NULL,
-                          return_plot = NULL,
-                          save_plot = NULL,
-                          save_param = list(),
-                          default_save_name = "dimFeatPlot2D") {
+    spat_unit = NULL,
+    feat_type = NULL,
+    expression_values = c("normalized", "scaled", "custom"),
+    feats = NULL,
+    order = TRUE,
+    dim_reduction_to_use = "umap",
+    dim_reduction_name = NULL,
+    dim1_to_use = 1,
+    dim2_to_use = 2,
+    show_NN_network = FALSE,
+    nn_network_to_use = "sNN",
+    network_name = "sNN.pca",
+    network_color = "lightgray",
+    edge_alpha = NULL,
+    scale_alpha_with_expression = FALSE,
+    point_shape = c("border", "no_border"),
+    point_size = 1,
+    point_alpha = 1,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = c("divergent", "sequential"),
+    gradient_limits = NULL,
+    point_border_col = "black",
+    point_border_stroke = 0.1,
+    show_legend = TRUE,
+    legend_text = 10,
+    background_color = "white",
+    axis_text = 8,
+    axis_title = 8,
+    cow_n_col = NULL,
+    cow_rel_h = 1,
+    cow_rel_w = 1,
+    cow_align = "h",
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
+    save_param = list(),
+    default_save_name = "dimFeatPlot2D") {
     # print, return and save parameters
     show_plot <- ifelse(is.null(show_plot),
-                        readGiottoInstructions(gobject, param = "show_plot"),
-                        show_plot)
+        readGiottoInstructions(gobject, param = "show_plot"),
+        show_plot
+    )
     save_plot <- ifelse(is.null(save_plot),
-                        readGiottoInstructions(gobject, param = "save_plot"),
-                        save_plot)
+        readGiottoInstructions(gobject, param = "save_plot"),
+        save_plot
+    )
     return_plot <- ifelse(is.null(return_plot),
-                          readGiottoInstructions(gobject, param = "return_plot"),
-                          return_plot)
+        readGiottoInstructions(gobject, param = "return_plot"),
+        return_plot
+    )
 
     # point shape
     point_shape <- match.arg(point_shape, choices = c("border", "no_border"))
@@ -3166,17 +3243,23 @@ dimFeatPlot2D <- function(gobject,
             if (feat_type == "rna") {
                 dim_reduction_name <- dim_reduction_to_use
             } else {
-                dim_reduction_name <- paste0(feat_type, ".",
-                                             dim_reduction_to_use)
+                dim_reduction_name <- paste0(
+                    feat_type, ".",
+                    dim_reduction_to_use
+                )
             }
         }
     }
 
 
     # expression values
-    values <- match.arg(expression_values,
-                        unique(c("normalized", "scaled", "custom",
-                                 expression_values)))
+    values <- match.arg(
+        expression_values,
+        unique(c(
+            "normalized", "scaled", "custom",
+            expression_values
+        ))
+    )
     expr_values <- get_expression_values(
         gobject = gobject,
         spat_unit = spat_unit,
@@ -3192,18 +3275,23 @@ dimFeatPlot2D <- function(gobject,
     #
     if (length(selected_feats) == 1) {
         subset_expr_data <- expr_values[
-            rownames(expr_values) %in% selected_feats, ]
+            rownames(expr_values) %in% selected_feats,
+        ]
         t_sub_expr_data_DT <- data.table::data.table(
             "selected_feat" = subset_expr_data,
-            "cell_ID" = colnames(expr_values))
-        data.table::setnames(t_sub_expr_data_DT, "selected_feat",
-                             selected_feats)
+            "cell_ID" = colnames(expr_values)
+        )
+        data.table::setnames(
+            t_sub_expr_data_DT, "selected_feat",
+            selected_feats
+        )
     } else {
         subset_expr_data <- expr_values[rownames(expr_values) %in%
-                                            selected_feats, ]
+            selected_feats, ]
         t_sub_expr_data <- t_flex(subset_expr_data)
         t_sub_expr_data_DT <- data.table::as.data.table(
-            as.matrix(t_sub_expr_data))
+            as.matrix(t_sub_expr_data)
+        )
 
         # data.table variables
         cell_ID <- NULL
@@ -3229,19 +3317,22 @@ dimFeatPlot2D <- function(gobject,
 
     ## annotated cell metadata
     cell_metadata <- get_cell_metadata(gobject,
-                                       spat_unit = spat_unit,
-                                       feat_type = feat_type,
-                                       output = "data.table",
-                                       copy_obj = TRUE
+        spat_unit = spat_unit,
+        feat_type = feat_type,
+        output = "data.table",
+        copy_obj = TRUE
     )
 
     annotated_DT <- data.table::merge.data.table(cell_metadata,
-                                                 dim_DT, by = "cell_ID")
+        dim_DT,
+        by = "cell_ID"
+    )
 
     ## merge feat info
     annotated_feat_DT <- data.table::merge.data.table(annotated_DT,
-                                                      t_sub_expr_data_DT,
-                                                      by = "cell_ID")
+        t_sub_expr_data_DT,
+        by = "cell_ID"
+    )
 
     # create input for network
     if (show_NN_network == TRUE) {
@@ -3256,22 +3347,31 @@ dimFeatPlot2D <- function(gobject,
         )
 
         network_DT <- data.table::as.data.table(
-            igraph::as_data_frame(selected_nn_network, what = "edges"))
+            igraph::as_data_frame(selected_nn_network, what = "edges")
+        )
 
         # annotated network
         old_dim_names <- dim_names
 
         annotated_network_DT <- data.table::merge.data.table(
-            network_DT, dim_DT, by.x = "from", by.y = "cell_ID")
+            network_DT, dim_DT,
+            by.x = "from", by.y = "cell_ID"
+        )
         from_dim_names <- paste0("from_", old_dim_names)
-        data.table::setnames(annotated_network_DT, old = old_dim_names,
-                             new = from_dim_names)
+        data.table::setnames(annotated_network_DT,
+            old = old_dim_names,
+            new = from_dim_names
+        )
 
         annotated_network_DT <- data.table::merge.data.table(
-            annotated_network_DT, dim_DT, by.x = "to", by.y = "cell_ID")
+            annotated_network_DT, dim_DT,
+            by.x = "to", by.y = "cell_ID"
+        )
         to_dim_names <- paste0("to_", old_dim_names)
-        data.table::setnames(annotated_network_DT, old = old_dim_names,
-                             new = to_dim_names)
+        data.table::setnames(annotated_network_DT,
+            old = old_dim_names,
+            new = to_dim_names
+        )
     }
 
     ## visualize multiple plots ##
@@ -3348,8 +3448,8 @@ dimFeatPlot2D <- function(gobject,
                 upper_lim <- gradient_limits[[2]]
                 numeric_data <- annotated_feat_DT[[feat]]
                 limit_numeric_data <- ifelse(numeric_data > upper_lim,
-                                             upper_lim,
-                                             ifelse(numeric_data < lower_lim, lower_lim, numeric_data)
+                    upper_lim,
+                    ifelse(numeric_data < lower_lim, lower_lim, numeric_data)
                 )
                 annotated_feat_DT[[feat]] <- limit_numeric_data
             }
@@ -3476,9 +3576,13 @@ dimFeatPlot2D <- function(gobject,
 
     ## save plot
     if (save_plot == TRUE) {
-        do.call("all_plots_save_function",
-                c(list(gobject = gobject, plot_object = combo_plot,
-                       default_save_name = default_save_name), save_param))
+        do.call(
+            "all_plots_save_function",
+            c(list(
+                gobject = gobject, plot_object = combo_plot,
+                default_save_name = default_save_name
+            ), save_param)
+        )
     }
 
     ## return plot
@@ -3544,69 +3648,70 @@ dimFeatPlot2D <- function(gobject,
 #'
 #' @export
 spatDimFeatPlot2D <- function(gobject,
-                              spat_unit = NULL,
-                              feat_type = NULL,
-                              show_image = FALSE,
-                              gimage = NULL,
-                              image_name = NULL,
-                              largeImage_name = NULL,
-                              expression_values = c("normalized", "scaled", "custom"),
-                              plot_alignment = c("vertical", "horizontal"),
-                              feats,
-                              order = TRUE,
-                              dim_reduction_to_use = "umap",
-                              dim_reduction_name = "umap",
-                              dim1_to_use = 1,
-                              dim2_to_use = 2,
-                              dim_point_shape = c("border", "no_border"),
-                              dim_point_size = 1,
-                              dim_point_alpha = 1,
-                              dim_point_border_col = "black",
-                              dim_point_border_stroke = 0.1,
-                              show_NN_network = FALSE,
-                              show_spatial_network = FALSE,
-                              dim_network_color = "gray",
-                              nn_network_to_use = "sNN",
-                              network_name = "sNN.pca",
-                              dim_edge_alpha = NULL,
-                              scale_alpha_with_expression = FALSE,
-                              sdimx = "sdimx",
-                              sdimy = "sdimy",
-                              spatial_network_name = "Delaunay_network",
-                              spatial_network_color = NULL,
-                              show_spatial_grid = FALSE,
-                              grid_color = NULL,
-                              spatial_grid_name = "spatial_grid",
-                              spat_point_shape = c("border", "no_border", "voronoi"),
-                              spat_point_size = 1,
-                              spat_point_alpha = 1,
-                              spat_point_border_col = "black",
-                              spat_point_border_stroke = 0.1,
-                              spat_edge_alpha = NULL,
-                              cell_color_gradient = NULL,
-                              gradient_midpoint = NULL,
-                              gradient_style = c("divergent", "sequential"),
-                              gradient_limits = NULL,
-                              cow_n_col = NULL,
-                              cow_rel_h = 1,
-                              cow_rel_w = 1,
-                              cow_align = "h",
-                              show_legend = TRUE,
-                              legend_text = 10,
-                              dim_background_color = "white",
-                              spat_background_color = "white",
-                              vor_border_color = "white",
-                              vor_max_radius = 200,
-                              vor_alpha = 1,
-                              axis_text = 8,
-                              axis_title = 8,
-                              show_plot = NULL,
-                              return_plot = NULL,
-                              save_plot = NULL,
-                              save_param = list(),
-                              default_save_name = "spatDimFeatPlot2D") {
+    spat_unit = NULL,
+    feat_type = NULL,
+    show_image = FALSE,
+    gimage = NULL,
+    image_name = NULL,
+    largeImage_name = NULL,
+    expression_values = c("normalized", "scaled", "custom"),
+    plot_alignment = c("vertical", "horizontal"),
+    feats,
+    order = TRUE,
+    dim_reduction_to_use = "umap",
+    dim_reduction_name = "umap",
+    dim1_to_use = 1,
+    dim2_to_use = 2,
+    dim_point_shape = c("border", "no_border"),
+    dim_point_size = 1,
+    dim_point_alpha = 1,
+    dim_point_border_col = "black",
+    dim_point_border_stroke = 0.1,
+    show_NN_network = FALSE,
+    show_spatial_network = FALSE,
+    dim_network_color = "gray",
+    nn_network_to_use = "sNN",
+    network_name = "sNN.pca",
+    dim_edge_alpha = NULL,
+    scale_alpha_with_expression = FALSE,
+    sdimx = "sdimx",
+    sdimy = "sdimy",
+    spatial_network_name = "Delaunay_network",
+    spatial_network_color = NULL,
+    show_spatial_grid = FALSE,
+    grid_color = NULL,
+    spatial_grid_name = "spatial_grid",
+    spat_point_shape = c("border", "no_border", "voronoi"),
+    spat_point_size = 1,
+    spat_point_alpha = 1,
+    spat_point_border_col = "black",
+    spat_point_border_stroke = 0.1,
+    spat_edge_alpha = NULL,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = c("divergent", "sequential"),
+    gradient_limits = NULL,
+    cow_n_col = NULL,
+    cow_rel_h = 1,
+    cow_rel_w = 1,
+    cow_align = "h",
+    show_legend = TRUE,
+    legend_text = 10,
+    dim_background_color = "white",
+    spat_background_color = "white",
+    vor_border_color = "white",
+    vor_max_radius = 200,
+    vor_alpha = 1,
+    axis_text = 8,
+    axis_title = 8,
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
+    save_param = list(),
+    default_save_name = "spatDimFeatPlot2D") {
     plot_alignment <- match.arg(plot_alignment,
-                                choices = c("vertical", "horizontal"))
+        choices = c("vertical", "horizontal")
+    )
 
     # dimension reduction plot
     dmpl <- dimFeatPlot2D(
@@ -3702,14 +3807,18 @@ spatDimFeatPlot2D <- function(gobject,
         ncol <- 1
         nrow <- 2
         combo_plot <- cowplot::plot_grid(
-            dmpl, spl, ncol = ncol, nrow = nrow, rel_heights = c(1),
-            rel_widths = c(1), align = "v")
+            dmpl, spl,
+            ncol = ncol, nrow = nrow, rel_heights = c(1),
+            rel_widths = c(1), align = "v"
+        )
     } else {
         ncol <- 2
         nrow <- 1
         combo_plot <- cowplot::plot_grid(
-            dmpl, spl, ncol = ncol, nrow = nrow, rel_heights = c(1),
-            rel_widths = c(1), align = "h")
+            dmpl, spl,
+            ncol = ncol, nrow = nrow, rel_heights = c(1),
+            rel_widths = c(1), align = "h"
+        )
     }
 
     return(plot_output_handler(
@@ -3771,65 +3880,65 @@ spatDimFeatPlot2D <- function(gobject,
 #'
 #' @export
 spatCellPlot2D <- function(gobject,
-                           spat_unit = NULL,
-                           feat_type = NULL,
-                           show_image = FALSE,
-                           gimage = NULL,
-                           image_name = NULL,
-                           largeImage_name = NULL,
-                           sdimx = "sdimx",
-                           sdimy = "sdimy",
-                           spat_enr_names = NULL,
-                           cell_annotation_values = NULL,
-                           cell_color_gradient = NULL,
-                           gradient_midpoint = NULL,
-                           gradient_style = c("divergent", "sequential"),
-                           gradient_limits = NULL,
-                           select_cell_groups = NULL,
-                           select_cells = NULL,
-                           point_shape = c("border", "no_border", "voronoi"),
-                           point_size = 3,
-                           point_alpha = 1,
-                           point_border_col = "black",
-                           point_border_stroke = 0.1,
-                           show_cluster_center = FALSE,
-                           show_center_label = FALSE,
-                           center_point_size = 4,
-                           center_point_border_col = "black",
-                           center_point_border_stroke = 0.1,
-                           label_size = 4,
-                           label_fontface = "bold",
-                           show_network = FALSE,
-                           spatial_network_name = "Delaunay_network",
-                           network_color = NULL,
-                           network_alpha = 1,
-                           show_grid = FALSE,
-                           spatial_grid_name = "spatial_grid",
-                           grid_color = NULL,
-                           show_other_cells = TRUE,
-                           other_cell_color = "lightgrey",
-                           other_point_size = 1,
-                           other_cells_alpha = 0.1,
-                           coord_fix_ratio = 1,
-                           show_legend = TRUE,
-                           legend_text = 8,
-                           legend_symbol_size = 1,
-                           background_color = "white",
-                           vor_border_color = "white",
-                           vor_max_radius = 200,
-                           vor_alpha = 1,
-                           axis_text = 8,
-                           axis_title = 8,
-                           cow_n_col = NULL,
-                           cow_rel_h = 1,
-                           cow_rel_w = 1,
-                           cow_align = "h",
-                           theme_param = list(),
-                           show_plot = NULL,
-                           return_plot = NULL,
-                           save_plot = NULL,
-                           save_param = list(),
-                           default_save_name = "spatCellPlot2D") {
+    spat_unit = NULL,
+    feat_type = NULL,
+    show_image = FALSE,
+    gimage = NULL,
+    image_name = NULL,
+    largeImage_name = NULL,
+    sdimx = "sdimx",
+    sdimy = "sdimy",
+    spat_enr_names = NULL,
+    cell_annotation_values = NULL,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = c("divergent", "sequential"),
+    gradient_limits = NULL,
+    select_cell_groups = NULL,
+    select_cells = NULL,
+    point_shape = c("border", "no_border", "voronoi"),
+    point_size = 3,
+    point_alpha = 1,
+    point_border_col = "black",
+    point_border_stroke = 0.1,
+    show_cluster_center = FALSE,
+    show_center_label = FALSE,
+    center_point_size = 4,
+    center_point_border_col = "black",
+    center_point_border_stroke = 0.1,
+    label_size = 4,
+    label_fontface = "bold",
+    show_network = FALSE,
+    spatial_network_name = "Delaunay_network",
+    network_color = NULL,
+    network_alpha = 1,
+    show_grid = FALSE,
+    spatial_grid_name = "spatial_grid",
+    grid_color = NULL,
+    show_other_cells = TRUE,
+    other_cell_color = "lightgrey",
+    other_point_size = 1,
+    other_cells_alpha = 0.1,
+    coord_fix_ratio = 1,
+    show_legend = TRUE,
+    legend_text = 8,
+    legend_symbol_size = 1,
+    background_color = "white",
+    vor_border_color = "white",
+    vor_max_radius = 200,
+    vor_alpha = 1,
+    axis_text = 8,
+    axis_title = 8,
+    cow_n_col = NULL,
+    cow_rel_h = 1,
+    cow_rel_w = 1,
+    cow_align = "h",
+    theme_param = list(),
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
+    save_param = list(),
+    default_save_name = "spatCellPlot2D") {
     # Set feat_type and spat_unit
     spat_unit <- set_default_spat_unit(
         gobject = gobject,
@@ -3856,7 +3965,8 @@ spatCellPlot2D <- function(gobject,
     }
     cell_annotation_values <- as.character(cell_annotation_values)
     cell_annotation_values <- cell_annotation_values[
-        cell_annotation_values %in% possible_value_cols]
+        cell_annotation_values %in% possible_value_cols
+    ]
 
     ## plotting ##
     savelist <- list()
@@ -3990,61 +4100,62 @@ spatCellPlot <- function(...) {
 #' @examples
 #' g <- GiottoData::loadGiottoMini("visium", verbose = FALSE)
 #' dimCellPlot2D(
-#'     g, spat_enr_names = "cluster_metagene",
+#'     g,
+#'     spat_enr_names = "cluster_metagene",
 #'     cell_annotation_values = as.character(seq(4))
 #' )
 #'
 #' @export
 dimCellPlot2D <- function(gobject,
-                          spat_unit = NULL,
-                          feat_type = NULL,
-                          dim_reduction_to_use = "umap",
-                          dim_reduction_name = "umap",
-                          dim1_to_use = 1,
-                          dim2_to_use = 2,
-                          spat_enr_names = NULL,
-                          cell_annotation_values = NULL,
-                          show_NN_network = FALSE,
-                          nn_network_to_use = "sNN",
-                          network_name = "sNN.pca",
-                          cell_color_code = NULL,
-                          cell_color_gradient = NULL,
-                          gradient_midpoint = NULL,
-                          gradient_style = c("divergent", "sequential"),
-                          gradient_limits = NULL,
-                          select_cell_groups = NULL,
-                          select_cells = NULL,
-                          show_other_cells = TRUE,
-                          other_cell_color = "lightgrey",
-                          other_point_size = 0.5,
-                          show_cluster_center = FALSE,
-                          show_center_label = TRUE,
-                          center_point_size = 4,
-                          center_point_border_col = "black",
-                          center_point_border_stroke = 0.1,
-                          label_size = 4,
-                          label_fontface = "bold",
-                          edge_alpha = NULL,
-                          point_shape = c("border", "no_border"),
-                          point_size = 1,
-                          point_alpha = 1,
-                          point_border_col = "black",
-                          point_border_stroke = 0.1,
-                          show_legend = TRUE,
-                          legend_text = 8,
-                          legend_symbol_size = 1,
-                          background_color = "white",
-                          axis_text = 8,
-                          axis_title = 8,
-                          cow_n_col = NULL,
-                          cow_rel_h = 1,
-                          cow_rel_w = 1,
-                          cow_align = "h",
-                          show_plot = NULL,
-                          return_plot = NULL,
-                          save_plot = NULL,
-                          save_param = list(),
-                          default_save_name = "dimCellPlot2D") {
+    spat_unit = NULL,
+    feat_type = NULL,
+    dim_reduction_to_use = "umap",
+    dim_reduction_name = "umap",
+    dim1_to_use = 1,
+    dim2_to_use = 2,
+    spat_enr_names = NULL,
+    cell_annotation_values = NULL,
+    show_NN_network = FALSE,
+    nn_network_to_use = "sNN",
+    network_name = "sNN.pca",
+    cell_color_code = NULL,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = c("divergent", "sequential"),
+    gradient_limits = NULL,
+    select_cell_groups = NULL,
+    select_cells = NULL,
+    show_other_cells = TRUE,
+    other_cell_color = "lightgrey",
+    other_point_size = 0.5,
+    show_cluster_center = FALSE,
+    show_center_label = TRUE,
+    center_point_size = 4,
+    center_point_border_col = "black",
+    center_point_border_stroke = 0.1,
+    label_size = 4,
+    label_fontface = "bold",
+    edge_alpha = NULL,
+    point_shape = c("border", "no_border"),
+    point_size = 1,
+    point_alpha = 1,
+    point_border_col = "black",
+    point_border_stroke = 0.1,
+    show_legend = TRUE,
+    legend_text = 8,
+    legend_symbol_size = 1,
+    background_color = "white",
+    axis_text = 8,
+    axis_title = 8,
+    cow_n_col = NULL,
+    cow_rel_h = 1,
+    cow_rel_w = 1,
+    cow_align = "h",
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
+    save_param = list(),
+    default_save_name = "dimCellPlot2D") {
     # Set feat_type and spat_unit
     spat_unit <- set_default_spat_unit(
         gobject = gobject,
@@ -4070,7 +4181,8 @@ dimCellPlot2D <- function(gobject,
             or enrichments you want to visualize")
     }
     cell_annotation_values <- cell_annotation_values[
-        cell_annotation_values %in% possible_value_cols]
+        cell_annotation_values %in% possible_value_cols
+    ]
 
     ## plotting ##
     savelist <- list()
@@ -4240,89 +4352,90 @@ dimCellPlot <- function(gobject, ...) {
 #'
 #' @export
 spatDimCellPlot2D <- function(gobject,
-                              feat_type = NULL,
-                              spat_unit = NULL,
-                              show_image = FALSE,
-                              gimage = NULL,
-                              image_name = NULL,
-                              largeImage_name = NULL,
-                              plot_alignment = c("vertical", "horizontal"),
-                              spat_enr_names = NULL,
-                              cell_annotation_values = NULL,
-                              dim_reduction_to_use = "umap",
-                              dim_reduction_name = "umap",
-                              dim1_to_use = 1,
-                              dim2_to_use = 2,
-                              sdimx = "sdimx",
-                              sdimy = "sdimy",
-                              cell_color_gradient = NULL,
-                              gradient_midpoint = NULL,
-                              gradient_style = c("divergent", "sequential"),
-                              gradient_limits = NULL,
-                              select_cell_groups = NULL,
-                              select_cells = NULL,
-                              dim_point_shape = c("border", "no_border"),
-                              dim_point_size = 1,
-                              dim_point_alpha = 1,
-                              dim_point_border_col = "black",
-                              dim_point_border_stroke = 0.1,
-                              spat_point_shape = c("border", "no_border", "voronoi"),
-                              spat_point_size = 1,
-                              spat_point_alpha = 1,
-                              spat_point_border_col = "black",
-                              spat_point_border_stroke = 0.1,
-                              dim_show_cluster_center = FALSE,
-                              dim_show_center_label = TRUE,
-                              dim_center_point_size = 4,
-                              dim_center_point_border_col = "black",
-                              dim_center_point_border_stroke = 0.1,
-                              dim_label_size = 4,
-                              dim_label_fontface = "bold",
-                              spat_show_cluster_center = FALSE,
-                              spat_show_center_label = FALSE,
-                              spat_center_point_size = 4,
-                              spat_center_point_border_col = "black",
-                              spat_center_point_border_stroke = 0.1,
-                              spat_label_size = 4,
-                              spat_label_fontface = "bold",
-                              show_NN_network = FALSE,
-                              nn_network_to_use = "sNN",
-                              nn_network_name = "sNN.pca",
-                              dim_edge_alpha = 0.5,
-                              spat_show_network = FALSE,
-                              spatial_network_name = "Delaunay_network",
-                              spat_network_color = "red",
-                              spat_network_alpha = 0.5,
-                              spat_show_grid = FALSE,
-                              spatial_grid_name = "spatial_grid",
-                              spat_grid_color = "green",
-                              show_other_cells = TRUE,
-                              other_cell_color = "grey",
-                              dim_other_point_size = 0.5,
-                              spat_other_point_size = 0.5,
-                              spat_other_cells_alpha = 0.5,
-                              show_legend = TRUE,
-                              legend_text = 8,
-                              legend_symbol_size = 1,
-                              dim_background_color = "white",
-                              spat_background_color = "white",
-                              vor_border_color = "white",
-                              vor_max_radius = 200,
-                              vor_alpha = 1,
-                              axis_text = 8,
-                              axis_title = 8,
-                              coord_fix_ratio = 1,
-                              cow_n_col = NULL,
-                              cow_rel_h = 1,
-                              cow_rel_w = 1,
-                              cow_align = "h",
-                              show_plot = NULL,
-                              return_plot = NULL,
-                              save_plot = NULL,
-                              save_param = list(),
-                              default_save_name = "spatDimCellPlot2D") {
+    feat_type = NULL,
+    spat_unit = NULL,
+    show_image = FALSE,
+    gimage = NULL,
+    image_name = NULL,
+    largeImage_name = NULL,
+    plot_alignment = c("vertical", "horizontal"),
+    spat_enr_names = NULL,
+    cell_annotation_values = NULL,
+    dim_reduction_to_use = "umap",
+    dim_reduction_name = "umap",
+    dim1_to_use = 1,
+    dim2_to_use = 2,
+    sdimx = "sdimx",
+    sdimy = "sdimy",
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = c("divergent", "sequential"),
+    gradient_limits = NULL,
+    select_cell_groups = NULL,
+    select_cells = NULL,
+    dim_point_shape = c("border", "no_border"),
+    dim_point_size = 1,
+    dim_point_alpha = 1,
+    dim_point_border_col = "black",
+    dim_point_border_stroke = 0.1,
+    spat_point_shape = c("border", "no_border", "voronoi"),
+    spat_point_size = 1,
+    spat_point_alpha = 1,
+    spat_point_border_col = "black",
+    spat_point_border_stroke = 0.1,
+    dim_show_cluster_center = FALSE,
+    dim_show_center_label = TRUE,
+    dim_center_point_size = 4,
+    dim_center_point_border_col = "black",
+    dim_center_point_border_stroke = 0.1,
+    dim_label_size = 4,
+    dim_label_fontface = "bold",
+    spat_show_cluster_center = FALSE,
+    spat_show_center_label = FALSE,
+    spat_center_point_size = 4,
+    spat_center_point_border_col = "black",
+    spat_center_point_border_stroke = 0.1,
+    spat_label_size = 4,
+    spat_label_fontface = "bold",
+    show_NN_network = FALSE,
+    nn_network_to_use = "sNN",
+    nn_network_name = "sNN.pca",
+    dim_edge_alpha = 0.5,
+    spat_show_network = FALSE,
+    spatial_network_name = "Delaunay_network",
+    spat_network_color = "red",
+    spat_network_alpha = 0.5,
+    spat_show_grid = FALSE,
+    spatial_grid_name = "spatial_grid",
+    spat_grid_color = "green",
+    show_other_cells = TRUE,
+    other_cell_color = "grey",
+    dim_other_point_size = 0.5,
+    spat_other_point_size = 0.5,
+    spat_other_cells_alpha = 0.5,
+    show_legend = TRUE,
+    legend_text = 8,
+    legend_symbol_size = 1,
+    dim_background_color = "white",
+    spat_background_color = "white",
+    vor_border_color = "white",
+    vor_max_radius = 200,
+    vor_alpha = 1,
+    axis_text = 8,
+    axis_title = 8,
+    coord_fix_ratio = 1,
+    cow_n_col = NULL,
+    cow_rel_h = 1,
+    cow_rel_w = 1,
+    cow_align = "h",
+    show_plot = NULL,
+    return_plot = NULL,
+    save_plot = NULL,
+    save_param = list(),
+    default_save_name = "spatDimCellPlot2D") {
     plot_alignment <- match.arg(plot_alignment,
-                                choices = c("vertical", "horizontal"))
+        choices = c("vertical", "horizontal")
+    )
 
     # dimension reduction plot
     dmpl <- dimCellPlot2D(
@@ -4440,15 +4553,19 @@ spatDimCellPlot2D <- function(gobject,
     if (plot_alignment == "vertical") {
         ncol <- 1
         nrow <- 2
-        combo_plot <- cowplot::plot_grid(dmpl, spl, ncol = ncol, nrow = nrow,
-                                         rel_heights = c(1), rel_widths = c(1),
-                                         align = "v")
+        combo_plot <- cowplot::plot_grid(dmpl, spl,
+            ncol = ncol, nrow = nrow,
+            rel_heights = c(1), rel_widths = c(1),
+            align = "v"
+        )
     } else {
         ncol <- 2
         nrow <- 1
-        combo_plot <- cowplot::plot_grid(dmpl, spl, ncol = ncol, nrow = nrow,
-                                         rel_heights = c(1), rel_widths = c(1),
-                                         align = "h")
+        combo_plot <- cowplot::plot_grid(dmpl, spl,
+            ncol = ncol, nrow = nrow,
+            rel_heights = c(1), rel_widths = c(1),
+            align = "h"
+        )
     }
 
     return(plot_output_handler(
@@ -4482,8 +4599,3 @@ spatDimCellPlot2D <- function(gobject,
 spatDimCellPlot <- function(...) {
     spatDimCellPlot2D(...)
 }
-
-
-
-
-
