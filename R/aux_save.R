@@ -23,7 +23,7 @@
 #' pixels.
 #' @param plot_count manually set the plot count that is appended to a
 #' default_save_name
-#' @param save_params `giotto_plot_save_param` object. If provided, will be
+#' @param gpsparam `giotto_plot_save_param` object. If provided, will be
 #' used instead of most other general save params. (save_dir, save_folder,
 #' save_name, default_save_name, save_format, base_width, base_height,
 #' base_aspect_ratio, units, dpi, plot_count)
@@ -68,22 +68,22 @@ all_plots_save_function <- function(gobject,
     dpi = NULL,
     limitsize = TRUE,
     plot_count = NULL,
-    save_params = NULL,
+    gpsparam = NULL,
     ...) {
 
     # get save params
-    if (is.null(save_params)) {
+    if (is.null(gpsparam)) {
         a <- .gvis_get_save_param_input(
             gobject = gobject, plot_object = plot_object
         )
         # finalize save params
-        save_params <- do.call(.gvis_save_param, args = a)
+        gpsparam <- do.call(.gvis_save_param, args = a)
     }
 
-    checkmate::assert_class(save_params, "giotto_plot_save_param")
+    checkmate::assert_class(gpsparam, "giotto_plot_save_param")
 
     if (getOption("giotto.verbose") == "debug") {
-        print(save_params)
+        print(gpsparam)
     }
 
     # perform save
@@ -96,7 +96,7 @@ all_plots_save_function <- function(gobject,
             nrow = nrow,
             scale = scale,
             limitsize = limitsize,
-            save_params = save_params,
+            gpsparam = gpsparam,
             ...
         )
     } else {
@@ -104,7 +104,7 @@ all_plots_save_function <- function(gobject,
             gobject = gobject,
             plot_object = plot_object,
             show_saved_plot = show_saved_plot,
-            save_params = save_params,
+            gpsparam = gpsparam,
             ...
         )
     }
@@ -165,7 +165,7 @@ showSaveParameters <- function() {
 
 # internals ####
 
-# save_params should be a `giotto_plot_save_param` object
+# gpsparam should be a `giotto_plot_save_param` object if provided
 #' @noMd
 #' @keywords internal
 .ggplot_save_function <- function(
@@ -176,14 +176,14 @@ showSaveParameters <- function() {
         nrow = 1,
         scale = 1,
         limitsize = TRUE,
-        save_params = NULL,
+        gpsparam = NULL,
         ...
 ) {
     if (is.null(plot_object)) {
         stop("\t there is no object to plot \t")
     }
 
-    sparam <- save_params
+    sparam <- gpsparam
 
     # create saving location
     fullpath <- sparam$fullpath
@@ -234,21 +234,21 @@ showSaveParameters <- function() {
 
 
 
-# save_params should be a `giotto_plot_save_param` object
+# gpsparam should be a `giotto_plot_save_param` object if provided
 #' @noMd
 #' @keywords internal
 .general_save_function <- function(
         gobject,
         plot_object,
         show_saved_plot = FALSE,
-        save_params = NULL,
+        gpsparam = NULL,
         ...
 ) {
     if (is.null(plot_object)) {
         stop("\t there is no object to plot \t")
     }
 
-    sparam <- save_params
+    sparam <- gpsparam
 
     fullpath <- sparam$fullpath
     save_format <- sparam$save_format
@@ -401,7 +401,7 @@ showSaveParameters <- function() {
 
     ## get save information and set defaults ------------------------------ ##
     save_dir <- save_dir %null% instructions(gobject, param = "save_dir")
-    plot_count <- plot_count %null% getOption("giotto.plot_count")
+    plot_count <- plot_count %null% getOption("giotto.plot_count", 1)
     dpi <- dpi %null% instructions(gobject, param = "dpi")
     base_width <- base_width %null% instructions(gobject, param = "width")
     base_height <- base_height %null% instructions(gobject, param = "height")
@@ -454,14 +454,14 @@ print.giotto_plot_save_param <- function(x, ...) {
     print_list(x)
 }
 
-# save_params should be a `giotto_plot_save_param`
-.plot_px_area <- function(save_params) {
+# gpsparam should be a `giotto_plot_save_param`
+.plot_px_area <- function(gpsparam) {
 
-    dims <- c(save_params$base_height, save_params$base_width)
-    pxdims <- switch(save_params$units,
-        "in" = dims * save_params$dpi,
-        "cm" = (dims / 2.54) * save_params$dpi,
-        "mm" = (dims / 25.4) * save_params$dpi,
+    dims <- c(gpsparam$base_height, gpsparam$base_width)
+    pxdims <- switch(gpsparam$units,
+        "in" = dims * gpsparam$dpi,
+        "cm" = (dims / 2.54) * gpsparam$dpi,
+        "mm" = (dims / 25.4) * gpsparam$dpi,
         "px" = dims
     )
     round(prod(pxdims))
