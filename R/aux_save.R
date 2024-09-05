@@ -1,7 +1,10 @@
 #' @title Plot saving
 #' @name plot_save
 #' @description
-#' Functions to automatically save plots to directory of interest
+#' Functions to save plots to directory of interest.
+#' `all_plots_save_function()` is used for plot saving operations. `gpsparam()`
+#' is used to generate a set of save parameters and filepath based on available
+#' parameter and `giottoInstructions` values.
 #' @param gobject giotto object or giottoInstructions
 #' @param plot_object ggplot object to plot
 #' @param save_dir directory to save to
@@ -30,7 +33,8 @@
 #' @param \dots additional parameters to pass downstream save functions.
 #' [cowplot::save_plot()] is used for `ggplot2` plots. grDevices png, tiff
 #' svg, pdf is used for base and general saving
-#' @returns a plot file
+#' @returns `all_plots_save_function` returns a plot file. `gpsparam` returns
+#' a `giotto_plot_save_param` object
 #' @seealso \code{\link{showSaveParameters}} \code{\link[cowplot]{save_plot}}
 #' \code{\link[grDevices]{png}}
 #' \code{\link[grDevices]{tiff}}
@@ -73,11 +77,14 @@ all_plots_save_function <- function(gobject,
 
     # get save params
     if (is.null(gpsparam)) {
-        a <- .gvis_get_save_param_input(
-            gobject = gobject, plot_object = plot_object
-        )
-        # finalize save params
-        gpsparam <- do.call(.gvis_save_param, args = a)
+        type <- "general"
+        if(any("ggplot" %in% class(plot_object))) type <- "gg"
+        if (any("plotly" %in% class(plot_object))) type <- "plotly"
+
+        a <- .grab_gpsparam_args()
+        gpsparam <- do.call(gpsparam, args = c(
+            a, list(instructions = instructions(gobject), type = type)
+        ))
     }
 
     checkmate::assert_class(gpsparam, "giotto_plot_save_param")
@@ -108,6 +115,103 @@ all_plots_save_function <- function(gobject,
             ...
         )
     }
+}
+
+
+
+#' @rdname plot_save
+#' @param instructions `giotto` or `giottoInstructions` object
+#' @param type `character`. One of `"gg"', '"plotly"', '"general"` to designate
+#'   which type of plot to save. This affects which types of outputs are
+#'   possible.
+#' @export
+gpsparam <- function(
+        instructions,
+        type = c("gg", "plotly", "general"),
+        save_dir = NULL,
+        save_folder = NULL,
+        save_name = NULL,
+        default_save_name = "giotto_plot",
+        save_format = NULL,
+        dpi = NULL,
+        base_width = NULL,
+        base_height = NULL,
+        base_aspect_ratio = NULL,
+        units = NULL,
+        plot_count = NULL,
+        ... # ignored
+) {
+    if (!inherits(instructions, c("giotto", "giottoInstructions"))) {
+        stop("`instructions` must be either a `giotto` or",
+             "`giottoInstructions` object.")
+    }
+    instrs <- instructions # shortname
+    checkmate::assert_character(type)
+    if (!length(type) == 1L) {
+        stop("Single `type` must be specified.")
+    }
+
+    ## save format -------------------------------------------------------- ##
+    save_format <- save_format %null%
+        instructions(instrs, param = "plot_format")
+
+    save_format <- switch(type,
+        "gg" = save_format,
+        "plotly" = "html",
+        "general" = match.arg(save_format, c("png", "tiff", "pdf", "svg"))
+    )
+
+    ## get save information and set defaults ------------------------------ ##
+    save_dir <- save_dir %null% instructions(instrs, param = "save_dir")
+    custom_plot_count <- is.null(plot_count)
+    plot_count <- plot_count %null% getOption("giotto.plot_count", 1)
+    dpi <- dpi %null% instructions(instrs, param = "dpi")
+    base_width <- base_width %null% instructions(instrs, param = "width")
+    base_height <- base_height %null% instructions(instrs, param = "height")
+    base_aspect_ratio <- base_aspect_ratio %null% 1.1
+    units <- units %null% instructions(instrs, param = "units")
+
+
+    ## checking ----------------------------------------------------------- ##
+    dpi <- as.numeric(dpi)
+    base_width <- as.numeric(base_width)
+    base_height <- as.numeric(base_height)
+    base_aspect_ratio <- as.numeric(base_aspect_ratio)
+    if (is.na(save_dir)) save_dir <- getwd()
+
+
+    # build filepath ------------------------------------------------------ ##
+    if (is.null(save_name)) {
+        save_name <- default_save_name
+        save_name <- paste0(plot_count, "-", save_name)
+        if (custom_plot_count) {
+            on.exit(options("giotto.plot_count" = plot_count + 1L), # increment
+                    add = TRUE)
+        }
+    }
+
+    if (!is.null(save_folder)) {
+        file_location <- file.path(save_dir, save_folder)
+    } else {
+        file_location <- save_dir
+    }
+
+    filename <- paste0(save_name, ".", save_format)
+    fullpath <- file.path(file_location, filename)
+
+    # create params object ------------------------------------------------ ##
+    structure(
+        list(
+            fullpath = fullpath,
+            save_format = save_format,
+            dpi = dpi,
+            base_width = base_width,
+            base_height = base_height,
+            base_aspect_ratio = base_aspect_ratio,
+            units = units
+        ),
+        class = "giotto_plot_save_param"
+    )
 }
 
 
@@ -328,125 +432,17 @@ showSaveParameters <- function() {
 }
 
 
-# detect these variables from previous stack frame and provide as list
-.gvis_get_save_param_input <- function(gobject, plot_object) {
-    # separately provide gobject and plot_object since they may be named
-    # something non-standard.
-
-    # type of plot object
-    type <- "general"
-    if(any("ggplot" %in% class(plot_object))) type <- "gg"
-    if (any("plotly" %in% class(plot_object))) type <- "plotly"
-
-    data_args <- list(
-        gobject = gobject,
-        type = type
-    )
-
-    # args to pull from prev. stack frame
-    # This is only possible because these args are standard
+# get expected save params from one stack frame up.
+.grab_gpsparam_args <- function() {
     expected_save_argnames <- c(
         "save_dir", "save_folder", "save_name", "default_save_name",
         "save_format", "dpi", "base_width", "base_height", "base_aspect_ratio",
         "units", "plot_count"
     )
 
-    # pull expected args from previous stack frame
-    sparam_input <- get_args_list(keep = expected_save_argnames, toplevel = 2L)
-    sparam_input <- c(data_args, sparam_input)
-
-    # report any save args not found
-    missing_bool <- !expected_save_argnames %in% names(sparam_input)
-    missing_args <- expected_save_argnames[missing_bool]
-    if (length(missing_args) > 0L) {
-        warning(sprintf(
-            ".gvis_get_save_param_input did not find some args: '%s'",
-            paste(missing_args, collapse = "', '")
-        ))
-    }
-
-    return(sparam_input)
+    get_args_list(toplevel = 2L, keep = expected_save_argnames)
 }
 
-
-# returns `giotto_plot_save_param`
-# check giotto instructions for defaults when values are not passed
-# builds a full filepath to use for the plot saving
-# the `type` param affects which types of outputs are possible.
-.gvis_save_param <- function(
-        gobject,
-        type = c("gg", "plotly", "general"),
-        save_dir = NULL,
-        save_folder = NULL,
-        save_name = NULL,
-        default_save_name = "giotto_plot",
-        save_format = NULL,
-        dpi = NULL,
-        base_width = NULL,
-        base_height = NULL,
-        base_aspect_ratio = NULL,
-        units = NULL,
-        plot_count = NULL
-) {
-    ## save format -------------------------------------------------------- ##
-
-    save_format <- save_format %null%
-        instructions(gobject, param = "plot_format")
-
-    save_format <- switch(type,
-        "gg" = save_format,
-        "plotly" = "html",
-        "general" = match.arg(save_format, c("png", "tiff", "pdf", "svg"))
-    )
-
-    ## get save information and set defaults ------------------------------ ##
-    save_dir <- save_dir %null% instructions(gobject, param = "save_dir")
-    plot_count <- plot_count %null% getOption("giotto.plot_count", 1)
-    dpi <- dpi %null% instructions(gobject, param = "dpi")
-    base_width <- base_width %null% instructions(gobject, param = "width")
-    base_height <- base_height %null% instructions(gobject, param = "height")
-    base_aspect_ratio <- base_aspect_ratio %null% 1.1
-    units <- units %null% instructions(gobject, param = "units")
-
-
-    ## checking ----------------------------------------------------------- ##
-    dpi <- as.numeric(dpi)
-    base_width <- as.numeric(base_width)
-    base_height <- as.numeric(base_height)
-    base_aspect_ratio <- as.numeric(base_aspect_ratio)
-    if (is.na(save_dir)) save_dir <- getwd()
-
-    # build filepath ------------------------------------------------------ ##
-
-    if (is.null(save_name)) {
-        save_name <- default_save_name
-        save_name <- paste0(plot_count, "-", save_name)
-        options("giotto.plot_count" = plot_count + 1L) # increment
-    }
-
-    if (!is.null(save_folder)) {
-        file_location <- file.path(save_dir, save_folder)
-    } else {
-        file_location <- save_dir
-    }
-
-    filename <- paste0(save_name, ".", save_format)
-    fullpath <- file.path(file_location, filename)
-
-    # create params object ------------------------------------------------ ##
-    structure(
-        list(
-            fullpath = fullpath,
-            save_format = save_format,
-            dpi = dpi,
-            base_width = base_width,
-            base_height = base_height,
-            base_aspect_ratio = base_aspect_ratio,
-            units = units
-        ),
-        class = "giotto_plot_save_param"
-    )
-}
 
 #' @export
 print.giotto_plot_save_param <- function(x, ...) {
