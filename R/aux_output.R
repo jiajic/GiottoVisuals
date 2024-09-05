@@ -41,14 +41,12 @@ plot_output_handler <- function(
     checkmate::assert_class(gobject, "giotto")
 
     ## output settings detection ##
-    # IF setting is NULL then the appropriate setting from gobject instructions
-    # will be checked and used.
-    # IF setting is NOT NULL then the provided value will be used directly.
     show_plot <- show_plot %null% instructions(gobject, param = "show_plot")
     save_plot <- save_plot %null% instructions(gobject, param = "save_plot")
     return_plot <- return_plot %null%
         instructions(gobject, param = "return_plot")
 
+    ## handle outputs --------------------------------------------------- ##
 
     ## print plot ##
     if (show_plot) {
@@ -60,17 +58,13 @@ plot_output_handler <- function(
         checkmate::assert_character(default_save_name)
         checkmate::assert_list(save_param)
 
-        do.call(
-            "all_plots_save_function",
-            c(
-                list(
-                    gobject = gobject,
-                    plot_object = plot_object,
-                    default_save_name = default_save_name
-                ),
-                save_param
-            )
+        data_param <- list(
+            gobject = gobject,
+            plot_object = plot_object,
+            default_save_name = default_save_name
         )
+
+        do.call("all_plots_save_function", args = c(data_param, save_param))
     }
 
     ## return plot ##
