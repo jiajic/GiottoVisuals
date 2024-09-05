@@ -94,8 +94,9 @@ Collate:
     'plot_violin.R'
     'spatialDE_visuals.R'
     'suite_reexports.R'
-    'vis_spatial.R'
+    'vis_spatial_gg.R'
     'vis_spatial_in_situ.R'
+    'vis_spatial_plotly.R'
     'viz_spatial_network.R'
     'zzz.R'
 biocViews: Software, Technology, Spatial
