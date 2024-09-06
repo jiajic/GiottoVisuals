@@ -26,7 +26,7 @@
 #' pixels.
 #' @param plot_count manually set the plot count that is appended to a
 #' default_save_name
-#' @param gpsparam `giotto_plot_save_param` object. If provided, will be
+#' @param GPSPARAM `giotto_plot_save_param` object. If provided, will be
 #' used instead of most other general save params. (save_dir, save_folder,
 #' save_name, default_save_name, save_format, base_width, base_height,
 #' base_aspect_ratio, units, dpi, plot_count)

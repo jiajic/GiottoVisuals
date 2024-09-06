@@ -25,7 +25,7 @@ all_plots_save_function(
   dpi = NULL,
   limitsize = TRUE,
   plot_count = NULL,
-  gpsparam = NULL,
+  GPSPARAM = NULL,
   ...
 )
 
@@ -86,7 +86,7 @@ pixels.}
 \item{plot_count}{manually set the plot count that is appended to a
 default_save_name}
 
-\item{gpsparam}{\code{giotto_plot_save_param} object. If provided, will be
+\item{GPSPARAM}{\code{giotto_plot_save_param} object. If provided, will be
 used instead of most other general save params. (save_dir, save_folder,
 save_name, default_save_name, save_format, base_width, base_height,
 base_aspect_ratio, units, dpi, plot_count)}
