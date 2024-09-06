@@ -3011,8 +3011,8 @@ spatFeatPlot2D <- function(gobject,
         # [grid aes]
         "show_grid", "grid_color", "spatial_grid_name",
         # [figure params]
-        "show_legend", "legend_text", "background_color", "axis_text",
-        "axis_title",
+        "coord_fix_ratio", "show_legend", "legend_text", "background_color",
+        "axis_text", "axis_title",
         "cow_n_col", "cow_rel_h", "cow_rel_w", "cow_align",
         # [return params]
         "show_plot", "return_plot", "save_plot", "save_param",

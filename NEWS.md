@@ -5,6 +5,9 @@
 - `gpsparam()` for generating an object containing plot saving parameters
 - `cowplot::plot_grid()` re-exported
 
+## bug fixes
+- fix `coord_fix_ratio` passing in `spatFeatPlot2D()` [#972](https://github.com/drieslab/Giotto/issues/972) by kaizen89
+
 # GiottoVisuals 0.2.4 (2024/07/26)
 
 ## enhancements
