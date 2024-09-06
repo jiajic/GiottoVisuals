@@ -3,6 +3,7 @@
 
 ## new
 - `gpsparam()` for generating an object containing plot saving parameters
+- `cowplot::plot_grid()` re-exported
 
 # GiottoVisuals 0.2.4 (2024/07/26)
 
