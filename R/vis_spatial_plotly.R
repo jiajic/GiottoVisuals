@@ -51,7 +51,7 @@
     cell_ID <- NULL
 
     ## dimension reduction ##
-    dim_dfr <- get_dimReduction(
+    dim_dfr <- getDimReduction(
         gobject = gobject,
         spat_unit = spat_unit,
         feat_type = feat_type,
@@ -80,12 +80,12 @@
     # create input for network
     if (show_NN_network == TRUE) {
         # nn_network
-        selected_nn_network <- get_NearestNetwork(
+        selected_nn_network <- getNearestNetwork(
             gobject = gobject,
             spat_unit = spat_unit,
             feat_type = feat_type,
-            nn_network_to_use = nn_network_to_use,
-            network_name = network_name,
+            nn_type = nn_network_to_use,
+            name = network_name,
             output = "igraph"
         )
         network_DT <- data.table::as.data.table(igraph::as_data_frame(
@@ -118,7 +118,7 @@
 
 
     if (dim_reduction_to_use == "pca") {
-        pca_object <- get_dimReduction(
+        pca_object <- getDimReduction(
             gobject = gobject,
             spat_unit = spat_unit,
             feat_type = feat_type,
@@ -378,19 +378,19 @@
     cell_ID <- NULL
 
     ## dimension reduction ##
-    dim_dfr <- get_dimReduction(
+    dim_mat <- getDimReduction(
         gobject = gobject,
         spat_unit = spat_unit,
         feat_type = feat_type,
         reduction = "cells",
         reduction_method = dim_reduction_to_use,
         name = dim_reduction_name,
-        output = "data.table"
+        output = "matrix"
     )
-    dim_dfr <- dim_dfr[, c(dim1_to_use, dim2_to_use, dim3_to_use)]
-    dim_names <- colnames(dim_dfr)
-    dim_DT <- data.table::as.data.table(dim_dfr)
-    dim_DT[, cell_ID := rownames(dim_dfr)]
+    dim_mat <- dim_mat[, c(dim1_to_use, dim2_to_use, dim3_to_use)]
+    dim_names <- colnames(dim_mat)
+    dim_DT <- data.table::as.data.table(dim_mat, keep.rownames = TRUE)
+    data.table::setnames(dim_DT, old = "rn", new = "cell_ID")
 
 
     ## annotated cell metadata
@@ -406,11 +406,12 @@
     # create input for network
     if (show_NN_network == TRUE) {
         # nn_network
-        selected_nn_network <- get_NearestNetwork(
-            gobject = gobject, spat_unit = spat_unit,
+        selected_nn_network <- getNearestNetwork(
+            gobject = gobject,
+            spat_unit = spat_unit,
             feat_type = feat_type,
-            nn_network_to_use = nn_network_to_use,
-            network_name = network_name,
+            nn_type = nn_network_to_use,
+            name = network_name,
             output = "igraph"
         )
         network_DT <- data.table::as.data.table(igraph::as_data_frame(
@@ -442,7 +443,7 @@
     }
 
     if (dim_reduction_to_use == "pca") {
-        pca_object <- get_dimReduction(
+        pca_object <- getDimReduction(
             gobject = gobject,
             spat_unit = spat_unit,
             feat_type = feat_type,
@@ -956,9 +957,10 @@ plotPCA_3D <- function(gobject,
     )
 
     ## get spatial cell locations
-    cell_locations <- get_spatial_locations(gobject,
+    cell_locations <- getSpatialLocations(
+        gobject = gobject,
         spat_unit = spat_unit,
-        spat_loc_name = spat_loc_name,
+        name = spat_loc_name,
         output = "data.table"
     )
     if (is.null(cell_locations)) {
@@ -967,8 +969,9 @@ plotPCA_3D <- function(gobject,
 
 
     ## extract spatial network
-    if (show_network == TRUE) {
-        spatial_network <- get_spatialNetwork(gobject,
+    if (show_network) {
+        spatial_network <- getSpatialNetwork(
+            gobject = gobject,
             spat_unit = spat_unit,
             name = spatial_network_name,
             output = "networkDT"
@@ -979,10 +982,11 @@ plotPCA_3D <- function(gobject,
 
     ## extract spatial grid
     if (show_grid == TRUE) {
-        spatial_grid <- get_spatialGrid(gobject,
+        spatial_grid <- getSpatialGrid(
+            gobject = gobject,
             spat_unit = spat_unit,
             feat_type = feat_type,
-            spatial_grid_name
+            name = spatial_grid_name
         )
     } else {
         spatial_grid <- NULL
@@ -1255,9 +1259,10 @@ plotPCA_3D <- function(gobject,
     )
 
     ## get spatial cell locations
-    cell_locations <- get_spatial_locations(gobject,
+    cell_locations <- getSpatialLocations(
+        gobject = gobject,
         spat_unit = spat_unit,
-        spat_loc_name = spat_loc_name,
+        name = spat_loc_name,
         output = "data.table"
     )
     if (is.null(cell_locations)) {
@@ -1265,8 +1270,9 @@ plotPCA_3D <- function(gobject,
     }
 
     ## extract spatial network
-    if (show_network == TRUE) {
-        spatial_network <- get_spatialNetwork(gobject,
+    if (show_network) {
+        spatial_network <- getSpatialNetwork(
+            gobject = gobject,
             spat_unit = spat_unit,
             name = spatial_network_name,
             output = "networkDT"
@@ -1276,11 +1282,12 @@ plotPCA_3D <- function(gobject,
     }
 
     ## extract spatial grid
-    if (show_grid == TRUE) {
-        spatial_grid <- get_spatialGrid(gobject,
+    if (show_grid) {
+        spatial_grid <- getSpatialGrid(
+            gobject = gobject,
             spat_unit = spat_unit,
             feat_type = feat_type,
-            spatial_grid_name
+            name = spatial_grid_name
         )
     } else {
         spatial_grid <- NULL
@@ -1764,14 +1771,14 @@ spatDimPlot3D <- function(gobject,
 
     # ********data prepare********#
     ## dimension reduction ##
-    dim_dfr <- get_dimReduction(
+    dim_dfr <- getDimReduction(
         gobject = gobject,
         spat_unit = spat_unit,
         feat_type = feat_type,
         reduction = "cells",
         reduction_method = dim_reduction_to_use,
         name = dim_reduction_name,
-        output = "data.table"
+        output = "matrix"
     )
     dim_dfr <- dim_dfr[, c(dim1_to_use, dim2_to_use, dim3_to_use)]
     dim_names <- colnames(dim_dfr)
@@ -1788,7 +1795,7 @@ spatDimPlot3D <- function(gobject,
     )
     annotated_DT <- merge(cell_metadata, dim_DT, by = "cell_ID")
     spatial_locations <- getSpatialLocations(
-        gobject,
+        gobject = gobject,
         spat_unit = spat_unit,
         name = spat_loc_name,
         output = "data.table"
@@ -1801,7 +1808,7 @@ spatDimPlot3D <- function(gobject,
 
 
     if (dim_reduction_to_use == "pca") {
-        pca_object <- get_dimReduction(
+        pca_object <- getDimReduction(
             gobject = gobject,
             spat_unit = spat_unit,
             feat_type = feat_type,
@@ -1828,12 +1835,12 @@ spatDimPlot3D <- function(gobject,
     ## nn network
     if (show_NN_network) {
         # nn_network
-        selected_nn_network <- get_NearestNetwork(
+        selected_nn_network <- getNearestNetwork(
             gobject = gobject,
             feat_type = feat_type,
             spat_unit = spat_unit,
-            nn_network_to_use = nn_network_to_use,
-            network_name = network_name,
+            nn_type = nn_network_to_use,
+            name = network_name,
             output = "igraph"
         )
         network_DT <- data.table::as.data.table(igraph::as_data_frame(
@@ -1868,8 +1875,9 @@ spatDimPlot3D <- function(gobject,
 
 
     ## extract spatial network
-    if (show_spatial_network == TRUE) {
-        spatial_network <- get_spatialNetwork(gobject,
+    if (show_spatial_network) {
+        spatial_network <- getSpatialNetwork(
+            gobject = gobject,
             spat_unit = spat_unit,
             name = spatial_network_name,
             output = "networkDT"
@@ -1881,10 +1889,11 @@ spatDimPlot3D <- function(gobject,
 
     ## extract spatial grid
     if (show_spatial_grid == TRUE) {
-        spatial_grid <- get_spatialGrid(gobject,
+        spatial_grid <- getSpatialGrid(
+            gobject = gobject,
             spat_unit = spat_unit,
             feat_type = feat_type,
-            spatial_grid_name
+            name = spatial_grid_name
         )
     } else {
         spatial_grid <- NULL
@@ -2793,8 +2802,9 @@ spatFeatPlot3D <- function(gobject,
 
 
     ## extract spatial network
-    if (show_network == TRUE) {
-        spatial_network <- get_spatialNetwork(gobject,
+    if (show_network) {
+        spatial_network <- getSpatialNetwork(
+            gobject = gobject,
             spat_unit = spat_unit,
             name = spatial_network_name,
             output = "networkDT"
@@ -2804,11 +2814,12 @@ spatFeatPlot3D <- function(gobject,
     }
 
     ## extract spatial grid
-    if (show_grid == TRUE) {
-        spatial_grid <- get_spatialGrid(gobject,
+    if (show_grid) {
+        spatial_grid <- getSpatialGrid(
+            gobject = gobject,
             spat_unit = spat_unit,
             feat_type = feat_type,
-            spatial_grid_name
+            name = spatial_grid_name
         )
     } else {
         spatial_grid <- NULL
@@ -3730,7 +3741,7 @@ spatDimFeatPlot3D <- function(gobject,
     }
     selected_genes <- genes
     values <- match.arg(expression_values, c("normalized", "scaled", "custom"))
-    expr_values <- get_expression_values(
+    expr_values <- getExpression(
         gobject = gobject,
         spat_unit = spat_unit,
         feat_type = feat_type,
@@ -3748,11 +3759,14 @@ spatDimFeatPlot3D <- function(gobject,
 
 
     ## dimension reduction ##
-    dim_dfr <- get_dimReduction(gobject,
+    dim_dfr <- getDimReduction(
+        gobject = gobject,
+        spat_unit = spat_unit,
+        feat_type = feat_type,
         reduction = "cells",
         reduction_method = dim_reduction_to_use,
         name = dim_reduction_name,
-        output = "data.table"
+        output = "matrix"
     )
     dim_dfr <- dim_dfr[, c(dim1_to_use, dim2_to_use, dim3_to_use)]
     dim_names <- colnames(dim_dfr)
@@ -3765,10 +3779,10 @@ spatDimFeatPlot3D <- function(gobject,
         feat_type = feat_type,
         spat_unit = spat_unit
     )
-    cell_locations <- get_spatial_locations(
+    cell_locations <- getSpatialLocations(
         gobject = gobject,
         spat_unit = spat_unit,
-        spat_loc_name = spat_loc_name,
+        name = spat_loc_name,
         output = "data.table"
     )
     if (is.null(cell_locations)) {
@@ -3783,12 +3797,12 @@ spatDimFeatPlot3D <- function(gobject,
     ## nn network
     if (show_NN_network) {
         # nn_network
-        selected_nn_network <- get_NearestNetwork(
+        selected_nn_network <- getNearestNetwork(
             gobject = gobject,
             feat_type = feat_type,
             spat_unit = spat_unit,
-            nn_network_to_use = nn_network_to_use,
-            network_name = network_name,
+            nn_type = nn_network_to_use,
+            name = network_name,
             output = "igraph"
         )
         network_DT <- data.table::as.data.table(igraph::as_data_frame(
@@ -3822,7 +3836,8 @@ spatDimFeatPlot3D <- function(gobject,
 
     ## extract spatial network
     if (show_spatial_network == TRUE) {
-        spatial_network <- get_spatialNetwork(gobject,
+        spatial_network <- getSpatialNetwork(
+            gobject = gobject,
             spat_unit = spat_unit,
             name = spatial_network_name,
             output = "networkDT"
@@ -3833,10 +3848,11 @@ spatDimFeatPlot3D <- function(gobject,
 
     ## extract spatial grid
     if (show_spatial_grid == TRUE) {
-        spatial_grid <- get_spatialGrid(gobject,
+        spatial_grid <- getSpatialGrid(
+            gobject = gobject,
             spat_unit = spat_unit,
             feat_type = feat_type,
-            spatial_grid_name
+            name = spatial_grid_name
         )
     } else {
         spatial_grid <- NULL

@@ -51,7 +51,7 @@ NULL
             expression_values
         ))
     )
-    expr_values <- get_expression_values(
+    expr_values <- getExpression(
         gobject = gobject,
         spat_unit = spat_unit,
         feat_type = feat_type,
@@ -61,7 +61,7 @@ NULL
 
     # subset expression data
     detected_feats <- feats[feats %in% rownames(expr_values)]
-    subset_values <- expr_values[rownames(expr_values) %in% detected_feats, ]
+    # subset_values <- expr_values[rownames(expr_values) %in% detected_feats, ]
 
     # metadata
     cell_metadata <- pDataDT(gobject,

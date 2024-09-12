@@ -131,10 +131,10 @@
 
 
     ## get spatial cell locations
-    cell_locations <- get_spatial_locations(
+    cell_locations <- getSpatialLocations(
         gobject = gobject,
         spat_unit = spat_unit,
-        spat_loc_name = spat_loc_name,
+        name = spat_loc_name,
         output = "data.table",
         copy_obj = TRUE,
         verbose = verbose
@@ -146,11 +146,12 @@
 
     ## extract spatial network
     if (show_network == TRUE) {
-        spatial_network <- get_spatialNetwork(
-            gobject,
+        spatial_network <- getSpatialNetwork(
+            gobject = gobject,
             spat_unit = spat_unit,
             name = spatial_network_name,
-            output = "networkDT"
+            output = "networkDT",
+            verbose = verbose
         )
     } else {
         spatial_network <- NULL
@@ -158,7 +159,7 @@
 
     ## extract spatial grid
     if (show_grid == TRUE) {
-        spatial_grid <- get_spatialGrid(
+        spatial_grid <- getSpatialGrid(
             gobject = gobject,
             spat_unit = spat_unit,
             feat_type = feat_type,
@@ -892,10 +893,10 @@ spatDeconvPlot <- function(gobject,
 
 
     ## get spatial cell locations
-    spatial_locations <- get_spatial_locations(
+    spatial_locations <- getSpatialLocations(
         gobject = gobject,
         spat_unit = spat_unit,
-        spat_loc_name = spat_loc_name,
+        name = spat_loc_name,
         output = "data.table"
     )
     if (is.null(spatial_locations)) {
@@ -903,11 +904,11 @@ spatDeconvPlot <- function(gobject,
     }
 
     ## deconvolution results
-    spatial_enrichment <- get_spatial_enrichment(
+    spatial_enrichment <- getSpatialEnrichment(
         gobject = gobject,
         spat_unit = spat_unit,
         feat_type = feat_type,
-        enrichm_name = deconv_name,
+        name = deconv_name,
         output = "data.table"
     )
 
@@ -1110,7 +1111,7 @@ spatDeconvPlot <- function(gobject,
     }
 
 
-    dim_dfr <- get_dimReduction(
+    dim_dfr <- getDimReduction(
         gobject = gobject,
         spat_unit = spat_unit,
         feat_type = feat_type,
@@ -1150,12 +1151,12 @@ spatDeconvPlot <- function(gobject,
     # create input for network
     if (show_NN_network == TRUE) {
         # nn_network
-        selected_nn_network <- get_NearestNetwork(
+        selected_nn_network <- getNearestNetwork(
             gobject = gobject,
             spat_unit = spat_unit,
             feat_type = feat_type,
-            nn_network_to_use = nn_network_to_use,
-            network_name = network_name,
+            nn_type = nn_network_to_use,
+            name = network_name,
             output = "igraph"
         )
 
@@ -1188,7 +1189,7 @@ spatDeconvPlot <- function(gobject,
 
     # add % variance information if reduction is PCA
     if (dim_reduction_to_use == "pca") {
-        pcaObj <- get_dimReduction(gobject,
+        pcaObj <- getDimReduction(gobject,
             spat_unit = spat_unit,
             feat_type = feat_type,
             reduction = "cells",
@@ -2416,7 +2417,7 @@ spatFeatPlot2D_single <- function(gobject,
             expression_values
         ))
     )
-    expr_values <- get_expression_values(
+    expr_values <- getExpression(
         gobject = gobject,
         spat_unit = spat_unit,
         feat_type = feat_type,
@@ -2466,10 +2467,10 @@ spatFeatPlot2D_single <- function(gobject,
         }
     }
 
-    cell_locations <- get_spatial_locations(
+    cell_locations <- getSpatialLocations(
         gobject = gobject,
         spat_unit = spat_unit,
-        spat_loc_name = spat_loc_name,
+        name = spat_loc_name,
         output = "data.table",
         copy_obj = TRUE
     )
@@ -2478,8 +2479,8 @@ spatFeatPlot2D_single <- function(gobject,
     }
 
     ## extract spatial network
-    if (show_network == TRUE) {
-        spatial_network <- get_spatialNetwork(
+    if (show_network) {
+        spatial_network <- getSpatialNetwork(
             gobject = gobject,
             spat_unit = spat_unit,
             name = spatial_network_name,
@@ -2490,9 +2491,9 @@ spatFeatPlot2D_single <- function(gobject,
     }
 
     ## extract spatial grid
-    if (show_grid == TRUE) {
-        spatial_grid <- get_spatialGrid(
-            gobject,
+    if (show_grid) {
+        spatial_grid <- getSpatialGrid(
+            gobject = gobject,
             spat_unit = spat_unit,
             feat_type = feat_type,
             name = spatial_grid_name
@@ -3260,7 +3261,7 @@ dimFeatPlot2D <- function(gobject,
             expression_values
         ))
     )
-    expr_values <- get_expression_values(
+    expr_values <- getExpression(
         gobject = gobject,
         spat_unit = spat_unit,
         feat_type = feat_type,
@@ -3301,7 +3302,7 @@ dimFeatPlot2D <- function(gobject,
 
 
     ## dimension reduction ##
-    dim_dfr <- get_dimReduction(
+    dim_dfr <- getDimReduction(
         gobject = gobject,
         feat_type = feat_type,
         spat_unit = spat_unit,
@@ -3316,11 +3317,10 @@ dimFeatPlot2D <- function(gobject,
     dim_DT[, cell_ID := rownames(dim_dfr)]
 
     ## annotated cell metadata
-    cell_metadata <- get_cell_metadata(gobject,
+    cell_metadata <- pDataDT(
+        gobject = gobject,
         spat_unit = spat_unit,
-        feat_type = feat_type,
-        output = "data.table",
-        copy_obj = TRUE
+        feat_type = feat_type
     )
 
     annotated_DT <- data.table::merge.data.table(cell_metadata,
@@ -3337,12 +3337,12 @@ dimFeatPlot2D <- function(gobject,
     # create input for network
     if (show_NN_network == TRUE) {
         # nn_network
-        selected_nn_network <- get_NearestNetwork(
+        selected_nn_network <- getNearestNetwork(
             gobject = gobject,
             spat_unit = spat_unit,
             feat_type = feat_type,
-            nn_network_to_use = nn_network_to_use,
-            network_name = network_name,
+            nn_type = nn_network_to_use,
+            name = network_name,
             output = "igraph"
         )
 

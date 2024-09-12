@@ -1123,7 +1123,7 @@ plotMetaDataCellsHeatmap <- function(
         expression_values,
         unique(c("normalized", "scaled", "custom", expression_values))
     )
-    expr_values <- get_expression_values(
+    expr_values <- getExpression(
         gobject = gobject,
         spat_unit = spat_unit,
         feat_type = feat_type,
