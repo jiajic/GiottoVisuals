@@ -87,6 +87,7 @@ Collate:
     'gstop.R'
     'mixcolor.R'
     'plot_dendrogram.R'
+    'plot_dotplot.R'
     'plot_heatmap.R'
     'plot_sankey.R'
     'plot_scatter.R'
