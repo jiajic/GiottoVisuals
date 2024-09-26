@@ -7,6 +7,7 @@
         legend_text = 8,
         axis_title = 8,
         axis_text = 8,
+        axis_text_y_angle = 90,
         background_color = "white",
         ...
 ) {
@@ -21,7 +22,8 @@
 
     # defaults
     a$plot.title <- a$plot.title %null% element_text(hjust = 0.5)
-    a$axis.text.y <- a$axis.text.y %null% element_text(angle = 90, hjust = 0.5)
+    a$axis.text.y <- a$axis.text.y %null%
+        element_text(angle = axis_text_y_angle, hjust = 0.5)
     a$legend.title <- a$legend.title %null% element_blank()
     a$panel.grid <- a$panel.grid %null% element_blank()
 
