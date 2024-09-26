@@ -31,6 +31,22 @@
 }
 
 
-
+#' @name theme_dark
+#' @title Dark plotting theme
+#' @description
+#' A default dark theme. It can be applied through the `theme_param`
+#' @export
+theme_dark <- theme(
+    plot.background = element_rect(fill = "black"),
+    panel.background = element_rect(fill = "black"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    text = element_text(color = "white"),
+    axis.text = element_text(color = "white"),
+    title = element_text(color = "white"),
+    legend.background = element_rect(fill = "black"),
+    legend.text = element_text(color = "white"),
+    legend.title = element_text(color = "white")
+)
 
 
