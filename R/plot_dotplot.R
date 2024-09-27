@@ -17,7 +17,8 @@
 #'   cells of a particular cluster that do not have an expression level of 0.
 #' @param dot_size_threshold numeric. The minimal value at which a dot is no
 #'   longer drawn.
-#' @param feats character vector. Features to use
+#' @param feats character vector or named list. Features to use or named lists
+#' of features to use.
 #' @param cluster_column character. Clusterings column to use (usually in cell
 #'   metadata)
 #' @param cluster_custom_order character vector. Specific cluster order to use
@@ -30,8 +31,21 @@
 #' @param theme_param list of additional params passed to `ggplot2::theme()`
 #' @examples
 #' g <- GiottoData::loadGiottoMini("visium")
-#' feats <- head(featIDs(g), 20)
-#' dotPlot(g, cluster_column = "leiden_clus", feats = feats)
+#' f1 <- head(featIDs(g), 20)
+#' f2 <- tail(featIDs(g), 20)
+#'
+#' dotPlot(g, cluster_column = "leiden_clus", feats = f1)
+#' dotPlot(g,
+#'     cluster_column = "leiden_clus",
+#'     feats = list(set1 = f1, set2 = f2)
+#' )
+#' dotPlot(g,
+#'     cluster_column = "leiden_clus",
+#'     feats = fuse,
+#'     group_by = "leiden_clus",
+#'     group_by_subset = c(2,3)
+#' )
+#'
 #' dotPlot(g,
 #'     cluster_column = "leiden_clus",
 #'     feats = feats,
@@ -41,8 +55,6 @@
 #' @export
 dotPlot <- function(
         gobject,
-        spat_unit = NULL,
-        feat_type = NULL,
         feats,
         cluster_column,
         cluster_custom_order = NULL,
@@ -54,6 +66,10 @@ dotPlot <- function(
         gradient_midpoint = NULL,
         gradient_style = "sequential",
         gradient_limits = NULL,
+        group_by = NULL,
+        group_by_subset = NULL,
+        spat_unit = NULL,
+        feat_type = NULL,
         expression_values = c(
             "normalized",
             "scaled",
@@ -66,6 +82,10 @@ dotPlot <- function(
         background_color = "white",
         axis_text = 10,
         axis_title = 9,
+        cow_n_col = NULL,
+        cow_rel_h = 1,
+        cow_rel_w = 1,
+        cow_align = "h",
         theme_param = list(),
         show_plot = NULL,
         return_plot = NULL,
@@ -74,17 +94,18 @@ dotPlot <- function(
         default_save_name = "dotPlot"
 ) {
     checkmate::assert_character(cluster_column, len = 1L)
-    checkmate::assert_character(feats)
     checkmate::assert_class(gobject, "giotto")
     if (!is.null(gradient_limits)) {
         checkmate::assert_numeric(gradient_limits, len = 2L)
     }
+    title <- title %null% ""
 
-
-    spat_unit <- set_default_spat_unit(gobject = gobject, spat_unit = spat_unit)
-    feat_type <- set_default_feat_type(gobject = gobject,
-                                       spat_unit = spat_unit,
-                                       feat_type = feat_type)
+    spat_unit <- set_default_spat_unit(
+        gobject = gobject, spat_unit = spat_unit
+    )
+    feat_type <- set_default_feat_type(
+        gobject = gobject, spat_unit = spat_unit, feat_type = feat_type
+    )
 
     expression_values <- match.arg(
         expression_values,
@@ -93,11 +114,129 @@ dotPlot <- function(
 
     clus <- spatValues(gobject, spat_unit = spat_unit, feat_type = feat_type,
                        feats = cluster_column, verbose = FALSE)
-
     expr <- spatValues(gobject, spat_unit = spat_unit, feat_type = feat_type,
-                       feats = feats, expression_values = expression_values,
+                       feats = unique(unlist(feats)), # unlist to get all feats
+                       expression_values = expression_values,
                        verbose = FALSE)
+
+    # combine cluster and expression info
     ann_dt <- clus[expr, on = "cell_ID"]
+
+    common_args <- get_args_list(keep = c(
+        "cluster_column", "dot_size_threshold", "dot_size", "dot_color",
+        "cluster_custom_order", "gradient_limits", "gradient_midpoint",
+        "dot_color_gradient", "gradient_style", "dot_scale", "theme_param",
+        "legend_text", "axis_title", "axis_text", "background_color"
+    ))
+    common_args$instrs <- instructions(gobject)
+    # `ann_dt`, `feats`, `title` need to be updated
+
+    # split up ann_dt into lists of ann_dt if `group_by` was given
+    if (is.null(group_by)) {
+        adt_list <- list(ann_dt)
+    } else {
+        grpby <- spatValues(gobject,
+            spat_unit = spat_unit, feat_type = feat_type, feats = group_by,
+            verbose = FALSE
+        )
+        ann_dt <- ann_dt[grpby, on = "cell_ID"]
+        # consider name collisions
+        if (identical(group_by, cluster_column)) {
+            group_by <- paste0("i.", group_by)
+        }
+
+        unique_groups <- unique(ann_dt[[group_by]])
+        # subset unique groups to those selected with `group_by_subset`
+        if (!is.null(group_by_subset)) {
+            not_found <- group_by_subset[!group_by_subset %in% unique_groups]
+            if (length(not_found) > 0) {
+                message("the following subset was not found: ", not_found)
+            }
+            unique_groups <- unique_groups[unique_groups %in% group_by_subset]
+        }
+
+        # subset ann_dt based on the group_by
+        adt_list <- lapply(unique_groups, function(ugroup) {
+            ann_dt[get(group_by) == ugroup]
+        })
+
+        # update title
+        title <- paste(title, unique_groups)
+    }
+
+    # deal with multiple feature sets
+    if (!is.list(feats)) {
+        feats <- list(feats)
+    } else {
+        fnames <- names(feats)
+        if (length(fnames) != length(feats)) {
+            stop("If `feats` is a list, all list elements must be named")
+        }
+
+        # duplicate adt_list for however many feature sets there are
+        # no need to bother with subsetting feat columns
+        n_adt <- length(adt_list)
+        n_fts <- length(feats)
+        adt_list <- rep(adt_list, n_fts)
+
+        # duplicate feats list to match adt list
+        feats <- rep(feats, n_adt)
+
+        # update title
+        title <- paste(rep(title, n_fts), fnames)
+    }
+
+
+    pl <- mapply(
+        function(adt_i, title_i, feats_i) {
+            specific_args <- list(
+                ann_dt = adt_i,
+                feats = feats_i,
+                title = title_i
+            )
+            do.call(.dplot_single, args = c(specific_args, common_args))
+        },
+        adt_i = adt_list, title_i = title, feats_i = feats,
+        SIMPLIFY = FALSE
+    )
+
+    if (length(pl) == 1L) pl <- pl[[1L]]
+    if (length(pl) > 1 && !inherits(pl, "gg")) {
+        pl <- cowplot::plot_grid(
+            plotlist = pl,
+            ncol = set_default_cow_n_col(
+                cow_n_col = cow_n_col,
+                nr_plots = length(pl)
+            ),
+            rel_heights = cow_rel_h,
+            rel_widths = cow_rel_w,
+            align = cow_align
+        )
+    }
+
+    plot_output_handler(
+        gobject = gobject,
+        plot_object = pl,
+        save_plot = save_plot,
+        return_plot = return_plot,
+        show_plot = show_plot,
+        default_save_name = default_save_name,
+        save_param = save_param,
+        else_return = NULL
+    )
+}
+
+
+# internals ####
+
+.dplot_single <- function(
+        ann_dt, cluster_column, dot_size, dot_color, feats, dot_size_threshold,
+        cluster_custom_order, gradient_limits, gradient_midpoint,
+        dot_color_gradient, gradient_style, dot_scale, theme_param,
+        legend_text, title, axis_title, axis_text, background_color, instrs
+) {
+    # NSE vars
+    cluster <- feat <- color <- size <- NULL
 
     dsize <- ann_dt[, lapply(.SD, dot_size), .SDcols = feats, by = cluster_column]
     dcol <- ann_dt[, lapply(.SD, dot_color), .SDcols = feats, by = cluster_column]
@@ -145,7 +284,7 @@ dotPlot <- function(
     }
     pl <- pl + set_default_color_continuous_cell(
         colors = dot_color_gradient,
-        instrs = instructions(gobject),
+        instrs = instrs,
         midpoint = gradient_midpoint,
         style = gradient_style,
         type = "color"
@@ -166,19 +305,10 @@ dotPlot <- function(
     )
     pl <- pl + do.call(.gg_theme, args = gg_theme_args)
 
+    pl <- pl + ggplot2::labs(title = title)
 
-    plot_output_handler(
-        gobject = gobject,
-        plot_object = pl,
-        save_plot = save_plot,
-        return_plot = return_plot,
-        show_plot = show_plot,
-        default_save_name = default_save_name,
-        save_param = save_param,
-        else_return = NULL
-    )
+    return(pl)
 }
-
 
 
 
