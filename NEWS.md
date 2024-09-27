@@ -1,5 +1,5 @@
 
-# GiottoVisuals 0.2.5
+# GiottoVisuals 0.2.5 (2024/09/27)
 
 ## new
 - `gpsparam()` for generating an object containing plot saving parameters
