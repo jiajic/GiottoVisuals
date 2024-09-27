@@ -1,0 +1,173 @@
+---
+title: "Color Settings"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Color Settings}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Relevant Options
+```
+# colors continuous
+options("giotto.color_cd_pal")
+options("giotto.color_cs_pal")
+options("giotto.color_c_rev")
+
+# colors discrete
+options("giotto.color_d_pal")
+options("giotto.color_d_rev")
+options("giotto.color_d_strategy")
+```
+
+```{r, echo=FALSE}
+# prevent spatInSituPlotPoints() warning
+options(giotto.warn_sispp_feats = FALSE)
+```
+
+## Load example data
+```{r}
+library(GiottoClass)
+library(GiottoVisuals)
+
+if (!requireNamespace("GiottoData")) {
+    pak::pak("drieslab/GiottoData")
+}
+
+g <- GiottoData::loadGiottoMini("vizgen", verbose = FALSE)
+activeSpatUnit(g) <- "aggregate"
+```
+
+## Ways to set colors
+
+Giotto can apply color palettes to plot points, polygons, and images in order
+to convey different kinds of information and make sure that elements are
+clearly visible.
+
+Color palettes to use can be set at three hierarchical levels. These are,
+in order of increasing priority:
+
+* **global options** general sessions settings with blanket color palette type
+effects.
+* **giotto instructions** gobject specific and affects specific types of plots.
+run `showColorInstructions()` for details on options/params to set in the 
+`giottoInstructions` object
+* **function specific** directly pass desired colors to plotting function
+
+## Types of palettes
+Giotto switches between using continuous and discrete color palettes using the
+`color_as_factor` or `polygon_fill_as_factor` params. 
+
+### Discrete colors
+`*_as_factor = TRUE`, produces discrete/categorical colors. These
+categorical colors default to the output of Giotto's `getDistinctColors()`,
+which depending on the number of items to plot, finds the most different
+colors across the 444 colors available to R. These are intended for displaying
+categorical information such as cell types or clustering classification results.
+```{r, fig.height=4, fig.width=5}
+spatPlot2D(g, cell_color = "leiden_clus", color_as_factor = TRUE)
+spatInSituPlotPoints(g, polygon_fill = "leiden_clus", polygon_fill_as_factor = TRUE)
+```
+
+Global options for setting a default discrete palette are:
+
+* `"giotto.color_d_pal"`: Either the name of a known palette (see `pal_names()`)
+or a character vector of colors.
+* `"giotto.color_d_rev"`: Whether the palette colors should be reversed
+* `"giotto.color_d_strategy"`: One fo the following options for how to deal 
+with situations when the palette has fewer colors than the number requested.
+    + `"interpolate"` interpolates provided colors using `grDevices::colorRampPalette()`
+    + `"interpolate"` recycles the input color vector across the n requested:
+    + `"cutoff"` supply only a maximum of as many colors as exist within the
+    palette or originally supplied vector of colors.
+
+```{r, fig.height=4, fig.width=5}
+options("giotto.color_d_pal" = "Set1")
+spatPlot2D(g, cell_color = "leiden_clus", color_as_factor = TRUE)
+options("giotto.color_d_rev" = TRUE)
+spatPlot2D(g, cell_color = "leiden_clus", color_as_factor = TRUE)
+```
+
+### Continuous colors
+
+Setting `color_as_factor = FALSE` will produce continuous colors. There are
+two sets of defaults for continuous colors since you can have both "sequential"
+and "divergent" palettes. Swapping between these two defaults is done with the
+`gradient_style` or `polygon_fill_gradient_style` param. Continuous palettes
+are appropriate for values that fall along a numerical scale, with sequential 
+being best for non-negative values, and divergent for signed values.
+```{r, fig.height=4, fig.width=5}
+spatPlot2D(g,  
+    cell_color = "total_expr", 
+    color_as_factor = FALSE,
+    gradient_style = "sequential"
+)
+```
+
+```{r, fig.height=4, fig.width=5}
+spatFeatPlot2D(g,
+    expression_values = "scaled",
+    feats = "Gfap",
+    gradient_style = "divergent",
+    gradient_midpoint = 0,
+    point_size = 2
+)
+```
+
+### Custom colors
+Custom palettes can always be used by supplying color names or hex codes to the plotting functions as well.
+
+
+### Futher examples
+
+```{r, fig.height=4, fig.width=5, eval = FALSE}
+nr_feat_polys <- function(...) {
+    spatInSituPlotPoints(g,
+        polygon_fill = "nr_feats",
+        polygon_fill_as_factor = FALSE,
+        polygon_feat_type = "aggregate",
+        polygon_line_size = 0.1,
+        polygon_alpha = 1,
+        ...
+    )
+}
+
+# default
+nr_feat_polys()
+
+# set global option level: viridis
+options("giotto.color_cs_pal" = "v")
+nr_feat_polys()
+
+# set instructions level: magma
+GiottoClass::instructions(g, "poly_color_c_pal") <- "magma"
+nr_feat_polys()
+
+GiottoClass::instructions(g, "poly_color_c_rev") <- TRUE
+nr_feat_polys()
+nr_feat_polys(polygon_fill_gradient_style = "s")
+
+
+# set function level: mako
+GiottoClass::instructions(g, "poly_color_c_rev") <- FALSE
+nr_feat_polys(polygon_fill_gradient = "mako")
+
+# set function level: color vector (2 to n colors)
+nr_feat_polys(
+    polygon_fill_gradient = c("green", "purple"),
+    polygon_fill_gradient_style = "s"
+)
+
+nr_feat_polys(
+    polygon_fill_gradient = c("blue", "yellow", "red"),
+    polygon_fill_gradient_style = "s"
+)
+
+nr_feat_polys(
+    polygon_fill_gradient = c(
+        "darkgrey", "darkblue", "purple", "violet", "cyan"
+    ),
+    polygon_fill_gradient_style = "s"
+)
+```
+
