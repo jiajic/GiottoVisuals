@@ -1,0 +1,32 @@
+---
+title: "Image Handling"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Image Handling}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Relevant Options
+```
+# image resampling
+options("giotto.plot_img_max_sample")
+options("giotto.plot_img_max_crop")
+options("giotto.plot_img_max_resample_scale")
+```
+
+When Giotto reads images, a link is formed between Giotto and the original
+image file on disk. The data is not read in automatically and instead, only the
+required portions of the original image are read into memory, speeding up
+plotting and lowering memory footprint.
+
+The amount of image sampling that is done is based on how plots usually appear in
+RStudio's plot viewer. When the plot is very large or when saving a high quality
+image, it is a good idea to use the `giotto.plot_img_max_sample` option and
+increase it to a higher value. The default is 5e5 pixels being sampled. Large
+sample values can take much longer however. For further details on how the
+resampling is done see ?GiottoVisuals::auto_image_resample
+
+The API for working with Giotto's image classes and ggplot is 
+`gg_annotation_raster()`. This generic will take a Giotto image class and append
+it to a ggplot2 plot.
