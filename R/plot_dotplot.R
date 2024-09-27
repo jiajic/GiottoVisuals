@@ -11,6 +11,7 @@
 #'   and dot color scaled by mean expression of that feature within the cluster.
 #' @inheritParams data_access_params
 #' @inheritParams plot_params
+#' @inheritParams plot_cow_params
 #' @inheritParams plot_output_params
 #' @param dot_size,dot_color summary function e.g. `sum`, `mean`, `var`, or
 #'   other custom function. The default for `dot_size` finds the percentage of

@@ -6,8 +6,6 @@
 \usage{
 dotPlot(
   gobject,
-  spat_unit = NULL,
-  feat_type = NULL,
   feats,
   cluster_column,
   cluster_custom_order = NULL,
@@ -19,6 +17,10 @@ dotPlot(
   gradient_midpoint = NULL,
   gradient_style = "sequential",
   gradient_limits = NULL,
+  group_by = NULL,
+  group_by_subset = NULL,
+  spat_unit = NULL,
+  feat_type = NULL,
   expression_values = c("normalized", "scaled", "custom"),
   title = NULL,
   show_legend = TRUE,
@@ -27,6 +29,10 @@ dotPlot(
   background_color = "white",
   axis_text = 10,
   axis_title = 9,
+  cow_n_col = NULL,
+  cow_rel_h = 1,
+  cow_rel_w = 1,
+  cow_align = "h",
   theme_param = list(),
   show_plot = NULL,
   return_plot = NULL,
@@ -38,11 +44,8 @@ dotPlot(
 \arguments{
 \item{gobject}{giotto object}
 
-\item{spat_unit}{spatial unit (e.g. "cell")}
-
-\item{feat_type}{feature type (e.g. "rna", "dna", "protein")}
-
-\item{feats}{character vector. Features to use}
+\item{feats}{character vector or named list. Features to use or named lists
+of features to use.}
 
 \item{cluster_column}{character. Clusterings column to use (usually in cell
 metadata)}
@@ -68,6 +71,15 @@ or 'sequential' (scaled based on data range)}
 \item{gradient_limits}{numeric vector of length 2. Set minmax value mappings
 for color gradient}
 
+\item{group_by}{character. Create multiple plots based on cell
+annotation column}
+
+\item{group_by_subset}{character. subset the group_by factor column}
+
+\item{spat_unit}{spatial unit (e.g. "cell")}
+
+\item{feat_type}{feature type (e.g. "rna", "dna", "protein")}
+
 \item{expression_values}{character. Expression values to use.}
 
 \item{title}{character. title for plot}
@@ -83,6 +95,14 @@ for color gradient}
 \item{axis_text}{size of axis text}
 
 \item{axis_title}{size of axis title}
+
+\item{cow_n_col}{cowplot param: how many columns}
+
+\item{cow_rel_h}{cowplot param: relative heights of rows (e.g. c(1,2))}
+
+\item{cow_rel_w}{cowplot param: relative widths of columns (e.g. c(1,2))}
+
+\item{cow_align}{cowplot param: how to align}
 
 \item{theme_param}{list of additional params passed to \code{ggplot2::theme()}}
 
@@ -106,8 +126,21 @@ and dot color scaled by mean expression of that feature within the cluster.
 }
 \examples{
 g <- GiottoData::loadGiottoMini("visium")
-feats <- head(featIDs(g), 20)
-dotPlot(g, cluster_column = "leiden_clus", feats = feats)
+f1 <- head(featIDs(g), 20)
+f2 <- tail(featIDs(g), 20)
+
+dotPlot(g, cluster_column = "leiden_clus", feats = f1)
+dotPlot(g,
+    cluster_column = "leiden_clus",
+    feats = list(set1 = f1, set2 = f2)
+)
+dotPlot(g,
+    cluster_column = "leiden_clus",
+    feats = fuse,
+    group_by = "leiden_clus",
+    group_by_subset = c(2,3)
+)
+
 dotPlot(g,
     cluster_column = "leiden_clus",
     feats = feats,
