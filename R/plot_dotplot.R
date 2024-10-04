@@ -51,7 +51,8 @@
 #'     cluster_column = "leiden_clus",
 #'     feats = feats,
 #'     dot_size = mean,
-#'     dot_color = var
+#'     dot_color = var,
+#'     dot_color_gradient = c("#EEEEFF", "#333377")
 #' )
 #' @export
 dotPlot <- function(
@@ -301,8 +302,8 @@ dotPlot <- function(
         axis_title = axis_title,
         axis_text = axis_text,
         background_color = background_color,
-        axis.ticks = element_blank(),
-        axis_text_y_angle = 0
+        axis_text_y_angle = 0,
+        axis.ticks = element_blank()
     )
     pl <- pl + do.call(.gg_theme, args = gg_theme_args)
 

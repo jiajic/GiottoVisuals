@@ -31,12 +31,12 @@
 }
 
 
-#' @name theme_dark
-#' @title Dark plotting theme
+#' @name ggplot_themes
+#' @title ggplot2 plotting themes
 #' @description
-#' A default dark theme. It can be applied through the `theme_param`
+#' ggplot2 themes. It can be applied through the `theme_param` arg.
 #' @export
-theme_dark <- theme(
+theme_dark2 <- theme(
     plot.background = element_rect(fill = "black"),
     panel.background = element_rect(fill = "black"),
     panel.grid.major = element_blank(),

@@ -145,6 +145,7 @@ dotPlot(g,
     cluster_column = "leiden_clus",
     feats = feats,
     dot_size = mean,
-    dot_color = var
+    dot_color = var,
+    dot_color_gradient = c("#EEEEFF", "#333377")
 )
 }
