@@ -2623,15 +2623,12 @@ spatFeatPlot2D_single <- function(gobject,
         ### plot cells ###
 
         ## set gradient limits if needed ##
-        if (!is.null(gradient_limits) & is.vector(gradient_limits) &
+        if (!is.null(gradient_limits) &&
+            is.vector(gradient_limits) &&
             length(gradient_limits) == 2) {
-            lower_lim <- gradient_limits[[1]]
-            upper_lim <- gradient_limits[[2]]
-            numeric_data <- cell_locations_metadata_feats[[feat]]
-            limit_numeric_data <- ifelse(numeric_data > upper_lim, upper_lim,
-                ifelse(numeric_data < lower_lim, lower_lim, numeric_data)
-            )
-            cell_locations_metadata_feats[[feat]] <- limit_numeric_data
+            cell_locations_metadata_feats[[feat]] <-
+                scales::oob_squish(cell_locations_metadata_feats[[feat]],
+                                   range = gradient_limits)
         }
 
         if (is.null(gradient_midpoint)) {
