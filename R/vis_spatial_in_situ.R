@@ -813,9 +813,6 @@ spatInSituPlotHex <- function(
         poly_info = polygon_feat_type
     )
 
-    # spatial_feat_info = combineSpatialCellFeatureInfo(gobject = gobject,
-    #                                                  feat_type = feat_type,
-    #                                                  selected_features = feat)
     spatial_feat_info <- do.call("rbind", spatial_feat_info)
 
     plot <- plot_feature_raster_density_layer(
