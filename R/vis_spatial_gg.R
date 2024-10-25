@@ -2638,39 +2638,48 @@ spatFeatPlot2D_single <- function(gobject,
         }
 
 
-        ## with border ##
-        if (point_shape == "border") {
-            if (scale_alpha_with_expression == TRUE) {
-                pl <- pl + ggplot2::geom_point(
-                    data = cell_locations_metadata_feats,
-                    aes_string2(
-                        x = sdimx,
-                        y = sdimy,
-                        fill = feat,
-                        alpha = feat
-                    ),
-                    shape = 21,
-                    color = point_border_col, size = point_size,
-                    stroke = point_border_stroke,
-                    show.legend = show_legend
-                )
+        if (point_shape %in% c("border", "no_border")) {
+
+            # assemble points plotting params
+            # * aes - dynamic values found in the `data`
+            # * args - static values to set
+
+            points_aes <- aes_string2(x = sdimx, y = sdimy)
+
+            points_args <- list()
+            # common args
+            points_args$size <- point_size
+            points_args$show.legend <- show_legend
+
+            if (isTRUE(scale_alpha_with_expression)) {
+                points_aes$alpha <- as.name(feat)
             } else {
-                pl <- pl + ggplot2::geom_point(
-                    data = cell_locations_metadata_feats,
-                    aes_string2(
-                        x = sdimx,
-                        y = sdimy,
-                        fill = feat
-                    ),
-                    shape = 21,
-                    color = point_border_col,
-                    size = point_size,
-                    stroke = point_border_stroke,
-                    show.legend = show_legend,
-                    alpha = point_alpha
-                )
+                points_args$alpha <- point_alpha
             }
 
+            switch(point_shape,
+                "border" = {
+                    points_aes$fill <- as.name(feat)
+
+                    points_args$shape <- 21
+                    points_args$color <- point_border_col
+                    points_args$stroke <- point_border_stroke
+                    scale_type <- "fill"
+                },
+                "no_border" = {
+                    points_aes$color <- as.name(feat)
+
+                    points_args$shape <- 19
+                    scale_type <- "color"
+                }
+            )
+
+            # other data to add
+            points_args$data <- cell_locations_metadata_feats
+            points_args$mapping <- points_aes
+
+            # add points
+            pl <- pl + do.call(ggplot2::geom_point, args = points_args)
 
             ## scale and labs ##
             pl <- pl + ggplot2::scale_alpha_continuous(guide = "none")
@@ -2680,55 +2689,12 @@ spatFeatPlot2D_single <- function(gobject,
                 midpoint = gradient_midpoint,
                 style = gradient_style,
                 guide = guide_colorbar(title = ""),
-                type = "fill"
+                type = scale_type
             )
-            pl <- pl + ggplot2::labs(x = "coord x", y = "coord y", title = feat)
-        }
-
-
-
-        ## no border ##
-        if (point_shape == "no_border") {
-            if (scale_alpha_with_expression == TRUE) {
-                pl <- pl + ggplot2::geom_point(
-                    data = cell_locations_metadata_feats,
-                    aes_string2(
-                        x = sdimx,
-                        y = sdimy,
-                        color = feat,
-                        alpha = feat
-                    ),
-                    shape = 19,
-                    size = point_size,
-                    show.legend = show_legend
-                )
-            } else {
-                pl <- pl + ggplot2::geom_point(
-                    data = cell_locations_metadata_feats,
-                    aes_string2(
-                        x = sdimx,
-                        y = sdimy,
-                        color = feat
-                    ),
-                    shape = 19,
-                    size = point_size,
-                    show.legend = show_legend,
-                    alpha = point_alpha
-                )
-            }
-
-
-            ## scale and labs ##
-            pl <- pl + ggplot2::scale_alpha_continuous(guide = "none")
-            pl <- pl + set_default_color_continuous_cell(
-                colors = cell_color_gradient,
-                instrs = instructions(gobject),
-                midpoint = gradient_midpoint,
-                style = gradient_style,
-                guide = guide_colorbar(title = ""),
-                type = "color"
-            )
-            pl <- pl + ggplot2::labs(x = "coord x", y = "coord y", title = feat)
+            pl <- pl + ggplot2::labs(
+                x = "coord x",
+                y = "coord y",
+                title = feat)
         }
 
 
@@ -2740,7 +2706,8 @@ spatFeatPlot2D_single <- function(gobject,
                     aes_string(
                         x = sdimx, y = sdimy,
                         group = "-1L",
-                        fill = feat, alpha = feat
+                        fill = feat,
+                        alpha = feat
                     ),
                     colour = vor_border_color,
                     max.radius = vor_max_radius,
@@ -2763,7 +2730,7 @@ spatFeatPlot2D_single <- function(gobject,
 
 
             ## plot spatial network
-            if (!is.null(spatial_network) & show_network == TRUE) {
+            if (!is.null(spatial_network) && show_network == TRUE) {
                 if (is.null(network_color)) {
                     network_color <- "red"
                 }
