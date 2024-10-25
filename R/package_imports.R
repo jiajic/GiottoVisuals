@@ -11,7 +11,6 @@
 #' @import utils
 #' @import cowplot
 #' @import scattermore
-#' @import RColorBrewer
 #' @importFrom terra as.array
 #' @import ggrepel
 #' @importFrom scales rescale_mid
