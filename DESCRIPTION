@@ -51,7 +51,6 @@ Suggests:
     ggsci,
     GiottoData,
     htmlwidgets,
-    Matrix,
     networkD3,
     NineteenEightyR,
     nord,
