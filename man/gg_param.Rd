@@ -29,6 +29,7 @@ available, or can be already processed before passing to plotting.
 }
 \examples{
 # data to use
+library(ggplot2)
 d <- data.frame(
     xvals = seq(10),
     yvals = seq(10),
@@ -52,7 +53,7 @@ p_single <- gg_param(
     )
 )
 
-ggplot2::ggplot() + do.call(ggplot2::geom_point, p_single)
+ggplot() + do.call(geom_point, p_single)
 
 # ----- multistep appending ----- #
 
@@ -73,14 +74,14 @@ p0$data <- d
 
 # `quote = TRUE` must be used when using `do.call()` for this
 p_multi <- do.call(gg_param, p0, quote = TRUE)
-ggplot2::ggplot() + do.call(ggplot2::geom_point, p_multi)
+ggplot() + do.call(geom_point, p_multi)
 
 # ----- nested appending ----- #
 p_nest <- gg_param(p_single, p_multi)
 p_nest_sub <- gg_param(p_single, p_multi, data = d[1:5,]) # change the data to use
 
-ggplot2::ggplot() + do.call(ggplot2::geom_point, p_nest)
-ggplot2::ggplot() + do.call(ggplot2::geom_point, p_nest_sub)
+ggplot() + do.call(geom_point, p_nest)
+ggplot() + do.call(geom_point, p_nest_sub)
 }
 \seealso{
 Other ggplot2 plotting wrangling functions: 

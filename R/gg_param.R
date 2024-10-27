@@ -65,6 +65,7 @@ combine_aes <- function(..., warn_duplicates = TRUE) {
 #' aesthetic lists.
 #' @examples
 #' # data to use
+#' library(ggplot2)
 #' d <- data.frame(
 #'     xvals = seq(10),
 #'     yvals = seq(10),
@@ -88,7 +89,7 @@ combine_aes <- function(..., warn_duplicates = TRUE) {
 #'     )
 #' )
 #'
-#' ggplot2::ggplot() + do.call(ggplot2::geom_point, p_single)
+#' ggplot() + do.call(geom_point, p_single)
 #'
 #' # ----- multistep appending ----- #
 #'
@@ -109,14 +110,14 @@ combine_aes <- function(..., warn_duplicates = TRUE) {
 #'
 #' # `quote = TRUE` must be used when using `do.call()` for this
 #' p_multi <- do.call(gg_param, p0, quote = TRUE)
-#' ggplot2::ggplot() + do.call(ggplot2::geom_point, p_multi)
+#' ggplot() + do.call(geom_point, p_multi)
 #'
 #' # ----- nested appending ----- #
 #' p_nest <- gg_param(p_single, p_multi)
 #' p_nest_sub <- gg_param(p_single, p_multi, data = d[1:5,]) # change the data to use
 #'
-#' ggplot2::ggplot() + do.call(ggplot2::geom_point, p_nest)
-#' ggplot2::ggplot() + do.call(ggplot2::geom_point, p_nest_sub)
+#' ggplot() + do.call(geom_point, p_nest)
+#' ggplot() + do.call(geom_point, p_nest_sub)
 #' @family ggplot2 plotting wrangling functions
 #' @export
 gg_param <- function(..., data = NULL, warn_duplicates = TRUE) {
