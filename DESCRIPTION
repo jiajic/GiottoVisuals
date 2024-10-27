@@ -23,9 +23,7 @@ BugReports: https://github.com/drieslab/Giotto/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Depends:
-    base (>= 4.4.0),
-    utils (>= 4.4.0),
-    R (>= 4.4.0)
+    R (>= 4.4.1)
 Imports:
     checkmate,
     colorRamp2,
