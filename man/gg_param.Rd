@@ -12,6 +12,9 @@ individually named params or lists of named parameters / \code{aes()} generated
 aesthetic lists.}
 
 \item{data}{data to plot}
+
+\item{warn_duplicates}{logical. Warn when aes names provided through ...
+overlap.}
 }
 \description{
 Based on a set of named inputs, organize them into either

@@ -126,24 +126,46 @@ and dot color scaled by mean expression of that feature within the cluster.
 }
 \examples{
 g <- GiottoData::loadGiottoMini("visium")
+library(GiottoClass)
 f1 <- head(featIDs(g), 20)
 f2 <- tail(featIDs(g), 20)
 
 dotPlot(g, cluster_column = "leiden_clus", feats = f1)
+
+# make two plots from two named sets of features
 dotPlot(g,
     cluster_column = "leiden_clus",
     feats = list(set1 = f1, set2 = f2)
 )
+
+# add new cell metadata col that classifies by total expression into
+# - 0 (< 900)
+# - 1 (> 900 and < 1200)
+# - 2 (> 1200)
+total_expr <- g$total_expr
+g$expr_class <- findInterval(total_expr, c(900, 1200))
+
+# Create a dotplot while splitting the values based on the above total
+# expression classifications.
 dotPlot(g,
     cluster_column = "leiden_clus",
-    feats = fuse,
-    group_by = "leiden_clus",
-    group_by_subset = c(2,3)
+    feats = list(set1 = f1, set2 = f2),
+    group_by = "expr_class"
 )
 
+# Same as before, but focusing on classifications 0 and 2
 dotPlot(g,
     cluster_column = "leiden_clus",
-    feats = feats,
+    feats = list(set1 = f1, set2 = f2),
+    group_by = "expr_class",
+    group_by_subset = c(0, 2)
+)
+
+# example with an alternate function used for `dot_color` and a different
+# color gradient
+dotPlot(g,
+    cluster_column = "leiden_clus",
+    feats = f1,
     dot_size = mean,
     dot_color = var,
     dot_color_gradient = c("#EEEEFF", "#333377")

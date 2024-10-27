@@ -58,6 +58,8 @@ combine_aes <- function(..., warn_duplicates = TRUE) {
 #' packages however, the proper environments for code to run is already
 #' available, or can be already processed before passing to plotting.
 #' @param data data to plot
+#' @param warn_duplicates logical. Warn when aes names provided through ...
+#' overlap.
 #' @param ... One or more named plotting params. Entries should either be
 #' individually named params or lists of named parameters / `aes()` generated
 #' aesthetic lists.
