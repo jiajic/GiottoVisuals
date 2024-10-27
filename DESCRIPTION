@@ -81,6 +81,7 @@ Collate:
     'generics.R'
     'gg_annotation_raster.R'
     'gg_info_layers.R'
+    'gg_param.R'
     'gg_settings.R'
     'globals.R'
     'gstop.R'
