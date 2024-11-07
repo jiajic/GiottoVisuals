@@ -186,7 +186,7 @@ giotto_point <- function(
         edim <- setNames(range(ext), NULL)
         ext_area <- prod(edim)
         px_per_unit <- px / ext_area
-        pixels <- ceiling(edim * px_per_unit)
+        pixels <- ceiling(edim * sqrt(px_per_unit))
     } else {
         pixels <- rep(ceiling(sqrt(px)), 2L)
     }
