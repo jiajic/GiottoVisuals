@@ -29,6 +29,7 @@ plot_spat_point_layer_ggplot <- function(ggobject,
     instrs = NULL,
     sdimx = NULL,
     sdimy = NULL,
+    plot_method = c("ggplot", "scattermore"), # does not actually work for fill types
     cell_locations_metadata_selected,
     cell_locations_metadata_other,
     cell_color = NULL,
@@ -65,6 +66,7 @@ plot_spat_point_layer_ggplot <- function(ggobject,
         sdimy <- "sdimy"
     }
 
+    plot_method <- match.arg(plot_method, c("ggplot", "scattermore"))
 
     ### point parameters ##
     point_size <- as.numeric(point_size)
@@ -86,7 +88,7 @@ plot_spat_point_layer_ggplot <- function(ggobject,
         isTRUE(show_other_cells)) {
         pl <- pl + ggplot2::geom_point(
             data = cell_locations_metadata_other,
-            aes_string(x = sdimx, sdimy),
+            mapping = aes_string(x = sdimx, sdimy),
             color = other_cell_color,
             show.legend = FALSE,
             size = other_point_size,
@@ -104,13 +106,12 @@ plot_spat_point_layer_ggplot <- function(ggobject,
     # 2.3.1 numerical column
     # 2.3.2 factor column or character to factor
 
-
     # cell color default
     if (is.null(cell_color)) {
         cell_color <- "lightblue"
-        pl <- pl + ggplot2::geom_point(
+        pl <- pl + giotto_point(plot_method = plot_method,
             data = cell_locations_metadata_selected,
-            aes_string(x = sdimx, y = sdimy),
+            mapping = aes_string(x = sdimx, y = sdimy),
             show.legend = show_legend,
             shape = 21,
             fill = cell_color,
@@ -128,9 +129,9 @@ plot_spat_point_layer_ggplot <- function(ggobject,
             }
             cell_locations_metadata_selected[["temp_color"]] <- cell_color
 
-            pl <- pl + ggplot2::geom_point(
+            pl <- pl + giotto_point(plot_method = plot_method,
                 data = cell_locations_metadata_selected,
-                aes_string2(x = sdimx, y = sdimy, fill = "temp_color"),
+                mapping = aes_string2(x = sdimx, y = sdimy, fill = "temp_color"),
                 show.legend = show_legend,
                 shape = 21,
                 size = point_size,
@@ -144,9 +145,9 @@ plot_spat_point_layer_ggplot <- function(ggobject,
                     a factor or vector of colors \n")
             }
 
-            pl <- pl + ggplot2::geom_point(
+            pl <- pl + giotto_point(plot_method = plot_method,
                 data = cell_locations_metadata_selected,
-                aes_string2(x = sdimx, y = sdimy),
+                mapping = aes_string2(x = sdimx, y = sdimy),
                 show.legend = show_legend,
                 shape = 21,
                 fill = cell_color,
@@ -161,9 +162,9 @@ plot_spat_point_layer_ggplot <- function(ggobject,
             if (!cell_color %in% grDevices::colors()) {
                 stop(cell_color, " is not a color or a column name \n")
             }
-            pl <- pl + ggplot2::geom_point(
+            pl <- pl + giotto_point(plot_method = plot_method,
                 data = cell_locations_metadata_selected,
-                aes_string2(x = sdimx, y = sdimy),
+                mapping = aes_string2(x = sdimx, y = sdimy),
                 show.legend = show_legend,
                 shape = 21,
                 fill = cell_color,
@@ -197,9 +198,9 @@ plot_spat_point_layer_ggplot <- function(ggobject,
                         limit_numeric_data
                 }
 
-                pl <- pl + ggplot2::geom_point(
+                pl <- pl + giotto_point(plot_method = plot_method,
                     data = cell_locations_metadata_selected,
-                    aes_string2(x = sdimx, y = sdimy, fill = cell_color),
+                    mapping = aes_string2(x = sdimx, y = sdimy, fill = cell_color),
                     show.legend = show_legend,
                     shape = 21,
                     size = point_size,
@@ -228,9 +229,9 @@ plot_spat_point_layer_ggplot <- function(ggobject,
                     annotated_DT_centers[[cell_color]] <- factor_center_data
                 }
 
-                pl <- pl + ggplot2::geom_point(
+                pl <- pl + giotto_point(plot_method = plot_method,
                     data = cell_locations_metadata_selected,
-                    aes_string2(x = sdimx, y = sdimy, fill = cell_color),
+                    mapping = aes_string2(x = sdimx, y = sdimy, fill = cell_color),
                     show.legend = show_legend,
                     shape = 21,
                     size = point_size,
@@ -244,9 +245,9 @@ plot_spat_point_layer_ggplot <- function(ggobject,
                 if (isTRUE(show_cluster_center) &&
                     (isTRUE(color_as_factor) ||
                         class_cell_color %in% c("character", "factor"))) {
-                    pl <- pl + ggplot2::geom_point(
+                    pl <- pl + giotto_point(plot_method = plot_method,
                         data = annotated_DT_centers,
-                        aes_string2(
+                        mapping = aes_string2(
                             x = "center_1", y = "center_2",
                             fill = cell_color
                         ),
@@ -262,7 +263,7 @@ plot_spat_point_layer_ggplot <- function(ggobject,
                 if (isTRUE(show_center_label)) {
                     pl <- pl + ggrepel::geom_text_repel(
                         data = annotated_DT_centers,
-                        aes_string2(
+                        mapping = aes_string2(
                             x = "center_1", y = "center_2",
                             label = cell_color
                         ),
@@ -321,6 +322,7 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
     instrs = NULL,
     sdimx = NULL,
     sdimy = NULL,
+    plot_method = c("ggplot", "scattermore"),
     cell_locations_metadata_selected,
     cell_locations_metadata_other,
     cell_color = NULL,
@@ -351,6 +353,8 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
         sdimx <- "sdimx"
         sdimy <- "sdimy"
     }
+
+    plot_method <- match.arg(plot_method, c("ggplot", "scattermore"))
 
     ## point parameters ##
     point_size <- as.numeric(point_size)
@@ -389,9 +393,9 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
     # cell color default
     if (is.null(cell_color)) {
         cell_color <- "lightblue"
-        pl <- pl + ggplot2::geom_point(
+        pl <- pl + giotto_point(plot_method = plot_method,
             data = cell_locations_metadata_selected,
-            aes_string(x = sdimx, y = sdimy),
+            mapping = aes_string(x = sdimx, y = sdimy),
             show.legend = show_legend,
             shape = 19,
             color = cell_color,
@@ -406,9 +410,9 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
             }
             cell_locations_metadata_selected[["temp_color"]] <- cell_color
 
-            pl <- pl + ggplot2::geom_point(
+            pl <- pl + giotto_point(plot_method = plot_method,
                 data = cell_locations_metadata_selected,
-                aes_string2(x = sdimx, y = sdimy, color = "temp_color"),
+                mapping = aes_string2(x = sdimx, y = sdimy, color = "temp_color"),
                 show.legend = show_legend,
                 shape = 19,
                 size = point_size,
@@ -420,9 +424,9 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
                     colors \n")
             }
 
-            pl <- pl + ggplot2::geom_point(
+            pl <- pl + giotto_point(plot_method = plot_method,
                 data = cell_locations_metadata_selected,
-                aes_string2(x = sdimx, y = sdimy),
+                mapping = aes_string2(x = sdimx, y = sdimy),
                 show.legend = show_legend, shape = 19,
                 color = cell_color, size = point_size,
                 alpha = point_alpha
@@ -433,9 +437,9 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
             if (!cell_color %in% grDevices::colors()) {
                 stop(cell_color, " is not a color or a column name \n")
             }
-            pl <- pl + ggplot2::geom_point(
+            pl <- pl + giotto_point(plot_method = plot_method,
                 data = cell_locations_metadata_selected,
-                aes_string2(x = sdimx, y = sdimy),
+                mapping = aes_string2(x = sdimx, y = sdimy),
                 show.legend = show_legend,
                 shape = 19,
                 color = cell_color,
@@ -467,9 +471,9 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
                         limit_numeric_data
                 }
 
-                pl <- pl + ggplot2::geom_point(
+                pl <- pl + giotto_point(plot_method = plot_method,
                     data = cell_locations_metadata_selected,
-                    aes_string2(x = sdimx, y = sdimy, color = cell_color),
+                    mapping = aes_string2(x = sdimx, y = sdimy, color = cell_color),
                     show.legend = show_legend,
                     shape = 19,
                     size = point_size,
@@ -496,9 +500,9 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
                     annotated_DT_centers[[cell_color]] <- factor_center_data
                 }
 
-                pl <- pl + ggplot2::geom_point(
+                pl <- pl + giotto_point(plot_method = plot_method,
                     data = cell_locations_metadata_selected,
-                    aes_string2(x = sdimx, y = sdimy, color = cell_color),
+                    mapping = aes_string2(x = sdimx, y = sdimy, color = cell_color),
                     show.legend = show_legend,
                     shape = 19,
                     size = point_size,
@@ -510,9 +514,9 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
                 if (isTRUE(show_cluster_center) &&
                     (isTRUE(color_as_factor) ||
                         class_cell_color %in% c("character", "factor"))) {
-                    pl <- pl + ggplot2::geom_point(
+                    pl <- pl + giotto_point(plot_method = plot_method,
                         data = annotated_DT_centers,
-                        aes_string2(
+                        mapping = aes_string2(
                             x = "center_1", y = "center_2",
                             color = cell_color
                         ),

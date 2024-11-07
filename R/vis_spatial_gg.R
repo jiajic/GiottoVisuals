@@ -45,6 +45,7 @@
 .spatPlot2D_single <- function(gobject,
     feat_type = NULL,
     spat_unit = NULL,
+    plot_method = "ggplot",
     show_image = FALSE,
     gimage = NULL,
     image_name = NULL,
@@ -319,6 +320,7 @@
         instrs = instructions(gobject),
         sdimx = sdimx,
         sdimy = sdimy,
+        plot_method = plot_method,
         cell_locations_metadata_selected = cell_locations_metadata_selected,
         cell_locations_metadata_other = cell_locations_metadata_other,
         cell_color = cell_color,
@@ -443,6 +445,8 @@
 #' @inheritParams plot_image_params
 #' @inheritParams plot_spatenr_params
 #' @inheritParams plot_params
+#' @param plot_method method to plot points. Either "ggplot" (default) or
+#' "scattermore" (rasterized and faster)
 #' @param spat_loc_name name of spatial locations
 #' @param sdimx x-axis dimension name (default = 'sdimx')
 #' @param sdimy y-axis dimension name (default = 'sdimy')
@@ -490,6 +494,7 @@
 spatPlot2D <- function(gobject,
     spat_unit = NULL,
     feat_type = NULL,
+    plot_method = "ggplot",
     show_image = FALSE,
     gimage = NULL,
     image_name = NULL,
@@ -567,6 +572,11 @@ spatPlot2D <- function(gobject,
         image_name <- c(image_name, largeImage_name)
     }
 
+    if (identical(plot_method, "scattermore") && point_shape != "no_border") {
+        warning("point_shape changed to \"no_border\" for scattermore")
+        point_shape <- "no_border"
+    }
+
     # create args list needed for each call to .spatPlot2D_single()
     # 1. - grab all params available
     # 2. - subset to those needed
@@ -580,7 +590,7 @@ spatPlot2D <- function(gobject,
         # [access spatial enrichments]
         "spat_enr_names",
         # [point aes]
-        "cell_color", "color_as_factor", "cell_color_code",
+        "plot_method", "cell_color", "color_as_factor", "cell_color_code",
         "cell_color_gradient",
         "gradient_midpoint", "gradient_style", "gradient_limits",
         "point_shape", "point_size", "point_alpha", "point_border_col",
