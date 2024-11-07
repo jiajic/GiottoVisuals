@@ -1,3 +1,8 @@
+# GiottoVisuals 0.2.7
+
+## enhancements
+- scattermore plotting for `spatPlot2D()`
+
 # GiottoVisuals 0.2.6 (2024/10/27)
 
 ## new
