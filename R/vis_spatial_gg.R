@@ -317,6 +317,7 @@
     ## plot point layer
     point_general_params <- list(
         ggobject = pl,
+        ext = ext(gobject, prefer = "spatlocs"),
         instrs = instructions(gobject),
         sdimx = sdimx,
         sdimy = sdimy,

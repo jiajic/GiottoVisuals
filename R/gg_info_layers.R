@@ -55,7 +55,8 @@ plot_spat_point_layer_ggplot <- function(ggobject,
     show_other_cells = TRUE,
     other_cell_color = "lightgrey",
     other_point_size = 1,
-    show_legend = TRUE) {
+    show_legend = TRUE,
+    ...) {
     ## specify spatial dimensions first
     if (is.null(sdimx) || is.null(sdimy)) {
         warning(wrap_txt("plot_method = ggplot,
@@ -344,7 +345,8 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
     show_other_cells = TRUE,
     other_cell_color = "lightgrey",
     other_point_size = 1,
-    show_legend = TRUE) {
+    show_legend = TRUE,
+    ...) {
     ## specify spatial dimensions first
     if (is.null(sdimx) || is.null(sdimy)) {
         warning(wrap_txt("plot_method = ggplot, but spatial dimensions
@@ -416,7 +418,8 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
                 show.legend = show_legend,
                 shape = 19,
                 size = point_size,
-                alpha = point_alpha
+                alpha = point_alpha,
+                ...
             )
         } else if (is.character(cell_color)) {
             if (!all(cell_color %in% grDevices::colors())) {
@@ -429,7 +432,8 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
                 mapping = aes_string2(x = sdimx, y = sdimy),
                 show.legend = show_legend, shape = 19,
                 color = cell_color, size = point_size,
-                alpha = point_alpha
+                alpha = point_alpha,
+                ...
             )
         }
     } else if (is.character(cell_color)) {
@@ -444,7 +448,8 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
                 shape = 19,
                 color = cell_color,
                 size = point_size,
-                alpha = point_alpha
+                alpha = point_alpha,
+                ...
             )
         } else {
             class_cell_color <- class(
@@ -477,7 +482,8 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
                     show.legend = show_legend,
                     shape = 19,
                     size = point_size,
-                    alpha = point_alpha
+                    alpha = point_alpha,
+                    ...
                 )
             } else {
                 # convert character or numeric to factor
@@ -506,7 +512,8 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
                     show.legend = show_legend,
                     shape = 19,
                     size = point_size,
-                    alpha = point_alpha
+                    alpha = point_alpha,
+                    ...
                 )
 
 
@@ -522,7 +529,8 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
                         ),
                         size = center_point_size,
                         shape = 19,
-                        alpha = point_alpha
+                        alpha = point_alpha,
+                        ...
                     )
                 }
 
@@ -618,7 +626,8 @@ plot_spat_voronoi_layer_ggplot <- function(ggobject,
     vor_border_color = "white",
     vor_max_radius = 200,
     vor_alpha = 1,
-    show_legend = TRUE) {
+    show_legend = TRUE,
+    ...) {
     ## specify spatial dimensions first
     if (is.null(sdimx) | is.null(sdimy)) {
         warning("plot_method = ggplot, but spatial dimensions for sdimx
