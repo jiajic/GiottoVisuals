@@ -2673,12 +2673,12 @@ spatFeatPlot2D_single <- function(gobject,
                     points_aes$fill <- as.name(feat)
 
                     points_args$shape <- 21
-                    points_args$color <- point_border_col
+                    points_args$colour <- point_border_col
                     points_args$stroke <- point_border_stroke
                     scale_type <- "fill"
                 },
                 "no_border" = {
-                    points_aes$color <- as.name(feat)
+                    points_aes$colour <- as.name(feat)
 
                     points_args$shape <- 19
                     scale_type <- "color"
