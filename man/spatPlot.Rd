@@ -125,7 +125,7 @@ spatPlot3D(
 \item{feat_type}{feature type (e.g. "rna", "dna", "protein")}
 
 \item{plot_method}{method to plot points. Either "ggplot" (default) or
-"scattermore" (rasterized and faster)}
+"scattermore" (rasterized and faster for large datasets)}
 
 \item{show_image}{show a tissue background image}
 

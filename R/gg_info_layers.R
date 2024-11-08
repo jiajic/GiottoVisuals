@@ -402,7 +402,8 @@ plot_spat_point_layer_ggplot_noFILL <- function(ggobject,
             shape = 19,
             color = cell_color,
             size = point_size,
-            alpha = point_alpha
+            alpha = point_alpha,
+            ...
         )
     } else if (length(cell_color) > 1) {
         if (is.numeric(cell_color) || is.factor(cell_color)) {
@@ -1828,6 +1829,7 @@ plot_point_layer_ggplot <- function(ggobject,
 #' @noRd
 plot_point_layer_ggplot_noFILL <- function(
         ggobject,
+        plot_method = "ggplot",
         instrs = NULL,
         annotated_DT_selected,
         annotated_DT_other,
@@ -1851,9 +1853,11 @@ plot_point_layer_ggplot_noFILL <- function(
         show_other_cells = TRUE,
         other_cell_color = "lightgrey",
         other_point_size = 0.5,
-        show_legend = TRUE) {
+        show_legend = TRUE,
+        ...) {
     pl <- ggobject
 
+    plot_method <- match.arg(plot_method, c("ggplot", "scattermore"))
 
 
     ## first plot other non-selected cells
@@ -1884,10 +1888,12 @@ plot_point_layer_ggplot_noFILL <- function(
 
     if (is.null(cell_color)) {
         cell_color <- "lightblue"
-        pl <- pl + ggplot2::geom_point(
-            data = annotated_DT_selected, aes_string(x = dims[1], dims[2]),
+        pl <- pl + giotto_point(plot_method = plot_method,
+            data = annotated_DT_selected,
+            mapping = aes_string(x = dims[1], dims[2]),
             color = cell_color, show.legend = show_legend, size = point_size,
-            alpha = point_alpha
+            alpha = point_alpha,
+            ...
         )
     } else if (length(cell_color) > 1) {
         if (is.numeric(cell_color) | is.factor(cell_color)) {
@@ -1897,7 +1903,7 @@ plot_point_layer_ggplot_noFILL <- function(
             }
             annotated_DT_selected[["temp_color"]] <- cell_color
 
-            pl <- pl + ggplot2::geom_point(
+            pl <- pl + giotto_point(
                 data = annotated_DT_selected,
                 aes_string2(x = dims[1], y = dims[2], color = "temp_color"),
                 show.legend = show_legend, shape = 19, size = point_size,
@@ -1908,12 +1914,13 @@ plot_point_layer_ggplot_noFILL <- function(
                 stop("cell_color is not numeric, a factor or vector
                     of colors \n")
             }
-            pl <- pl + ggplot2::geom_point(
+            pl <- pl + giotto_point(plot_method = plot_method,
                 data = annotated_DT_selected,
-                aes_string2(x = dims[1], y = dims[2]),
+                mapping = aes_string2(x = dims[1], y = dims[2]),
                 show.legend = show_legend, shape = 19,
                 fill = cell_color, size = point_size,
-                alpha = point_alpha
+                alpha = point_alpha,
+                ...
             )
         }
     } else if (is.character(cell_color)) {
@@ -1921,12 +1928,13 @@ plot_point_layer_ggplot_noFILL <- function(
             if (!cell_color %in% grDevices::colors()) {
                 stop(cell_color, " is not a color or a column name \n")
             }
-            pl <- pl + ggplot2::geom_point(
+            pl <- pl + giotto_point(plot_method = plot_method,
                 data = annotated_DT_selected,
-                aes_string(x = dims[1], y = dims[2]),
+                mapping = aes_string(x = dims[1], y = dims[2]),
                 show.legend = show_legend, shape = 19,
                 color = cell_color, size = point_size,
-                alpha = point_alpha
+                alpha = point_alpha,
+                ...
             )
         } else {
             class_cell_color <- class(annotated_DT_selected[[cell_color]])
@@ -1949,11 +1957,12 @@ plot_point_layer_ggplot_noFILL <- function(
                     annotated_DT_selected[[cell_color]] <- limit_numeric_data
                 }
 
-                pl <- pl + ggplot2::geom_point(
+                pl <- pl + giotto_point(plot_method = plot_method,
                     data = annotated_DT_selected,
-                    aes_string2(x = dims[1], y = dims[2], color = cell_color),
+                    mapping = aes_string2(x = dims[1], y = dims[2], color = cell_color),
                     show.legend = show_legend, shape = 19, size = point_size,
-                    alpha = point_alpha
+                    alpha = point_alpha,
+                    ...
                 )
             } else {
                 # convert character or numeric to factor
@@ -1973,11 +1982,12 @@ plot_point_layer_ggplot_noFILL <- function(
                     annotated_DT_centers[[cell_color]] <- factor_center_data
                 }
 
-                pl <- pl + ggplot2::geom_point(
+                pl <- pl + giotto_point(plot_method = plot_method,
                     data = annotated_DT_selected,
-                    aes_string2(x = dims[1], y = dims[2], color = cell_color),
+                    mapping = aes_string2(x = dims[1], y = dims[2], color = cell_color),
                     show.legend = show_legend, shape = 19, size = point_size,
-                    alpha = point_alpha
+                    alpha = point_alpha,
+                    ...
                 )
 
 
@@ -1985,14 +1995,15 @@ plot_point_layer_ggplot_noFILL <- function(
                 if (show_cluster_center == TRUE &
                     (color_as_factor == TRUE |
                         class_cell_color %in% c("character", "factor"))) {
-                    pl <- pl + ggplot2::geom_point(
+                    pl <- pl + giotto_point(plot_method = plot_method,
                         data = annotated_DT_centers,
-                        aes_string2(
+                        mapping = aes_string2(
                             x = "center_1", y = "center_2",
                             color = cell_color
                         ),
                         size = center_point_size, shape = 19,
-                        alpha = point_alpha
+                        alpha = point_alpha,
+                        ...
                     )
                 }
 

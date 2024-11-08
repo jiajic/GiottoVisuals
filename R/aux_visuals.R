@@ -163,12 +163,20 @@ gg_input <- function(ggobject) {
 
 #' @title giotto_point
 #' @name giotto_point
+#' @description Plot a point scatter layer via one of ggplot::geom_point,
+#' scattermore::geom_scattermore or scattermore::geom_scattermost
+#' @param plot_method which scatter plotting method to use.
+#' @param size point size parameter
+#' @param ext SpatVector. Spatial extent of the plotting region. Used when
+#' considering raster size for rasterization with scattermore and scattermost
+#' @param scattermost_xy 2-column object with data. Used with scattermost since
+#' it doesn't talk to ggplot
+#' @param scattermost_color Color vector (or a single color). Used with
+#' scattermost since it doesn't talk to ggplot
 #' @param \dots geom_point parameters
 #' @keywords internal
-#' @description uses ggplot::geom_point, scattermore::geom_scattermore
-#' or scattermore::geom_scattermost
+#' @noRd
 #' @returns ggplot2::geom_point layer
-#'
 giotto_point <- function(
         plot_method = c("ggplot", "scattermore", "scattermost"),
         size = 1,
