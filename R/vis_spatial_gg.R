@@ -3168,6 +3168,12 @@ spatFeatPlot2D <- function(gobject,
 
 ## ** dim reduction feature plotting ####
 
+.dimFeatPlot2D_single <- function() {
+
+}
+
+
+
 #' @title dimFeatPlot2D
 #' @name dimFeatPlot2D
 #' @description Visualize gene expression according to dimension reduction
