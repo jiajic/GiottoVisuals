@@ -3168,8 +3168,218 @@ spatFeatPlot2D <- function(gobject,
 
 ## ** dim reduction feature plotting ####
 
-.dimFeatPlot2D_single <- function() {
+.dimFeatPlot2D_single <- function(selected_feats, ...) {
+    lapply(selected_feats, function(feat) {
+        .dimFeatPlot_single_feat(feat, ...)
+    })
+}
 
+.dimFeatPlot_single_feat <- function(data,
+    feat,
+    feats,
+    dim_names,
+    order = TRUE,
+    group_id = NULL,
+    show_NN_network = FALSE,
+    network_color = NULL,
+    from_dim_names = NULL,
+    to_dim_names = NULL,
+    annotated_network_DT = NULL,
+    edge_alpha = NULL,
+    scale_alpha_with_expression = FALSE,
+    point_shape,
+    point_size = 1,
+    point_alpha = 1,
+    cell_color_gradient = NULL,
+    gradient_midpoint = NULL,
+    gradient_style = c("divergent", "sequential"),
+    gradient_limits = NULL,
+    point_border_col = "black",
+    point_border_stroke = 0.1,
+    show_legend = TRUE,
+    legend_text = 10,
+    background_color = "white",
+    axis_text = 8,
+    axis_title = 8,
+    instrs
+) {
+    # order spatial units (e.g. cell IDs) based on expression of feature
+    if (isTRUE(order)) {
+        data <- data[order(get(feat))]
+    }
+
+
+    ## OLD need to be combined ##
+    pl <- ggplot2::ggplot()
+    pl <- pl + ggplot2::theme_classic()
+
+    # network layer
+    if (show_NN_network == TRUE) {
+        if (is.null(edge_alpha)) {
+            edge_alpha <- 0.5
+            pl <- pl + ggplot2::geom_segment(
+                data = annotated_network_DT,
+                aes_string(
+                    x = from_dim_names[1], y = from_dim_names[2],
+                    xend = to_dim_names[1], yend = to_dim_names[2]
+                ),
+                alpha = edge_alpha, color = network_color, size = 0.1,
+                show.legend = FALSE
+            )
+        } else if (is.numeric(edge_alpha)) {
+            pl <- pl + ggplot2::geom_segment(
+                data = annotated_network_DT,
+                aes_string(
+                    x = from_dim_names[1], y = from_dim_names[2],
+                    xend = to_dim_names[1], yend = to_dim_names[2]
+                ),
+                alpha = edge_alpha, color = network_color, size = 0.1,
+                show.legend = FALSE
+            )
+        } else if (is.character(edge_alpha)) {
+            if (edge_alpha %in% colnames(annotated_network_DT)) {
+                pl <- pl + ggplot2::geom_segment(
+                    data = annotated_network_DT,
+                    aes_string(
+                        x = from_dim_names[1], y = from_dim_names[2],
+                        xend = to_dim_names[1],
+                        yend = to_dim_names[2], alpha = edge_alpha
+                    ),
+                    color = network_color,
+                    show.legend = FALSE
+                )
+            }
+        }
+    }
+
+
+    ## point layer ##
+    if (is.null(feats)) {
+        cell_color <- "lightblue"
+        message("no feats selected")
+        pl <- pl + ggplot2::geom_point(
+            data = data,
+            aes_string(x = dim_names[1], dim_names[2]),
+            fill = cell_color, show.legend = show_legend,
+            size = point_size, alpha = point_alpha
+        )
+    } else {
+        ## set gradient limits if needed ##
+        if (!is.null(gradient_limits) & is.vector(gradient_limits) &
+            length(gradient_limits) == 2) {
+            lower_lim <- gradient_limits[[1]]
+            upper_lim <- gradient_limits[[2]]
+            numeric_data <- data[[feat]]
+            limit_numeric_data <- ifelse(
+                numeric_data > upper_lim,
+                upper_lim,
+                ifelse(numeric_data < lower_lim, lower_lim, numeric_data)
+            )
+            data[[feat]] <- limit_numeric_data
+        }
+
+        if (is.null(gradient_midpoint)) {
+            gradient_midpoint <- stats::median(data[[feat]])
+        }
+
+
+
+        ## with border ##
+        if (point_shape == "border") {
+            if (scale_alpha_with_expression == TRUE) {
+                pl <- pl + ggplot2::geom_point(
+                    data = data, aes_string2(
+                        x = dim_names[1],
+                        y = dim_names[2],
+                        fill = feat, alpha = feat
+                    ),
+                    show.legend = show_legend, shape = 21,
+                    size = point_size,
+                    color = point_border_col, stroke = point_border_stroke
+                )
+            } else {
+                pl <- pl + ggplot2::geom_point(
+                    data = data, aes_string2(
+                        x = dim_names[1],
+                        y = dim_names[2],
+                        fill = feat
+                    ),
+                    show.legend = show_legend, shape = 21,
+                    size = point_size,
+                    color = point_border_col, stroke = point_border_stroke,
+                    alpha = point_alpha
+                )
+            }
+
+            ## scale and labs ##
+            pl <- pl + ggplot2::scale_alpha_continuous(guide = "none")
+            pl <- pl + set_default_color_continuous_cell(
+                colors = cell_color_gradient,
+                instrs = instrs,
+                midpoint = gradient_midpoint,
+                style = gradient_style,
+                guide = guide_colorbar(title = ""),
+                type = "fill"
+            )
+        }
+
+
+        ## without border ##
+        if (point_shape == "no_border") {
+            if (scale_alpha_with_expression == TRUE) {
+                pl <- pl + ggplot2::geom_point(
+                    data = data, aes_string2(
+                        x = dim_names[1],
+                        y = dim_names[2],
+                        color = feat, alpha = feat
+                    ),
+                    show.legend = show_legend, shape = 19, size = point_size
+                )
+            } else {
+                pl <- pl + ggplot2::geom_point(
+                    data = data, aes_string2(
+                        x = dim_names[1],
+                        y = dim_names[2],
+                        color = feat
+                    ),
+                    show.legend = show_legend, shape = 19,
+                    size = point_size,
+                    alpha = point_alpha
+                )
+            }
+
+            ## scale and labs ##
+            pl <- pl + ggplot2::scale_alpha_continuous(guide = "none")
+            pl <- pl + set_default_color_continuous_cell(
+                colors = cell_color_gradient,
+                instrs = instrs,
+                midpoint = gradient_midpoint,
+                style = gradient_style,
+                guide = guide_colorbar(title = ""),
+                type = "color"
+            )
+        }
+    }
+
+    ## add title
+    pl <- pl + ggplot2::labs(
+        x = "coord x",
+        y = "coord y",
+        title = paste(group_id, feat, sep = "-")
+    )
+
+    ## aesthetics
+    pl <- pl + ggplot2::theme(
+        plot.title = element_text(hjust = 0.5),
+        legend.title = element_blank(),
+        legend.text = element_text(size = legend_text),
+        axis.title = element_text(size = axis_title),
+        axis.text = element_text(size = axis_text),
+        panel.grid = element_blank(),
+        panel.background = element_rect(fill = background_color)
+    )
+
+    return(pl)
 }
 
 
@@ -3197,6 +3407,18 @@ spatFeatPlot2D <- function(gobject,
 #' g <- GiottoData::loadGiottoMini("visium", verbose = FALSE)
 #' dimFeatPlot2D(g, feats = c("Gna12", "Ccnd2", "Btbd17"))
 #'
+#' # with group_by
+#' dimFeatPlot2D(g,
+#'     feats = c("Gna12"),
+#'     group_by = "leiden_clus",
+#'     gradient_midpoint = 3 # setting a specific midpoint can be helpful
+#' )
+#' # with group_by and group_by_subset
+#' dimFeatPlot2D(g,
+#'     feats = c("Gna12", "Ccnd2", "Btbd17"),
+#'     group_by = "leiden_clus",
+#'     group_by_subset = c(2, 5)
+#' )
 #' @export
 dimFeatPlot2D <- function(gobject,
     spat_unit = NULL,
@@ -3204,6 +3426,8 @@ dimFeatPlot2D <- function(gobject,
     expression_values = c("normalized", "scaled", "custom"),
     feats = NULL,
     order = TRUE,
+    group_by = NULL,
+    group_by_subset = NULL,
     dim_reduction_to_use = "umap",
     dim_reduction_name = NULL,
     dim1_to_use = 1,
@@ -3297,8 +3521,15 @@ dimFeatPlot2D <- function(gobject,
     )
 
     # only keep feats that are in the dataset
+    if (length(feats) == 0) {
+        stop("No `feats` selected to plot.", call. = FALSE)
+    }
     selected_feats <- feats
     selected_feats <- selected_feats[selected_feats %in% rownames(expr_values)]
+    if (length(selected_feats) == 0) {
+        stop("Selected `feats` not found in expression information",
+             call. = FALSE)
+    }
 
     #
     if (length(selected_feats) == 1) {
@@ -3401,187 +3632,56 @@ dimFeatPlot2D <- function(gobject,
         )
     }
 
-    ## visualize multiple plots ##
-    ## 2D plots ##
-    savelist <- list()
+    # params list for plotting
+    a <- list(
+        feats = feats,
+        selected_feats = selected_feats,
+        order = order,
+        dim_names = dim_names,
+        show_NN_network = show_NN_network,
+        edge_alpha = edge_alpha,
+        scale_alpha_with_expression = scale_alpha_with_expression,
+        point_shape = point_shape,
+        point_size = point_size,
+        point_alpha = point_alpha,
+        cell_color_gradient = cell_color_gradient,
+        gradient_midpoint = gradient_midpoint,
+        gradient_style = gradient_style,
+        gradient_limits = gradient_limits,
+        point_border_col = point_border_col,
+        point_border_stroke = point_border_stroke,
+        show_legend = show_legend,
+        legend_text = legend_text,
+        background_color = background_color,
+        axis_text = axis_text,
+        axis_title = axis_title,
+        instrs = instructions(gobject)
+    )
 
-
-    for (feat in selected_feats) {
-        # order spatial units (e.g. cell IDs) based on expression of feature
-        if (isTRUE(order)) {
-            annotated_feat_DT <- annotated_feat_DT[order(get(feat))]
-        }
-
-
-        ## OLD need to be combined ##
-        pl <- ggplot2::ggplot()
-        pl <- pl + ggplot2::theme_classic()
-
-        # network layer
-        if (show_NN_network == TRUE) {
-            if (is.null(edge_alpha)) {
-                edge_alpha <- 0.5
-                pl <- pl + ggplot2::geom_segment(
-                    data = annotated_network_DT,
-                    aes_string(
-                        x = from_dim_names[1], y = from_dim_names[2],
-                        xend = to_dim_names[1], yend = to_dim_names[2]
-                    ),
-                    alpha = edge_alpha, color = network_color, size = 0.1,
-                    show.legend = FALSE
-                )
-            } else if (is.numeric(edge_alpha)) {
-                pl <- pl + ggplot2::geom_segment(
-                    data = annotated_network_DT,
-                    aes_string(
-                        x = from_dim_names[1], y = from_dim_names[2],
-                        xend = to_dim_names[1], yend = to_dim_names[2]
-                    ),
-                    alpha = edge_alpha, color = network_color, size = 0.1,
-                    show.legend = FALSE
-                )
-            } else if (is.character(edge_alpha)) {
-                if (edge_alpha %in% colnames(annotated_network_DT)) {
-                    pl <- pl + ggplot2::geom_segment(
-                        data = annotated_network_DT,
-                        aes_string(
-                            x = from_dim_names[1], y = from_dim_names[2],
-                            xend = to_dim_names[1],
-                            yend = to_dim_names[2], alpha = edge_alpha
-                        ),
-                        color = network_color,
-                        show.legend = FALSE
-                    )
-                }
-            }
-        }
-
-
-        ## point layer ##
-        if (is.null(feats)) {
-            cell_color <- "lightblue"
-            message("no feats selected")
-            pl <- pl + ggplot2::geom_point(
-                data = annotated_feat_DT,
-                aes_string(x = dim_names[1], dim_names[2]),
-                fill = cell_color, show.legend = show_legend,
-                size = point_size, alpha = point_alpha
-            )
-        } else {
-            ## set gradient limits if needed ##
-            if (!is.null(gradient_limits) & is.vector(gradient_limits) &
-                length(gradient_limits) == 2) {
-                lower_lim <- gradient_limits[[1]]
-                upper_lim <- gradient_limits[[2]]
-                numeric_data <- annotated_feat_DT[[feat]]
-                limit_numeric_data <- ifelse(numeric_data > upper_lim,
-                    upper_lim,
-                    ifelse(numeric_data < lower_lim, lower_lim, numeric_data)
-                )
-                annotated_feat_DT[[feat]] <- limit_numeric_data
-            }
-
-            if (is.null(gradient_midpoint)) {
-                gradient_midpoint <- stats::median(annotated_feat_DT[[feat]])
-            }
-
-
-
-            ## with border ##
-            if (point_shape == "border") {
-                if (scale_alpha_with_expression == TRUE) {
-                    pl <- pl + ggplot2::geom_point(
-                        data = annotated_feat_DT, aes_string2(
-                            x = dim_names[1],
-                            y = dim_names[2],
-                            fill = feat, alpha = feat
-                        ),
-                        show.legend = show_legend, shape = 21,
-                        size = point_size,
-                        color = point_border_col, stroke = point_border_stroke
-                    )
-                } else {
-                    pl <- pl + ggplot2::geom_point(
-                        data = annotated_feat_DT, aes_string2(
-                            x = dim_names[1],
-                            y = dim_names[2],
-                            fill = feat
-                        ),
-                        show.legend = show_legend, shape = 21,
-                        size = point_size,
-                        color = point_border_col, stroke = point_border_stroke,
-                        alpha = point_alpha
-                    )
-                }
-
-                ## scale and labs ##
-                pl <- pl + ggplot2::scale_alpha_continuous(guide = "none")
-                pl <- pl + set_default_color_continuous_cell(
-                    colors = cell_color_gradient,
-                    instrs = instructions(gobject),
-                    midpoint = gradient_midpoint,
-                    style = gradient_style,
-                    guide = guide_colorbar(title = ""),
-                    type = "fill"
-                )
-            }
-
-
-            ## without border ##
-            if (point_shape == "no_border") {
-                if (scale_alpha_with_expression == TRUE) {
-                    pl <- pl + ggplot2::geom_point(
-                        data = annotated_feat_DT, aes_string2(
-                            x = dim_names[1],
-                            y = dim_names[2],
-                            color = feat, alpha = feat
-                        ),
-                        show.legend = show_legend, shape = 19, size = point_size
-                    )
-                } else {
-                    pl <- pl + ggplot2::geom_point(
-                        data = annotated_feat_DT, aes_string2(
-                            x = dim_names[1],
-                            y = dim_names[2],
-                            color = feat
-                        ),
-                        show.legend = show_legend, shape = 19,
-                        size = point_size,
-                        alpha = point_alpha
-                    )
-                }
-
-                ## scale and labs ##
-                pl <- pl + ggplot2::scale_alpha_continuous(guide = "none")
-                pl <- pl + set_default_color_continuous_cell(
-                    colors = cell_color_gradient,
-                    instrs = instructions(gobject),
-                    midpoint = gradient_midpoint,
-                    style = gradient_style,
-                    guide = guide_colorbar(title = ""),
-                    type = "color"
-                )
-            }
-        }
-
-        ## add title
-        pl <- pl + ggplot2::labs(x = "coord x", y = "coord y", title = feat)
-
-        ## aesthetics
-        pl <- pl + ggplot2::theme(
-            plot.title = element_text(hjust = 0.5),
-            legend.title = element_blank(),
-            legend.text = element_text(size = legend_text),
-            axis.title = element_text(size = axis_title),
-            axis.text = element_text(size = axis_text),
-            panel.grid = element_blank(),
-            panel.background = element_rect(fill = background_color)
-        )
-
-        savelist[[feat]] <- pl
+    if (isTRUE(show_NN_network)) {
+        a$network_color <- network_color
+        a$from_dim_names <- from_dim_names
+        a$to_dim_names <- to_dim_names
+        a$annotated_network_DT <- annotated_network_DT
     }
 
-
+    ## generate plot(s) ##
+    if (is.null(group_by)) {
+        a$data <- annotated_feat_DT
+        savelist <- do.call(.dimFeatPlot2D_single, a)
+    } else {
+        datalist <- .groupby(annotated_feat_DT,
+            group_by = group_by,
+            group_by_subset = group_by_subset
+        )
+        gp_savelist <- lapply(datalist, function(data) {
+            a$data <- data
+            group_id <- data[[group_by]][[1]]
+            a$group_id <- group_id
+            do.call(.dimFeatPlot2D_single, a)
+        })
+        savelist <- do.call(c, gp_savelist)
+    }
 
 
     # combine plots with cowplot

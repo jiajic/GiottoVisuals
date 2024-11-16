@@ -2,6 +2,35 @@
 NULL
 
 
+# groupby ####
+
+# split apart a table of data based on a group by column
+.groupby <- function(data, group_by, group_by_subset = NULL) {
+
+    possible_groups <- colnames(data)
+
+    ## error if group_by col is not found
+    if (!group_by %in% possible_groups) {
+        stop("group_by ", group_by, " was not found in pDataDT()")
+    }
+
+    # subset unique_groups if needed
+    if (!is.null(group_by_subset)) {
+        unique_groups <- unique(data[[group_by]])
+        not_found <- group_by_subset[!group_by_subset %in% unique_groups]
+        if (length(not_found) > 0) {
+            message("the following subset was not found: ", not_found)
+        }
+        unique_groups <- unique_groups[unique_groups %in% group_by_subset]
+
+        # subset data to only group_by_subset
+        data <- data[get(group_by) %in% unique_groups]
+    }
+
+    datalist <- split(data, data[[group_by]])
+}
+
+
 # clusters ####
 
 #' @title Decide cluster order
