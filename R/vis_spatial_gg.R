@@ -3208,13 +3208,18 @@ spatFeatPlot2D <- function(gobject,
         data <- data[order(get(feat))]
     }
 
-
     ## OLD need to be combined ##
     pl <- ggplot2::ggplot()
     pl <- pl + ggplot2::theme_classic()
 
     # network layer
     if (show_NN_network == TRUE) {
+
+        annotated_network_DT <- annotated_network_DT[
+            to %in% data$cell_ID & from %in% data$cell_ID
+        ]
+
+
         if (is.null(edge_alpha)) {
             edge_alpha <- 0.5
             pl <- pl + ggplot2::geom_segment(
