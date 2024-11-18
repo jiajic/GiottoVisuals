@@ -420,6 +420,7 @@ setMethod(
     if (nlyr == 1L) {
         # SINGLE CHANNEL #
         # max window cutoff
+        maxval <- maxval %na% quantile(x, 0.99)
         if (!is.null(maxval)) x[x > maxval] <- maxval
         # colorize
         if (is.null(col)) {
