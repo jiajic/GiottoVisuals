@@ -189,6 +189,11 @@ spatInSituPlotPoints <- function(
     ## 0. plot image ##
     if (isTRUE(show_image) &&
         !is.null(gimage)) {
+
+        if (!is.null(xlim) && !is.null(ylim)) {
+            e <- ext(c(xlim, ylim))
+        }
+
         plot <- plot_spat_image_layer_ggplot(
             gg_obj = plot,
             gobject = gobject,
@@ -196,7 +201,8 @@ spatInSituPlotPoints <- function(
             feat_type = feat_type,
             spat_loc_name = spat_loc_name,
             polygon_feat_type = polygon_feat_type,
-            gimage = gimage
+            gimage = gimage,
+            ext = e
         )
 
         if (isTRUE(verbose)) wrap_msg("plot image layer done")
