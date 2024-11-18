@@ -1,9 +1,11 @@
 
-# GiottoVisuals 0.2.9
+# GiottoVisuals 0.2.9 (2024/11/18)
+
+## bug fixes
+- `spatInSituPlotPoints()` `xlim` and `ylim` params now also affect image resampling
 
 ## enhancements
 - `group_by` and `group_by_subset` for `dimFeatPlot2D()` [#1069](https://github.com/drieslab/Giotto/issues/1069) by xhNorthwestern
-- `spatInSituPlotPoints()` `xlim` and `ylim` params now also affect image resampling
 - image plotting will now scale values to the 99th percentile when a specific max intensity is not set.
 
 # GiottoVisuals 0.2.8 (2024/11/14)
