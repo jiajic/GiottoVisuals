@@ -143,9 +143,12 @@ spatInSituPlotPoints <- function(
         background_color = "black",
         show_legend = TRUE,
         show_axes = NULL,
+        show_scalebar = FALSE,
+        scalebar_param = list(),
         plot_method = c("ggplot", "scattermore", "scattermost"),
         plot_last = c("polygons", "points"),
         theme_param = list(),
+        gg = NULL,
         show_plot = NULL,
         return_plot = NULL,
         save_plot = NULL,
@@ -210,7 +213,8 @@ spatInSituPlotPoints <- function(
         polygon_alpha <- polygon_alpha %null% 1
     }
 
-    show_axes <- show_axes %null% TRUE
+    if (show_scalebar) show_axes <- show_axes %null% FALSE
+    else show_axes <- show_axes %null% TRUE
 
     # what to plot...
     plot_order <- character(0L)
@@ -328,6 +332,29 @@ spatInSituPlotPoints <- function(
         plot <- plot + ggplot2::coord_fixed(ratio = coord_fix_ratio)
     }
 
+    # scalebar
+    if (show_scalebar) {
+        msize <- instructions(gobject)$micron_size
+        if (is.null(msize)) {
+            warning(
+                sprintf("No `micron_size` in gobject instructions. %s\n%s\n%s",
+                "Defaulting to 1.",
+                "You can specify a value using:",
+                "instructions(gobject, \"micron_size\") <- ??"),
+                call. = FALSE
+            )
+            msize <- 1
+        }
+
+        scalebar_param$ggobject <- plot
+        scalebar_param$step_size <- msize
+        scalebar_param$d <- scalebar_param$d %null% 100
+        plot <- do.call(scalebar, scalebar_param)
+    }
+
+    if (!is.null(gg)) {
+        plot <- plot + gg
+    }
 
     return(plot_output_handler(
         gobject = gobject,

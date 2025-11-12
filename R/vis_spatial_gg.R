@@ -93,10 +93,14 @@
         legend_symbol_size = 1,
         background_color = "white",
         vor_border_color = "white",
+        show_axes = NULL,
+        show_scalebar = FALSE,
+        scalebar_param = list(),
         vor_max_radius = 200,
         vor_alpha = 1,
         axis_text = 8,
         axis_title = 8,
+        gg = NULL,
         theme_param = list(),
         show_plot = NULL,
         return_plot = NULL,
@@ -106,6 +110,8 @@
         default_save_name = "spatPlot2D_single") {
     # Check params
     checkmate::assert_class(gobject, "giotto")
+    if (show_scalebar) show_axes <- show_axes %null% FALSE
+    else show_axes <- show_axes %null% TRUE
 
     point_shape <- match.arg(
         point_shape,
@@ -419,6 +425,32 @@
         title = title
     )
 
+    if (!show_axes) {
+        pl <- .theme_remove_axes(pl)
+    }
+
+    # scalebar
+    if (show_scalebar) {
+        msize <- instructions(gobject)$micron_size
+        if (is.null(msize)) {
+            warning(
+                sprintf("No `micron_size` in gobject instructions. %s\n%s\n%s",
+                    "Defaulting to 1.",
+                    "You can specify a value using:",
+                    "instructions(gobject, \"micron_size\") <- ??"),
+                call. = FALSE
+            )
+            msize <- 1
+        }
+
+        scalebar_param$ggobject <- pl
+        scalebar_param$step_size <- msize
+        scalebar_param$d <- scalebar_param$d %null% 100
+        pl <- do.call(scalebar, scalebar_param)
+    }
+
+    if (!is.null(gg)) pl <- pl + gg
+
     return(plot_output_handler(
         gobject = gobject,
         plot_object = pl,
@@ -544,11 +576,15 @@ spatPlot2D <- function(
         legend_text = 10,
         legend_symbol_size = 2,
         background_color = "white",
+        show_axes = NULL,
+        show_scalebar = FALSE,
+        scalebar_param = list(),
         vor_border_color = "white",
         vor_max_radius = 200,
         vor_alpha = 1,
         axis_text = 8,
         axis_title = 8,
+        gg = NULL,
         cow_n_col = NULL,
         cow_rel_h = 1,
         cow_rel_w = 1,
@@ -626,7 +662,11 @@ spatPlot2D <- function(
         "show_plot", "return_plot", "save_plot", "save_param",
         "default_save_name",
         # [gg params]
-        "theme_param"
+        "theme_param",
+        # [scalebar params]
+        "show_axes", "show_scalebar", "scalebar_param",
+        # [ggplot2]
+        "gg"
     ))
 
 

@@ -2249,3 +2249,279 @@ addGiottoImageToSpatPlot <- function(spatpl = NULL,
 
     return(newpl)
 }
+
+# scalebar ####
+
+#' @title Scale Bar
+#' @name scalebar
+#' @description
+#' Apply a scalebar on top of a ggplot plot object.
+#' @param ggobject ggplot2 `ggplot` object
+#' @param d numeric. Distance covered by the scalebar in your desired units
+#' @param step_size numeric. default = 1. Size of the `units` you are using in
+#' coordinate space. This should be the size of a micron if `units` is any
+#' of `"um"`, `"nm"`, `"mm"`, `"cm"`.
+#' @param color character. default = "white". Color of scalebar bar and text
+#' @param text_size numeric. default = 3. Size of the text label in points.
+#' @param bar_width numeric. default = 0.5. Height/thickness of the scale bar
+#' in data units.
+#' @param stroke_color character or NULL. default = NULL. Apply a stroked
+#' outline on the text and bar when not NULL.
+#' @param stroke_width numeric. Default = 0.5. Width of stroke to apply to text
+#' and bar.
+#' @param position character or numeric.
+#'   * If character, one of `"bottom-right"` (default), `"bottom-left"`,
+#'    `"top-right"`, `"top-left"` presets
+#'   * If numeric, custom position as `c(x, y)` in data coordinates
+#' @param padding numeric. default = 0.05. Amount of scalebar position padding
+#' when using one of the four position presets. Can supply a single or
+#' two independent values for x and y padding.
+#' @param text_offset numeric or NULL. default = NULL. Amount of offset for
+#' text placement above or below the scalebar. If NULL, 0.02 x plot height
+#' will be used.
+#' @param units character. default = "um". Used in the text display. If one of
+#' `"nm"`, `"um"`, `"mm"`, `"cm"`, a conversion factor from microns will be
+#' applied (see `step_size` param). Other units outside of these can be
+#' provided, and no scaling will be performed.
+#' @export
+scalebar <- function(ggobject, d,
+    step_size = NULL,
+    color = "white",
+    text_size = 3,
+    stroke_color = NULL,
+    stroke_width = 0.5,
+    bar_width = 0.5,
+    position = "bottom-right",
+    padding = 0.05,
+    units = "um",
+    text_offset = NULL
+) {
+    checkmate::assert_numeric(step_size, null.ok = TRUE)
+    checkmate::assert_character(color, len = 1L)
+
+    # step_size
+    if (is.null(step_size)) {
+        step_size <- 1
+        warning("[scalebar] `step_size` not specified. Defaulting to 1",
+            call. = FALSE)
+    }
+
+    # Get the current plot dims
+    plot_data <- ggplot2::ggplot_build(ggobject)
+    ranges <- c(
+        plot_data$layout$panel_params[[1]]$x.range,
+        plot_data$layout$panel_params[[1]]$y.range
+    )
+    names(ranges) <- c("xmin", "xmax", "ymin", "ymax")
+
+    bar_length <- d * step_size
+
+    pos_data <- .scalebar_position(
+        bar_length = bar_length,
+        ranges = ranges,
+        bar_width = bar_width,
+        position = position,
+        padding = padding,
+        text_offset = text_offset
+    )
+    label_text <- .scalebar_text(
+        d = d,
+        units = units
+    )
+    .scalebar_draw(
+        ggobject = ggobject,
+        pos_data = pos_data,
+        bar_length = bar_length,
+        label_text = label_text,
+        bar_width = bar_width,
+        color = color,
+        stroke_color = stroke_color,
+        stroke_width = stroke_width,
+        text_size = text_size
+    )
+}
+
+# create the scalebar text to use
+# d is microns the bar should be
+.scalebar_text <- function(d, units = "um") {
+    if (units == "um") units <- "\u00b5m"
+    display_value <- switch(units,
+        "nm" = d * 1e3,
+        "mm" = d / 1e3,
+        "cm" = d / 1e4,
+        d # default case
+    )
+
+    # Format the number nicely without trailing zeros
+    formatted_value <- format(display_value, nsmall = 0, trim = TRUE)
+    if (grepl("\\.0+$", formatted_value)) {
+        formatted_value <- sub("\\.0+$", "", formatted_value)
+    }
+
+    # Create label text
+    paste(formatted_value, units)
+}
+
+# calculation for `pos_data`
+.scalebar_position <- function(bar_length, ranges,
+    bar_width = 0.5,
+    position = "bottom-right",
+    padding = 0,
+    text_offset = NULL
+) {
+    checkmate::assert_numeric(ranges, len = 4L)
+    if (!setequal(names(ranges), c("xmin", "xmax", "ymin", "ymax"))) {
+        stop("[scalebar] `ranges` info must be named", call. = FALSE)
+    }
+    checkmate::assert_numeric(padding)
+    if (length(padding) == 1L) padding <- rep(padding, 2L)
+    checkmate::assert_numeric(padding, len = 2L)
+    if(is.null(text_offset)) {
+        plot_height <- ranges[["ymax"]] - ranges[["ymin"]]
+        text_offset <- plot_height * 0.02 # y offset
+    }
+    checkmate::assert_numeric(text_offset, len = 1L)
+
+    # scale padding values
+    padding <- padding *
+        c(
+            ranges[["xmax"]] - ranges[["xmin"]],
+            ranges[["ymax"]] - ranges[["ymin"]]
+        )
+
+    if (is.character(position)) {
+        position <- match.arg(position, choices = c(
+            "bottom-right", "bottom-left", "top-right", "top-left"
+        ))
+
+        pos_data <- switch(position,
+            "bottom-right" = list(
+                x_start = ranges[["xmax"]] - padding[1L] - bar_length,
+                y = ranges[["ymin"]] + padding[2L],
+                text_above = TRUE
+            ),
+            "bottom-left" = list(
+                x_start = ranges[["xmin"]] + padding[1L],
+                y = ranges[["ymin"]] + padding[2L],
+                text_above = TRUE
+            ),
+            "top-right" = list(
+                x_start = ranges[["xmax"]] - padding[1L] - bar_length,
+                y = ranges[["ymax"]] - padding[2L] - bar_width,
+                text_above = FALSE
+            ),
+            "top-left" = list(
+                x_start = ranges[["xmin"]] + padding[1L],
+                y = ranges[["ymax"]] - padding[2L] - bar_width,
+                text_above = FALSE
+            )
+        )
+
+    } else if (is.numeric(position) && length(position) == 2L) {
+        # Custom position provided as c(x, y)
+        # Determine if text should be above or below based on y-position
+        text_above <- position[2L] < mean(c(ranges[["ymin"]], ranges[["ymax"]]))
+        pos_data <- list(
+            x_start = position[1L],
+            y = position[2L],
+            text_above = text_above
+        )
+    } else {
+        err_m <- "`position` must be a string or a numeric vector c(x, y)"
+        stop(paste("[scalebar]", err_m), call. = FALSE)
+    }
+
+    # text positioning
+    if (pos_data$text_above) {
+        pos_data$text_y <- pos_data$y + bar_width + text_offset
+        pos_data$vjust_val <- 0 # align bottom of text with position
+    } else {
+        pos_data$text_y <- pos_data$y - text_offset
+        pos_data$vjust_val <- 1 # align top of text with position
+    }
+    pos_data
+}
+
+.scalebar_draw <- function(ggobject, pos_data, bar_length, label_text,
+    bar_width = 0.5,
+    color = "white",
+    stroke_color = NULL,
+    stroke_width = 0.5,
+    text_size = 3
+) {
+    checkmate::assert_character(label_text, len = 1L)
+    checkmate::assert_numeric(bar_length, len = 1L)
+    checkmate::assert_numeric(bar_width)
+    checkmate::assert_character(color, len = 1L)
+    checkmate::assert_numeric(text_size, len = 1L)
+
+    # draw funs
+    bar <- function() {
+        ggplot2::annotate("rect",
+            xmin = pos_data$x_start,
+            xmax = pos_data$x_start + bar_length,
+            ymin = pos_data$y,
+            ymax = pos_data$y + bar_width,
+            fill = color,
+            color = NA
+        )
+    }
+    border <- function() {
+        ggplot2::annotate("rect",
+            xmin = pos_data$x_start - stroke_width,
+            xmax = pos_data$x_start + bar_length + stroke_width,
+            ymin = pos_data$y - stroke_width,
+            ymax = pos_data$y + bar_width + stroke_width,
+            fill = stroke_color,
+            color = NA
+        )
+    }
+    txt <- function(x, y, color) {
+        ggplot2::annotate("text",
+            x = x, y = y, color = color,
+            label = label_text,
+            size = text_size,
+            vjust = pos_data$vjust_val,
+            fontface = "bold"
+        )
+    }
+
+    # draw bar and outline
+    if (!is.null(stroke_color)) {
+        ggobject <- ggobject + border() + bar()
+    } else {
+        ggobject <- ggobject + bar()
+    }
+
+    # draw text
+    ## create outline effect if specified
+    if (!is.null(stroke_color)) {
+        # Create outline effect by adding the same text multiple times with small offsets
+        # This creates a "shadow" effect that simulates an outline
+
+        # Scale the offset based on the outline size parameter
+        offset_base <- stroke_width
+        offsets <- list(
+            c(-offset_base, 0), c(offset_base, 0),    # left, right
+            c(0, -offset_base), c(0, offset_base),    # bottom, top
+            c(-offset_base, -offset_base), c(offset_base, -offset_base),  # bottom corners
+            c(-offset_base, offset_base), c(offset_base, offset_base)     # top corners
+        )
+        # add outline/shadow text annotations
+        for (offset in offsets) {
+            ggobject <- ggobject + txt(
+                x = pos_data$x_start + (bar_length / 2) + offset[1],
+                y = pos_data$text_y + offset[2],
+                color = stroke_color
+            )
+        }
+    }
+    ## main text
+    ggobject <- ggobject + txt(
+        x = pos_data$x_start + (bar_length / 2),
+        y = pos_data$text_y,
+        color = color
+    )
+
+    ggobject
+}
