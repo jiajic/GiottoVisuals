@@ -79,7 +79,7 @@
 #' # plot with spatial enrichment information
 #' spatInSituPlotPoints(g,
 #'     polygon_feat_type = "aggregate",
-#'     spat_enr_names = "cluster_metagene",
+#'     spat_enr_name = "cluster_metagene",
 #'     polygon_fill = "1",
 #'     polygon_fill_as_factor = FALSE,
 #'     polygon_fill_gradient_style = "sequential",
@@ -328,9 +328,7 @@ spatInSituPlotPoints <- function(
     }
 
     # fix coordinates
-    if (!is.null(coord_fix_ratio)) {
-        plot <- plot + ggplot2::coord_fixed(ratio = coord_fix_ratio)
-    }
+    plot <- .aspect_ratio(plot, coord_fix_ratio)
 
     # scalebar
     if (show_scalebar) {
@@ -655,9 +653,7 @@ spatInSituPlotPoints <- function(
     )
 
     # fix coord ratio
-    if (!is.null(coord_fix_ratio)) {
-        plot <- plot + ggplot2::coord_fixed(ratio = coord_fix_ratio)
-    }
+    plot <- .aspect_ratio(plot, coord_fix_ratio)
 
     return(plot)
 }
@@ -927,9 +923,7 @@ spatInSituPlotHex <- function(gobject,
     )
 
     # fix coord ratio
-    if (!is.null(coord_fix_ratio)) {
-        plot <- plot + ggplot2::coord_fixed(ratio = coord_fix_ratio)
-    }
+    plot <- .aspect_ratio(plot, coord_fix_ratio)
 
     return(plot)
 }
