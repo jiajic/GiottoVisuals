@@ -16,8 +16,6 @@
 #' @param spat_loc_name name of spatial locations
 #' @param feats named list of features to plot
 #' @param feat_type feature types of the feats
-#' @param sdimx spatial dimension x
-#' @param sdimy spatial dimension y
 #' @param xlim limits of x-scale (min/max vector)
 #' @param ylim limits of y-scale (min/max vector)
 #' @param remove_background_polygon logical (default = `TRUE`). `xlim` and
@@ -112,8 +110,6 @@ spatInSituPlotPoints <- function(
         feat_type = "rna",
         feats_color_code = NULL,
         feat_shape_code = NULL,
-        sdimx = "x",
-        sdimy = "y",
         xlim = NULL,
         ylim = NULL,
         remove_background_polygon = TRUE,

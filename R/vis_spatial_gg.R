@@ -94,7 +94,6 @@
         legend_symbol_size = 1,
         background_color = "white",
         vor_border_color = "white",
-        show_axes = NULL,
         show_scalebar = FALSE,
         scalebar_param = list(),
         vor_max_radius = 200,
@@ -118,8 +117,6 @@
         point_shape,
         choices = c("border", "no_border", "voronoi")
     )
-
-    show_axes <- show_axes %null% TRUE
 
     # Set feat_type and spat_unit
     spat_unit <- set_default_spat_unit(
@@ -402,10 +399,6 @@
     )
     pl <- pl + do.call(.gg_theme, args = gg_theme_args)
 
-    if (!show_axes) {
-        pl <- .theme_remove_axes(pl)
-    }
-
     ## change symbol size of legend
     if (isTRUE(color_as_factor)) {
         if (point_shape %in% c("border", "voronoi")) {
@@ -584,7 +577,6 @@ spatPlot2D <- function(
         legend_text = 10,
         legend_symbol_size = 2,
         background_color = "white",
-        show_axes = NULL,
         show_scalebar = FALSE,
         scalebar_param = list(),
         vor_border_color = "white",
@@ -663,7 +655,7 @@ spatPlot2D <- function(
         # [grid aes]
         "show_grid", "spatial_grid_name", "grid_color",
         # [figure params]
-        "coord_fix_ratio", "show_legend", "show_axes", "legend_text",
+        "coord_fix_ratio", "show_legend", "legend_text",
         "legend_symbol_size", "background_color", "axis_text",
         "axis_title", "title",
         # [return params]
