@@ -1,15 +1,17 @@
-# GiottoVisuals 0.2.14
+# GiottoVisuals 0.2.15
+
+## changes
+- `auto_image_resample()` rewritten to use `terra::window()` instead of the two-method crop/oversample approach, simplifying the implementation and avoiding materialization of large crops to disk. `giottoAffineImage` is now also supported. Removed params: `flex_resample`, `max_crop`, `max_resample_scale` and their corresponding global options `giotto.plot_img_max_crop` and `giotto.plot_img_max_resample_scale`.
+- feature value collection in `spatFeatPlot2D_single()`, `dimFeatPlot2D()`, `spatFeatPlot3D()`, `dimFeatPlot3D()`, `spatDimFeatPlot3D()`, and `violinPlot()` now uses `spatValues()`, replacing manual expression matrix extraction and transposition
+- minimum GiottoClass version bumped to `>= 0.5.1`
+
+# GiottoVisuals 0.2.14 (2025/11/19)
 
 ## bug fixes
 - allow `coord_fix_ratio = TRUE` usage again after ggplot2 changes
 
 ## changes
 - change `spatInSituPlotPoints()` param `spat_enr_names` to `spat_enr_name`
-- `auto_image_resample()`
-  - Rewritten to use `terra::window()` instead of the two-method crop/oversample approach, simplifying the implementation and avoiding materialization of large crops to disk
-  - Removed params: `flex_resample`, `max_crop`, `max_resample_scale` and their corresponding global options `giotto.plot_img_max_crop` and `giotto.plot_img_max_resample_scale`.
-- feature value collection in `spatFeatPlot2D_single()`, `dimFeatPlot2D()`, `spatFeatPlot3D()`, `dimFeatPlot3D()`, and `spatDimFeatPlot3D()` now uses `spatValues()`, replacing manual expression matrix extraction and transposition
-- minimum GiottoClass version bumped to `>= 0.5.1`
 
 ## enhancements
 - `show_axes` param for `spatInSituPlotPoints()`
