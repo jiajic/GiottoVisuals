@@ -1,3 +1,22 @@
+#' Bidirectionalize a canonical spatial-network edge table into
+#' source/target form and compute `rank_int` (rank-by-distance per source).
+#' Replacement for the legacy `convert_to_full_spatial_network()`; the
+#' rank is recomputed JIT because any topology mutation (subset, filter)
+#' would invalidate a stored value.
+#' @keywords internal
+#' @noRd
+.full_with_rank <- function(sn_dt) {
+    distance <- rank_int <- source <- NULL # data.table NSE
+    rev <- data.table::copy(sn_dt)
+    data.table::setnames(rev, c("from", "to"), c("to", "from"))
+    full <- unique(rbind(sn_dt, rev))
+    data.table::setnames(full, c("from", "to"), c("source", "target"))
+    data.table::setorder(full, source, distance)
+    full[, rank_int := seq_len(.N), by = "source"]
+    full
+}
+
+
 #' @title Plot spatial distance distribution
 #' @name spatNetwDistributionsDistance
 #' @description This function return histograms displaying the distance
@@ -39,8 +58,8 @@ spatNetwDistributionsDistance <- function(gobject,
         output = "networkDT"
     )
 
-    ## convert to full network with rank_int column
-    spatial_network <- convert_to_full_spatial_network(spatial_network)
+    ## bidirectionalize edges and compute rank_int per source
+    spatial_network <- .full_with_rank(spatial_network)
 
     if (is.null(spatial_network)) {
         stop("spatial network ", spatial_network_name, " was not found")
@@ -154,8 +173,8 @@ spatNetwDistributionsKneighbors <- function(gobject,
         output = "networkDT"
     )
 
-    ## convert to full network with rank_int column
-    spatial_network <- convert_to_full_spatial_network(spatial_network)
+    ## bidirectionalize edges and compute rank_int per source
+    spatial_network <- .full_with_rank(spatial_network)
 
     if (is.null(spatial_network)) {
         stop("spatial network ", spatial_network_name, " was not found")
@@ -343,9 +362,7 @@ plotStatDelaunayNetwork <- function(gobject,
         ...
     )
 
-    delaunay_network_DT_c <- convert_to_full_spatial_network(
-        reduced_spatial_network_DT = delaunay_network_DT
-    )
+    delaunay_network_DT_c <- .full_with_rank(delaunay_network_DT)
 
     ## create visuals
     pl1 <- ggplot2::ggplot(
