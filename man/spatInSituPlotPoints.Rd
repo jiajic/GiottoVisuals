@@ -182,7 +182,7 @@ One resolver pass is shared across the polygon / point / image
 helpers. Backend-agnostic: in-mem and on-disk gobjects take the
 same code path via the registered view coordinator.}
 
-\item{...}{additional params to pass to \code{\link[GiottoClass:spatValues]{spatValues()}}}
+\item{...}{additional params to pass to \code{\link[=spatValues]{spatValues()}}}
 }
 \value{
 ggplot

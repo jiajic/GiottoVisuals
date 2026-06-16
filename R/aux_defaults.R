@@ -147,12 +147,9 @@ set_default_color_discrete_cell <- function(
         instrs,
         ...) {
     # read instructions
-    instr_pal <- readGiottoInstructions(instrs, "cell_color_d_pal", NULL)
-    instr_rev <- readGiottoInstructions(instrs, "cell_color_d_rev", NULL)
-    instr_strategy <- readGiottoInstructions(
-        instrs, "cell_color_d_strategy",
-        NULL
-    )
+    instr_pal <- instrs[["cell_color_d_pal"]]
+    instr_rev <- instrs[["cell_color_d_rev"]]
+    instr_strategy <- instrs[["cell_color_d_strategy"]]
 
     set_default_color_discrete(
         colors = colors,
@@ -170,12 +167,9 @@ set_default_color_discrete_poly <- function(
         instrs,
         ...) {
     # read instructions
-    instr_pal <- readGiottoInstructions(instrs, "poly_color_d_pal", NULL)
-    instr_rev <- readGiottoInstructions(instrs, "poly_color_d_rev", NULL)
-    instr_strategy <- readGiottoInstructions(
-        instrs, "poly_color_d_strategy",
-        NULL
-    )
+    instr_pal <- instrs[["poly_color_d_pal"]]
+    instr_rev <- instrs[["poly_color_d_rev"]]
+    instr_strategy <- instrs[["poly_color_d_strategy"]]
 
     set_default_color_discrete(
         colors = colors,
@@ -193,12 +187,9 @@ set_default_color_discrete_feat <- function(
         instrs,
         ...) {
     # read instructions
-    instr_pal <- readGiottoInstructions(instrs, "feat_color_pal", NULL)
-    instr_rev <- readGiottoInstructions(instrs, "feat_color_rev", NULL)
-    instr_strategy <- readGiottoInstructions(
-        instrs, "feat_color_strategy",
-        NULL
-    )
+    instr_pal <- instrs[["feat_color_pal"]]
+    instr_rev <- instrs[["feat_color_rev"]]
+    instr_strategy <- instrs[["feat_color_strategy"]]
 
     set_default_color_discrete(
         colors = colors,
@@ -216,18 +207,9 @@ set_default_color_discrete_heatmap_clus <- function(
         instrs,
         ...) {
     # read instructions
-    instr_pal <- readGiottoInstructions(
-        instrs, "heatmap_clus_color_pal",
-        NULL
-    )
-    instr_rev <- readGiottoInstructions(
-        instrs, "heatmap_clus_color_rev",
-        NULL
-    )
-    instr_strategy <- readGiottoInstructions(
-        instrs,
-        "heatmap_clus_color_strategy", NULL
-    )
+    instr_pal <- instrs[["heatmap_clus_color_pal"]]
+    instr_rev <- instrs[["heatmap_clus_color_rev"]]
+    instr_strategy <- instrs[["heatmap_clus_color_strategy"]]
 
     set_default_color_discrete(
         colors = colors,
@@ -516,8 +498,8 @@ set_default_color_continuous_cell <- function(colors = NULL,
     ...,
     data_default = NULL) {
     # read instructions
-    instr_pal <- readGiottoInstructions(instrs, "cell_color_c_pal", NULL)
-    instr_rev <- readGiottoInstructions(instrs, "cell_color_c_rev", NULL)
+    instr_pal <- instrs[["cell_color_c_pal"]]
+    instr_rev <- instrs[["cell_color_c_rev"]]
 
     set_default_color_continuous(
         colors = colors,
@@ -538,8 +520,8 @@ set_default_color_continuous_poly <- function(colors = NULL,
     style = "divergent",
     ...) {
     # read instructions
-    instr_pal <- readGiottoInstructions(instrs, "poly_color_c_pal", NULL)
-    instr_rev <- readGiottoInstructions(instrs, "poly_color_c_rev", NULL)
+    instr_pal <- instrs[["poly_color_c_pal"]]
+    instr_rev <- instrs[["poly_color_c_rev"]]
 
     set_default_color_continuous(
         colors = colors,
@@ -560,8 +542,8 @@ set_default_color_continuous_heatmap <- function(colors = NULL,
     style = "divergent",
     ...) {
     # read instructions
-    instr_pal <- readGiottoInstructions(instrs, "heatmap_color_pal", NULL)
-    instr_rev <- readGiottoInstructions(instrs, "heatmap_color_rev", NULL)
+    instr_pal <- instrs[["heatmap_color_pal"]]
+    instr_rev <- instrs[["heatmap_color_rev"]]
 
     set_default_color_continuous(
         colors = colors,
@@ -581,8 +563,8 @@ set_default_color_continuous_CCcom_heatmap <- function(colors = NULL,
     style = "divergent",
     ...) {
     # read instructions
-    instr_pal <- readGiottoInstructions(instrs, "CCcom_heatmap_color_pal", NULL)
-    instr_rev <- readGiottoInstructions(instrs, "CCcom_heatmap_color_rev", NULL)
+    instr_pal <- instrs[["CCcom_heatmap_color_pal"]]
+    instr_rev <- instrs[["CCcom_heatmap_color_rev"]]
 
     set_default_color_continuous(
         colors = colors,
@@ -609,8 +591,8 @@ set_default_color_continuous_CCcom_dotplot <- function(colors = NULL,
         pal = c("darkblue", "blue", "white", "red", "darkred")
     )) {
     # read instructions
-    instr_pal <- readGiottoInstructions(instrs, "CCcom_dotplot_color_pal", NULL)
-    instr_rev <- readGiottoInstructions(instrs, "CCcom_dotplot_color_rev", NULL)
+    instr_pal <- instrs[["CCcom_dotplot_color_pal"]]
+    instr_rev <- instrs[["CCcom_dotplot_color_rev"]]
 
     set_default_color_continuous(
         colors = colors,
