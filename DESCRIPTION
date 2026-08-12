@@ -75,6 +75,7 @@ Collate:
     'aux_output.R'
     'aux_save.R'
     'aux_visuals.R'
+    'gmulti.R'
     'package_imports.R'
     'colorRamp2.R'
     'color_palettes.R'

@@ -96,7 +96,11 @@ NULL
 
     plots <- lapply(space, function(child) {
         a <- named
-        a$gobject <- gobject@objects[[child]]
+        a$gobject <- GiottoClass:::.gm_inject_joint_metadata(
+            mg = gobject,
+            child_g = gobject@objects[[child]],
+            child_name = child
+        )
         a$view <- NULL    # already applied
         a$space <- NULL   # single-sample below
         if (has_title) {
@@ -116,16 +120,36 @@ NULL
         do.call(plot_fn, c(a, dots))
     })
 
-    if (length(plots) == 1L) return(plots[[1L]])
+    composite <- if (length(plots) == 1L) {
+        plots[[1L]]
+    } else {
+        cowplot::plot_grid(
+            plotlist = plots,
+            ncol = set_default_cow_n_col(
+                cow_n_col = named$cow_n_col,
+                nr_plots = length(plots)
+            ),
+            rel_heights = named$cow_rel_h %null% 1,
+            rel_widths = named$cow_rel_w %null% 1,
+            align = named$cow_align %null% "h"
+        )
+    }
 
-    cowplot::plot_grid(
-        plotlist = plots,
-        ncol = set_default_cow_n_col(
-            cow_n_col = named$cow_n_col,
-            nr_plots = length(plots)
-        ),
-        rel_heights = named$cow_rel_h %null% 1,
-        rel_widths = named$cow_rel_w %null% 1,
-        align = named$cow_align %null% "h"
+    # Route the composite through plot_output_handler so the user's
+    # `show_plot` / `save_plot` / `return_plot` / `save_param` /
+    # `default_save_name` are honored at the gmulti level. Per-panel
+    # values were already suppressed to FALSE/TRUE/FALSE above so each
+    # sub-plot returned a ggplot to compose with; the user-facing
+    # settings only apply to the composite output.
+    plot_output_handler(
+        gobject = gobject,
+        plot_object = composite,
+        save_plot = named$save_plot,
+        return_plot = named$return_plot,
+        show_plot = named$show_plot,
+        default_save_name = named$default_save_name %null%
+            paste0(deparse(substitute(plot_fn)), "_gmulti"),
+        save_param = named$save_param %null% list(),
+        else_return = NULL
     )
 }
