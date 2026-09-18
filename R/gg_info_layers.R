@@ -99,14 +99,8 @@ plot_spat_point_layer_ggplot <- function(
     }
 
 
-    ## order of color
-    # 1. if NULL then default to lightblue
-    # 2. if character vector
-    # 2.1 if length of cell_color is longer than 1 and has colors
-    # 2.2 if not part of metadata then suppose its color
-    # 2.3 part of metadata
-    # 2.3.1 numerical column
-    # 2.3.2 factor column or character to factor
+    # color resolution order: see "Color resolution order" in
+    # vignettes/articles/design.Rmd
 
     # cell color default
     if (is.null(cell_color)) {
@@ -405,14 +399,8 @@ plot_spat_point_layer_ggplot_noFILL <- function(
     }
 
 
-    ## order of color
-    # 1. if NULL then default to lightblue
-    # 2. if character vector
-    # 2.1 if length of cell_color is longer than 1 and has colors
-    # 2.2 if not part of metadata then suppose its color
-    # 2.3 part of metadata
-    # 2.3.1 numerical column
-    # 2.3.2 factor column or character to factor
+    # color resolution order: see "Color resolution order" in
+    # vignettes/articles/design.Rmd
 
     # cell color default
     if (is.null(cell_color)) {
@@ -690,14 +678,8 @@ plot_spat_voronoi_layer_ggplot <- function(
 
 
 
-    ## order of color
-    # 1. if NULL then default to lightblue
-    # 2. if character vector
-    # 2.1 if length of cell_color is longer than 1 and has colors
-    # 2.2 if not part of metadata then suppose its color
-    # 2.3 part of metadata
-    # 2.3.1 numerical column
-    # 2.3.2 factor column or character to factor
+    # color resolution order: see "Color resolution order" in
+    # vignettes/articles/design.Rmd
 
     # data.table variables
     temp_color <- NULL
@@ -1692,14 +1674,8 @@ plot_point_layer_ggplot <- function(
     }
 
 
-    ## order of color
-    # 1. if NULL then default to lightblue
-    # 2. if character vector
-    # 2.1 if length of cell_color is longer than 1 and has colors
-    # 2.2 if not part of metadata then suppose its color
-    # 2.3 part of metadata
-    # 2.3.1 numerical column
-    # 2.3.2 factor column or character to factor
+    # color resolution order: see "Color resolution order" in
+    # vignettes/articles/design.Rmd
 
 
     ## point layer
@@ -1955,14 +1931,8 @@ plot_point_layer_ggplot_noFILL <- function(ggobject,
     }
 
 
-    ## order of color
-    # 1. if NULL then default to lightblue
-    # 2. if character vector
-    # 2.1 if length of cell_color is longer than 1 and has colors
-    # 2.2 if not part of metadata then suppose its color
-    # 2.3 part of metadata
-    # 2.3.1 numerical column
-    # 2.3.2 factor column or character to factor
+    # color resolution order: see "Color resolution order" in
+    # vignettes/articles/design.Rmd
 
 
     ## point layer

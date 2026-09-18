@@ -1,0 +1,327 @@
+---
+title: "Architecture and Design"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Architecture and Design}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+This article describes the internal architecture of GiottoVisuals for
+contributors. It covers how plot functions get their data out of a `giotto`
+object, how that data reaches a geom, and the reasoning behind decisions that
+are not obvious from the code.
+
+## Package Layers
+
+A plot function moves through four layers, top to bottom:
+
+| Layer | Where | Responsibility |
+|-------|-------|----------------|
+| Entry | `vis_spatial_gg.R`, `vis_spatial_in_situ.R`, `vis_spatial_plotly.R`, `plot_*.R` | User-facing function, argument defaults, orchestration |
+| Data input | `GiottoClass` getters, `spatValues()`, `combine*Data()`, `.gg_materialize()` | Pull values out of the gobject into a `data.table` |
+| Render | `gg_info_layers.R`, `gg_param.R`, `aux_defaults.R`, `color_palettes.R` | Turn a table plus params into ggplot layers |
+| Output | `aux_output.R`, `aux_save.R` | Show / save / return, per `giottoInstructions` |
+
+The data input and render layers are not separated by a function boundary.
+Entry functions interleave the two in a single body — `.spatPlot2D_single()`
+fetches locations, network, grid and metadata, subsets them, and constructs
+geoms in the same ~460-line closure. Recognizing this seam is the precondition
+for most of the work in [Planned Work](#planned-work).
+
+## Data Input
+
+### The four input paths
+
+There is no single data-input API. Four paths coexist, in rough order of
+preference for new code:
+
+1. **`spatValues()`** — the funnel. Give it `feats` and it searches the gobject
+   for them. Preferred for anything that is "a named column of values per
+   cell".
+2. **`combine*Data()` / `combineMetadata()`** — joined tables when a plot needs
+   coordinates, metadata, polygons or overlapped points together. Used by
+   `spatInSituPlotPoints()` and the `spat*Plot` family.
+3. **Direct slot getters** — `getSpatialLocations()`, `getSpatialNetwork()`,
+   `getDimReduction()`, `getSpatialGrid()`, `getGiottoImage()`,
+   `getExpression()`. Used where the thing wanted is a whole slot, not a set of
+   named values: networks, grids, images, embeddings.
+4. **`.gg_materialize()`** — not a fetch. A pre-narrow applied before any of the
+   above (see [View / space pre-narrow](#view-space-pre-narrow)).
+
+All of them return eagerly. `spatValues()` and the `combine*` functions return
+`data.table`; the getters are called with `output = "data.table"` /
+`"networkDT"` / `"matrix"`.
+
+### `spatValues()` as the funnel
+
+`spatValues(gobject, feats, ...)` is a plain function in GiottoClass, not a
+generic. It walks a fixed search order and returns the first slot that holds
+every requested feature, as a `data.table` keyed on `cell_ID`:
+
+```
+cell expression -> cell metadata -> spatial locations
+  -> spatial enrichment -> dim reduction -> polygon info
+```
+
+Passing a location parameter (`expression_values`, `spat_enr_name`,
+`dim_reduction_name`, ...) scopes the search to that one slot, which also
+relaxes the all-or-nothing match into a partial match with a message.
+
+The consequence for plot functions is that `cell_color = "leiden_clus"`,
+`cell_color = "Gfap"` and `cell_color = "sdimx"` are all one call with no
+branch at the call site. Feature-value collection in `spatFeatPlot2D_single()`,
+`dimFeatPlot2D()`, the 3D variants, `violinPlot()`, `dotPlot()` and
+`plotRidge()` all route this way.
+
+### View / space pre-narrow {#view-space-pre-narrow}
+
+Plot functions that accept `view` / `space` call `.gg_materialize()` as their
+first statement, before any defaults are resolved or data is fetched.
+
+```r
+gobject <- .gg_materialize(gobject, view, space,
+    slots = c("cell_metadata", "expression", "spatial_enrichment"))
+```
+
+`slots` names the slots that plot reads, from the canonical set in
+`GiottoClass::materialize()`. The resolver runs **once** for the listed slots,
+so the predicate or crop is evaluated a single time no matter how many
+`combine*` / getter calls the plot body then makes.
+
+`.gg_materialize()` exists as a helper rather than an inline call because
+`materialize()` dispatches on `signature(giotto, giottoView)` /
+`(giotto, character)` and has no method for `view = NULL`. Plot functions need
+`view = NULL` to be the default so that callers without a view see normal
+behavior, so every one of the 23 call sites would otherwise carry its own
+`if (!is.null(view) || !is.null(space))` guard. The helper folds that guard into
+one place — do not inline it back.
+
+It is backend-agnostic by construction: `materialize()` selects
+`dataTableCoordinator` for in-memory gobjects and `parquetCoordinator` for
+`gsource`-backed ones via `.default_view_coordinator()`. Nothing in
+GiottoVisuals chooses.
+
+### There is no backed-vs-unbacked branch here, by design {#no-backed-branch}
+
+A disk-backed gobject is still class `giotto`. Backing lives one level down, in
+the subobjects — a `parquetExprStore` inside the `exprObj`, a `parquetStore`
+inside the `spatLocsObj`, a `parquetEdgeStore` in `@network`. S4 dispatch on
+`gobject` therefore cannot separate backed from unbacked, and a plot function
+that tried to branch on it would be branching on the wrong thing.
+
+Backed data works today because the getters narrow before they materialize.
+`spatValues()`'s expression branch subsets to the requested features first and
+only then coerces:
+
+```r
+e[][present, , drop = FALSE] |> t_flex() |> as("dgCMatrix") |> as.matrix()
+```
+
+For a handful of features that is cheap on any carrier. It is, however,
+hardcoded to the sparse in-memory route, and there is no seam at which a store
+could serve those columns natively.
+
+**Rule for this package:** no `inherits(x, "dataStore")` checks in
+GiottoVisuals. GiottoVisuals imports only GiottoUtils and GiottoClass and must
+stay that way. Any behavior that has to differ by carrier is expressed as a
+generic in GiottoClass with an in-memory default method, and implemented for
+stores in GiottoDisk. `.gg_materialize()` is the model: one call, no branch,
+the right coordinator chosen below.
+
+## Render
+
+### Layer functions
+
+`gg_info_layers.R` holds the render primitives. Each takes a ggplot object plus
+a prepared table and returns the object with one layer added:
+
+| Function | Adds |
+|----------|------|
+| `plot_spat_point_layer_ggplot()` | Cell points, fill-capable |
+| `plot_spat_point_layer_ggplot_noFILL()` | Cell points, color-only |
+| `plot_spat_voronoi_layer_ggplot()` | Voronoi tessellation |
+| `plot_cell_polygon_layer()` | Cell polygons |
+| `plot_feature_points_layer()` | Transcript / feature points |
+| `plot_feature_raster_density_layer()`, `plot_feature_hexbin_layer()` | Binned feature density |
+| `plot_spat_image_layer_ggplot()` | Background image |
+| `plot_spat_scatterpie_layer_ggplot()` | Deconvolution pies |
+| `plot_network_layer_ggplot()` | Network edges |
+| `plot_point_layer_ggplot()`, `..._noFILL()` | Dimension-reduction points |
+
+These take prepared tables, never a gobject — with the exception of
+`plot_spat_image_layer_ggplot()`, which needs the gobject to resolve the image
+and its extent. The `.sissp_*()` helpers in `vis_spatial_in_situ.R` sit one
+level above and do take a gobject: fetch, then delegate to a layer function.
+They are the closest thing in the package to an explicit collect/render split
+and are the pattern to follow.
+
+### Color resolution order {#color-order}
+
+`cell_color` (and the `polygon_fill` / `feat_color` equivalents) is
+deliberately overloaded. The resolution order below is canonical and is applied
+by every point and polygon layer function:
+
+1. `NULL` — default to `"lightblue"`, no mapping.
+2. Character or numeric vector of `length > 1`:
+   - numeric or factor — treated as per-cell values, attached as `temp_color`
+     and mapped. Errors if the length does not match the row count.
+   - character — must be all valid color codes, applied as a literal fill.
+3. Character of `length 1`:
+   - not a column name in the data — must be a valid color code, applied as a
+     literal fill. Errors otherwise.
+   - a column name:
+     - numeric or integer column and `color_as_factor = FALSE` — continuous
+       gradient, honoring `gradient_limits` and `gradient_midpoint`.
+     - otherwise — coerced to factor, discrete scale.
+
+The five layer functions that implement this each carry a one-line pointer back
+to this section instead of restating the ladder.
+
+### Palette defaults
+
+Color defaults resolve through three levels, closest wins:
+
+```
+function argument  ->  giottoInstructions  ->  global option
+```
+
+`set_default_color_discrete()` / `set_default_color_continuous()` and their
+`_cell` / `_poly` / `_feat` / `_heatmap` wrappers implement this. The global
+options are initialized in `zzz.R`:
+
+| Option | Default | Scope |
+|--------|---------|-------|
+| `giotto.color_d_pal` | `"distinct"` | Discrete palette |
+| `giotto.color_d_rev` | `FALSE` | Discrete reversal |
+| `giotto.color_d_strategy` | `"interpolate"` | Discrete expansion strategy |
+| `giotto.color_cd_pal` | `c("blue", "white", "red")` | Continuous divergent |
+| `giotto.color_cs_pal` | `"viridis"` | Continuous sequential |
+| `giotto.color_c_rev` | `FALSE` | Continuous reversal |
+
+A palette resolves to a **factory function** (`n` in, colors out), not a vector,
+so that the number of levels does not need to be known at default-resolution
+time. `set_default_color_*()` returns early when given a function, wraps a
+multi-entry character vector with `simple_palette_factory()`, and treats a
+single string as a `getColors()` palette name.
+
+These functions must keep inline fallback defaults for their `getOption()`
+reads rather than relying on `zzz.R` having run: GiottoVisuals is frequently
+loaded as a dependency or reached via `::` without being attached, in which case
+`.onLoad`'s `init_option()` calls have not necessarily populated the options.
+
+### Params and aesthetics
+
+`gg_param()` sorts a flat set of named arguments into a ggplot2 `aes` mapping
+versus top-level geom parameters, by class: anything that is a `quosure`, a
+`name`, or a language object becomes an aesthetic, everything else becomes a
+top-level parameter. This lets layer functions accumulate params
+unconditionally and sort once at the end.
+
+`aes_string2()` exists because `ggplot2::aes_string()` was removed in ggplot2
+v4. It also handles column names that parse as numeric literals (`"1"`, `"2"`),
+which appear routinely as spatial-enrichment and cluster column names.
+
+### Point rasterization budget
+
+`giotto_point()` dispatches between `ggplot2::geom_point()`,
+`scattermore::geom_scattermore()` and `scattermore::geom_scattermost()` on
+`plot_method`, and computes the raster pixel dimensions from
+`getOption("giotto.plot_point_raster", 5e5)` and the plot extent.
+
+This is a **pixel** budget, not a row budget. It reduces the resolution the
+points are rasterized into; it does not reduce the number of rows fetched, and
+it only applies once the caller has already selected a scattermore method.
+There is currently no row-count guard anywhere in the data path — see
+[Planned Work](#planned-work).
+
+Image resolution has a separate budget: `auto_image_resample()` uses
+`giotto.plot_img_max_sample` (default `5e5`) and `terra::window()` to avoid
+materializing large crops.
+
+## Output Handling
+
+Every plot function returns through `plot_output_handler()`, which reads
+`show_plot` / `save_plot` / `return_plot` from the passed value when non-`NULL`
+and otherwise from the object's `giottoInstructions`. Saving is delegated to
+`all_plots_save_function()`.
+
+## Design Decisions
+
+### Plot functions are closures, not generics
+
+There is no S4 dispatch on `gobject` anywhere in the package. The `setMethod()`
+calls that exist are for `giottoSankeyPlan`, `show`, and
+`gg_annotation_raster()` — which dispatches on the *image* class
+(`giottoImage` / `giottoLargeImage` / `giottoAffineImage` / `list`) against a
+`ggUnionClass` plot object, and is the one place dispatch earns its keep.
+
+This is a consequence of [the backing rule](#no-backed-branch) rather than an
+oversight: the axis a plot function would most want to dispatch on is not
+visible in the `gobject` class.
+
+### Entry functions take flat formals
+
+`.spatPlot2D_single()` has roughly 60 formals. This is deliberate for the
+user-facing surface — it keeps every knob discoverable through `?spatPlot2D`
+and tab-completion, and it is what existing Giotto users expect. It is not
+deliberate for the internals, where any wrapper that needs to re-dispatch a
+plot call has to reconstruct it from `formals()`.
+
+### `plot_output_handler()` is a single function
+
+It reads settings, prints, saves and returns in one pass. Splitting it into a
+read step producing a `giottoPlotOutput` and a do step consuming one has been
+sketched but not adopted; the sketch survives as commented code in
+`aux_output.R`. The motivation would be testability — as written, the decision
+logic cannot be exercised without producing a plot.
+
+## Planned Work {#planned-work}
+
+In dependency order. None of this is committed; it is recorded so the reasoning
+is not re-derived.
+
+1. **Extract the collect phase into named internals.** Split each `*_single`
+   into a `.plotdata_*()` and a `.render_*()`. Mechanical, no behavior change.
+   `.sissp_polygon()` / `.sissp_points()` and the violin / ridge / dotplot
+   bodies already have the shape; `.spatPlot2D_single()` and
+   `spatFeatPlot2D_single()` are the ones that need it. Prerequisite for
+   everything below.
+
+2. **A render-budget generic.** Something like `plotPrepare(x, budget)` in
+   GiottoClass, default method identity, with store methods in GiottoDisk that
+   push the reduction down (stride sample, bbox crop, SQL-side hexbin
+   aggregate). GiottoDisk already has this logic — `.arrow_sample_max_rows()`,
+   the `giottodisk.plot_sample_max` option, the sedona stride sample — but it
+   is sealed inside `setMethod("plot", "parquetGeomStore")` and reachable only
+   by calling `plot()` on a bare store. Highest value per line changed, and the
+   difference between a spatial plot of a large backed points store working and
+   exhausting memory.
+
+3. **A carrier output mode for collectors.** Return what the slot natively
+   holds rather than forcing a `data.table`, and force only at the geom
+   boundary. `spatValues()` needs an `output =` argument, and its expression
+   branch needs to route through a generic so a backed store can serve a narrow
+   feature set as a column pull instead of `dgCMatrix` to dense.
+
+4. **Push `select_cells` / `select_cell_groups` / `xlim` / `ylim` into the
+   view.** These are predicates, but they are applied after materialization as
+   `data.table` filters in plot bodies. As view steps they would be evaluated
+   once, at the coordinator, on the backed side.
+
+5. **Consolidate the request spec.** `GiottoClass::svkey` is already a
+   declarative, serializable "data to fetch" object with a `@get` closure that
+   `spatValues()` honors. Growing it is preferable to inventing a new spec
+   class, and it composes with the view recipe.
+
+Tests that check backed and unbacked parity should assert the **class** the
+collector returns, not only the values — otherwise a parity test passes having
+quietly materialized the whole store.
