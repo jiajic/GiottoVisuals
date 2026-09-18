@@ -1183,8 +1183,18 @@ plotMetaDataCellsHeatmap <- function(gobject,
     )
 
     ## data.table ##
+    # Coerce through dgCMatrix rather than calling `as.matrix()` on whatever
+    # `getExpression()` returned. A disk-backed store has no `as.matrix()`
+    # method, and giving it one would be the wrong fix: `as.matrix()` means
+    # dense, so a backed carrier would densify with none of the size checks
+    # its own materialization path applies. Going via dgCMatrix keeps that
+    # path, and every in-memory carrier used here -- base matrix, dgCMatrix,
+    # DelayedArray, IterableMatrix -- answers it too.
+    #
+    # `melt_matrix()` needs a base array (it calls `as.data.frame.table()`),
+    # so the result is dense either way; only the route differs.
     subset_values_DT <- melt_matrix(
-        as.matrix(subset_values),
+        as.matrix(methods::as(subset_values, "dgCMatrix")),
         varnames = c("feats", "cells"),
         value.name = "expression",
         as.is = TRUE
