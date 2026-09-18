@@ -30,7 +30,7 @@ Imports:
     data.table,
     ggplot2 (>= 3.1.1),
     GiottoUtils (>= 0.1.12),
-    GiottoClass (>= 0.5.1),
+    GiottoClass (>= 0.7.0),
     ggrepel,
     igraph (>= 1.2.4.1),
     methods,
@@ -68,7 +68,7 @@ Suggests:
     rmarkdown
 Remotes:
     giotto-suite/GiottoUtils,
-    giotto-suite/GiottoClass
+    giotto-suite/GiottoClass@gsource
 Config/testthat/edition: 3
 Collate: 
     'aux_defaults.R'
