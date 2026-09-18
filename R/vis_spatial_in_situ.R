@@ -372,6 +372,57 @@ spatInSituPlotPoints <- function(
     plot
 }
 
+# Record `xlim` / `ylim` as a crop step on a scratch view, and return the
+# gobject carrying it together with that view's name.
+#
+# The window used to be handed to `combineCellData()`, which cropped the
+# polygon carrier eagerly. That works on a `SpatVector` and not on a
+# disk-backed store, where neither `crop()` nor `terra::geom()` has a route --
+# a crop STEP does, because it resolves through whichever view coordinator the
+# object registers. So the window is expressed the same way a user-supplied
+# view is, and takes the same path.
+#
+# The view is scratch: the gobject carrying it is local to the plotting call
+# and never returned, so nothing is left on the user's object. The name is
+# chosen to avoid collision with anything already slotted.
+#
+# `geom = "poly"` rather than the `centroid` default, to match the eager
+# behaviour this replaces -- cropping the polygon carrier kept a polygon
+# overlapping the window even when its centroid fell outside.
+#
+# Stacking: a caller-supplied view is copied onto the scratch name first, so
+# the window lands last. That ordering wants revisiting when `view` / `space`
+# become routine here; it is the reading that matches what the eager crop did.
+.sissp_window_view <- function(gobject, spat_unit,
+                               xlim = NULL, ylim = NULL, view = NULL) {
+    if (is.null(xlim) && is.null(ylim)) {
+        return(list(gobject = gobject, view = view))
+    }
+
+    # axes the caller left open keep the object's own extent, which is what
+    # starting from the carrier's extent used to accomplish
+    e <- terra::ext(GiottoClass::ext(gobject,
+        spat_unit = spat_unit, prefer = "polygon"))
+    if (!is.null(xlim)) e[c(1, 2)] <- xlim
+    if (!is.null(ylim)) e[c(3, 4)] <- ylim
+
+    # giottoViews() returns the names themselves, not a named list
+    taken <- GiottoClass::giottoViews(gobject)
+    nm <- ".roi"
+    i <- 1L
+    while (nm %in% taken) {
+        nm <- sprintf(".roi%d", i)
+        i <- i + 1L
+    }
+
+    if (!is.null(view)) {
+        GiottoClass::giottoView(gobject, nm) <-
+            GiottoClass::giottoView(gobject, view)
+    }
+    gobject <- GiottoClass::crop(gobject, e, geom = "poly", view = nm)
+    list(gobject = gobject, view = nm)
+}
+
 .sissp_polygon <- function(plot, gobject,
     polygon_feat_type = NULL,
     feat_type = NULL,
@@ -405,15 +456,19 @@ spatInSituPlotPoints <- function(
         feat_type = feat_type
     )
 
+    # the window travels as a view, not as a carrier crop -- see
+    # .sissp_window_view() for why
+    .win <- .sissp_window_view(gobject, spat_unit = polygon_feat_type,
+        xlim = xlim, ylim = ylim)
+
     polygon_combo <- combineCellData(
-        gobject = gobject,
+        gobject = .win$gobject,
         spat_loc_name = spat_loc_name,
         feat_type = feat_type,
         include_poly_info = TRUE,
         poly_info = polygon_feat_type,
         remove_background_polygon = remove_background_polygon,
-        xlim = xlim,
-        ylim = ylim
+        view = .win$view
     )
 
     polygon_dt <- data.table::rbindlist(polygon_combo, fill = TRUE)
